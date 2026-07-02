@@ -11,7 +11,7 @@
 - [x] Add initial scripts
 - [x] Create FishingScene
 - [x] Place temporary boat, water, light, and camera
-- [ ] Verify Play Mode manually in Unity
+- [x] Verify Play Mode manually in Unity
 - [x] Commit and push baseline
 
 ## Week 1 - Boat Movement

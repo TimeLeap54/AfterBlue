@@ -18,6 +18,7 @@
 
 - [x] Add BoatController script
 - [x] Add FollowCamera script
+- [x] Install and verify Blender MCP bridge
 - [x] Create first Blender boat model
 - [x] Export first Unity boat FBX
 - [x] Replace prototype cube boat with Blender boat model

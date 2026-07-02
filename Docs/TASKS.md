@@ -14,10 +14,15 @@
 - [x] Verify Play Mode manually in Unity
 - [x] Commit and push baseline
 
-## Week 1 - Boat Movement
+## Week 1 - Boat Feel & First Visual Pass
 
 - [x] Add BoatController script
 - [x] Add FollowCamera script
-- [ ] Test WASD boat movement in Play Mode
+- [x] Create first Blender boat model
+- [x] Export first Unity boat FBX
+- [x] Replace prototype cube boat with Blender boat model
+- [x] Add first-pass flooded scenery props
+- [x] Tune initial movement/camera defaults
+- [ ] Test WASD boat movement in Play Mode after visual pass
 - [ ] Tune camera manually in Unity
 - [ ] Capture 10-second GIF

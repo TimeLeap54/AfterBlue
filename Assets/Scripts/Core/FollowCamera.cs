@@ -5,8 +5,9 @@ namespace AfterBlue.Core
     public sealed class FollowCamera : MonoBehaviour
     {
         [SerializeField] private Transform target;
-        [SerializeField] private Vector3 offset = new Vector3(0f, 9f, -8f);
-        [SerializeField] private float followSmoothTime = 0.18f;
+        [SerializeField] private Vector3 offset = new Vector3(0f, 10f, -9f);
+        [SerializeField] private float followSmoothTime = 0.25f;
+        [SerializeField] private float lookAtHeight = 0.5f;
         [SerializeField] private bool lookAtTarget = true;
 
         private Vector3 followVelocity;
@@ -23,7 +24,7 @@ namespace AfterBlue.Core
 
             if (lookAtTarget)
             {
-                transform.LookAt(target.position);
+                transform.LookAt(target.position + Vector3.up * lookAtHeight);
             }
         }
 
@@ -33,4 +34,3 @@ namespace AfterBlue.Core
         }
     }
 }
-

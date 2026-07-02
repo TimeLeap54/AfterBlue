@@ -14,6 +14,11 @@ namespace AfterBlue.Boat
 
         private Vector3 currentVelocity;
         private Vector2 currentInput;
+        private bool eventLeftHeld;
+        private bool eventRightHeld;
+        private bool eventDownHeld;
+        private bool eventUpHeld;
+        private string lastKeyEvent = "None";
 
         public Vector3 Velocity => currentVelocity;
 
@@ -48,39 +53,59 @@ namespace AfterBlue.Boat
             }
         }
 
-        private static Vector2 ReadMoveInput()
+        private Vector2 ReadMoveInput()
         {
             float horizontal = 0f;
             float vertical = 0f;
 
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            if (SafeGetKey(KeyCode.A) || SafeGetKey(KeyCode.LeftArrow))
             {
                 horizontal -= 1f;
             }
 
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            if (SafeGetKey(KeyCode.D) || SafeGetKey(KeyCode.RightArrow))
             {
                 horizontal += 1f;
             }
 
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            if (SafeGetKey(KeyCode.S) || SafeGetKey(KeyCode.DownArrow))
             {
                 vertical -= 1f;
             }
 
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            if (SafeGetKey(KeyCode.W) || SafeGetKey(KeyCode.UpArrow))
+            {
+                vertical += 1f;
+            }
+
+            if (eventLeftHeld)
+            {
+                horizontal -= 1f;
+            }
+
+            if (eventRightHeld)
+            {
+                horizontal += 1f;
+            }
+
+            if (eventDownHeld)
+            {
+                vertical -= 1f;
+            }
+
+            if (eventUpHeld)
             {
                 vertical += 1f;
             }
 
             if (Mathf.Approximately(horizontal, 0f))
             {
-                horizontal = Input.GetAxisRaw("Horizontal");
+                horizontal = SafeGetAxisRaw("Horizontal");
             }
 
             if (Mathf.Approximately(vertical, 0f))
             {
-                vertical = Input.GetAxisRaw("Vertical");
+                vertical = SafeGetAxisRaw("Vertical");
             }
 
             Vector2 input = new Vector2(horizontal, vertical);
@@ -89,12 +114,99 @@ namespace AfterBlue.Boat
 
         private void OnGUI()
         {
+            TrackGuiKeyEvents(Event.current);
+
             if (!showDebugOverlay)
             {
                 return;
             }
 
-            GUI.Label(new Rect(12f, 12f, 520f, 24f), $"Boat Input: {currentInput}  Speed: {currentVelocity.magnitude:0.00}  Click Game view, then press WASD");
+            GUI.Label(new Rect(12f, 12f, 760f, 24f), $"Boat Input: {currentInput}  Speed: {currentVelocity.magnitude:0.00}  Last Key: {lastKeyEvent}  Click Game view, then press WASD");
+        }
+
+        private void TrackGuiKeyEvents(Event guiEvent)
+        {
+            if (guiEvent == null || !guiEvent.isKey)
+            {
+                return;
+            }
+
+            bool isPressed = guiEvent.type == EventType.KeyDown;
+            bool isReleased = guiEvent.type == EventType.KeyUp;
+
+            if (!isPressed && !isReleased)
+            {
+                return;
+            }
+
+            lastKeyEvent = $"{guiEvent.type} {guiEvent.keyCode}";
+
+            switch (guiEvent.keyCode)
+            {
+                case KeyCode.A:
+                case KeyCode.LeftArrow:
+                    eventLeftHeld = isPressed;
+                    break;
+                case KeyCode.D:
+                case KeyCode.RightArrow:
+                    eventRightHeld = isPressed;
+                    break;
+                case KeyCode.S:
+                case KeyCode.DownArrow:
+                    eventDownHeld = isPressed;
+                    break;
+                case KeyCode.W:
+                case KeyCode.UpArrow:
+                    eventUpHeld = isPressed;
+                    break;
+            }
+
+            if (isReleased)
+            {
+                switch (guiEvent.keyCode)
+                {
+                    case KeyCode.A:
+                    case KeyCode.LeftArrow:
+                        eventLeftHeld = false;
+                        break;
+                    case KeyCode.D:
+                    case KeyCode.RightArrow:
+                        eventRightHeld = false;
+                        break;
+                    case KeyCode.S:
+                    case KeyCode.DownArrow:
+                        eventDownHeld = false;
+                        break;
+                    case KeyCode.W:
+                    case KeyCode.UpArrow:
+                        eventUpHeld = false;
+                        break;
+                }
+            }
+        }
+
+        private static bool SafeGetKey(KeyCode keyCode)
+        {
+            try
+            {
+                return Input.GetKey(keyCode);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return false;
+            }
+        }
+
+        private static float SafeGetAxisRaw(string axisName)
+        {
+            try
+            {
+                return Input.GetAxisRaw(axisName);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return 0f;
+            }
         }
 
         private static void CreateReferenceMarkers()

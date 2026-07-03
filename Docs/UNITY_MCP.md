@@ -41,5 +41,7 @@ startup_timeout_sec = 30
 ## Notes
 
 - The Unity Editor WebSocket server runs on port `8090` by default.
+- On this Windows setup, Unity listens on IPv6 loopback `::1`. Codex uses `UNITY_HOST = '::1'` in `C:/Users/minil/.codex/config.toml`.
+- The local MCP server has been patched to include `jsonrpc: "2.0"` in Unity WebSocket requests because direct tests without it timed out.
 - If Unity enters Play Mode and the MCP connection drops, reconnect from the MCP Unity server window.
 - Keep scene edits focused and commit Unity scene changes separately from code changes when practical.

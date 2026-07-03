@@ -1,5 +1,6 @@
 using AfterBlue.Boat;
 using AfterBlue.Core;
+using AfterBlue.Fishing;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -119,6 +120,51 @@ namespace AfterBlue.EditorTools
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             Debug.Log("Applied AfterBlue week 1 visual pass.");
+        }
+
+        [MenuItem("AfterBlue/Setup/Apply Week 2 Fishing Loop")]
+        public static void ApplyWeekTwoFishingLoop()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+            GameObject gameManager = GameObject.Find("GameManager");
+            if (gameManager == null)
+            {
+                gameManager = new GameObject("GameManager");
+                gameManager.AddComponent<GameManager>();
+            }
+
+            if (gameManager.GetComponent<FishingCastController>() == null)
+            {
+                gameManager.AddComponent<FishingCastController>();
+            }
+
+            if (gameManager.GetComponent<FishingLine>() == null)
+            {
+                gameManager.AddComponent<FishingLine>();
+            }
+
+            if (gameManager.GetComponent<FishingDebugUI>() == null)
+            {
+                gameManager.AddComponent<FishingDebugUI>();
+            }
+
+            if (gameManager.GetComponent<FishingStateMachine>() == null)
+            {
+                gameManager.AddComponent<FishingStateMachine>();
+            }
+
+            GameObject boat = GameObject.Find("PlayerBoat");
+            if (boat != null && boat.transform.Find("RodTip") == null)
+            {
+                GameObject rodTip = new GameObject("RodTip");
+                rodTip.transform.SetParent(boat.transform, false);
+                rodTip.transform.localPosition = new Vector3(0.42f, 0.72f, 0.62f);
+            }
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("Applied AfterBlue week 2 fishing loop components.");
         }
 
         private static Material CreateMaterial(string path, Color color)

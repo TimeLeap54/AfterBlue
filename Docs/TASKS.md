@@ -27,3 +27,20 @@
 - [ ] Test WASD boat movement in Play Mode after visual pass
 - [ ] Tune camera manually in Unity
 - [ ] Capture 10-second GIF
+
+## Week 2 - Fishing Core Loop
+
+- [x] Create fishing state machine states: Idle, Casting, Waiting, Bite, Hooked, Result
+- [x] Add Space / left click fishing action input
+- [x] Add runtime Bobber creation
+- [x] Add bobber arc cast from PlayerBoat forward direction
+- [x] Add LineRenderer fishing line between RodTip and Bobber
+- [x] Add random bite delay
+- [x] Add rarity-based bite timing window
+- [x] Add temporary fish roll table
+- [x] Add success / missed result model
+- [x] Add OnGUI debug fishing HUD
+- [x] Add runtime bootstrap for FishingScene
+- [ ] Verify in Unity Play Mode
+- [ ] Tune cast distance, rod tip position, and bite timing
+- [ ] Tag week 2 milestone

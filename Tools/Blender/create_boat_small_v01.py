@@ -62,8 +62,10 @@ def create_cylinder(collection, name, location, radius, depth, material, rotatio
     return obj
 
 
-def create_mesh(collection, name, verts, faces, material):
+def create_mesh(collection, name, verts, faces, material, double_sided=False):
     mesh = bpy.data.meshes.new(f"{name}Mesh")
+    if double_sided:
+        faces = faces + [tuple(reversed(face)) for face in faces]
     mesh.from_pydata(verts, [], faces)
     mesh.update()
     obj = bpy.data.objects.new(name, mesh)
@@ -124,7 +126,11 @@ def build_boat(collection):
     faces.append((0, 2, 3, 1))
     last = (len(stations) - 1) * 4
     faces.append((last, last + 1, last + 3, last + 2))
-    create_mesh(collection, "boat_hull_open_canoe", verts, faces, hull_mat)
+    create_mesh(collection, "boat_hull_open_canoe", verts, faces, hull_mat, double_sided=True)
+
+    # Unity culls backfaces and the water plane sits below the boat. This liner makes
+    # the interior read as a watertight wooden floor while the separate planks remain visible.
+    create_cube(collection, "boat_inner_water_blocker", (0.0, 0.0, 0.135), (0.86, 2.42, 0.035), hull_mat)
 
     for side, sx in [("left", -1), ("right", 1)]:
         for i in range(len(stations) - 1):
@@ -147,7 +153,7 @@ def build_boat(collection):
         create_cube(collection, f"boat_floor_plank_{index + 1}", (x, 0.0, 0.18), (0.13, 2.35, 0.055), plank_mat)
 
     for index, x in enumerate([-0.24, -0.08, 0.08, 0.24]):
-        create_cube(collection, f"boat_floor_dark_gap_{index + 1}", (x, 0.0, 0.215), (0.025, 2.18, 0.012), rail_mat)
+        create_cube(collection, f"boat_floor_dark_gap_{index + 1}", (x, 0.0, 0.217), (0.025, 2.18, 0.016), rail_mat)
 
     for name, y, width in [("stern", -0.82, 0.92), ("middle", 0.0, 1.04), ("bow", 0.82, 0.86)]:
         create_cube(collection, f"boat_{name}_cross_seat", (0.0, y, 0.53), (width, 0.22, 0.12), plank_mat)

@@ -32,12 +32,12 @@ def save_soft_patches():
     alpha_mask = Image.new("L", (SIZE, SIZE), 0)
     draw = ImageDraw.Draw(alpha_mask)
 
-    for _ in range(30):
+    for _ in range(34):
         x = random.randint(-80, SIZE + 80)
         y = random.randint(-80, SIZE + 80)
         radius_x = random.randint(70, 180)
         radius_y = random.randint(45, 135)
-        alpha = random.randint(14, 42)
+        alpha = random.randint(72, 138)
         draw.ellipse((x - radius_x, y - radius_y, x + radius_x, y + radius_y), fill=alpha)
 
     alpha_mask = alpha_mask.filter(ImageFilter.GaussianBlur(radius=18.0))
@@ -51,12 +51,12 @@ def save_surface_glints():
     alpha_mask = Image.new("L", (SIZE, SIZE), 0)
     draw = ImageDraw.Draw(alpha_mask)
 
-    for _ in range(52):
+    for _ in range(72):
         x = random.randint(0, SIZE)
         y = random.randint(0, SIZE)
-        length = random.randint(10, 42)
-        thickness = random.choice([1, 1, 2])
-        alpha = random.randint(18, 68)
+        length = random.randint(14, 56)
+        thickness = random.choice([1, 2, 2])
+        alpha = random.randint(92, 190)
         angle = random.uniform(-0.42, 0.28)
 
         for segment in range(random.choice([1, 1, 2])):
@@ -67,12 +67,12 @@ def save_surface_glints():
             ey = sy + math.sin(angle) * length
             draw.line((sx, sy, ex, ey), fill=alpha, width=thickness)
 
-    for _ in range(18):
+    for _ in range(24):
         x = random.randint(0, SIZE)
         y = random.randint(0, SIZE)
         width = random.randint(24, 72)
         height = random.randint(4, 10)
-        alpha = random.randint(10, 32)
+        alpha = random.randint(42, 92)
         draw.ellipse((x - width, y - height, x + width, y + height), fill=alpha)
 
     alpha_mask = alpha_mask.filter(ImageFilter.GaussianBlur(radius=1.1))

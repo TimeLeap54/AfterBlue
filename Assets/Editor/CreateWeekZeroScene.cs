@@ -298,8 +298,8 @@ namespace AfterBlue.EditorTools
             CreateMaterial("Assets/Materials/RustedMetal.mat", new Color(0.478f, 0.294f, 0.208f, 1f));
             CreateMaterial("Assets/Materials/MossAlgae.mat", new Color(0.31f, 0.435f, 0.259f, 1f));
             CreateMaterial("Assets/Materials/Ripple.mat", new Color(0.78f, 0.96f, 1f, 0.72f));
-            CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterSoftPatchTexturePath, new Color(0.7f, 0.96f, 1f, 0.22f), 3100, new Vector2(1.15f, 1.15f));
-            CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.32f), 3110, new Vector2(1.35f, 1.35f));
+            CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterSoftPatchTexturePath, new Color(0.7f, 0.96f, 1f, 0.6f), 3100, new Vector2(1.15f, 1.15f));
+            CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.78f), 3110, new Vector2(1.35f, 1.35f));
 
             GameObject water = GameObject.Find("Prototype Water");
             if (water == null)
@@ -345,11 +345,11 @@ namespace AfterBlue.EditorTools
             }
 
             GameObject root = new GameObject("Week 3 Water Detail");
-            Material patchMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterSoftPatchTexturePath, new Color(0.7f, 0.96f, 1f, 0.22f), 3100, new Vector2(1.15f, 1.15f));
-            Material glintMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.32f), 3110, new Vector2(1.35f, 1.35f));
+            Material patchMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterSoftPatchTexturePath, new Color(0.7f, 0.96f, 1f, 0.6f), 3100, new Vector2(1.15f, 1.15f));
+            Material glintMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.78f), 3110, new Vector2(1.35f, 1.35f));
 
-            CreateWaterOverlay(root.transform, "Soft Cyan Water Patches", 0.055f, 12.05f, patchMaterial, new Vector2(0.006f, 0.003f), 0.025f, 0.18f);
-            CreateWaterOverlay(root.transform, "Subtle Surface Glints", 0.065f, 12.0f, glintMaterial, new Vector2(-0.011f, 0.007f), 0.035f, 0.32f);
+            CreateWaterOverlay(root.transform, "Soft Cyan Water Patches", 0.055f, 12.05f, patchMaterial, new Vector2(0.006f, 0.003f), 0.055f, 0.18f);
+            CreateWaterOverlay(root.transform, "Subtle Surface Glints", 0.065f, 12.0f, glintMaterial, new Vector2(-0.011f, 0.007f), 0.08f, 0.32f);
         }
 
         private static void CreateWaterOverlay(Transform parent, string name, float height, float scale, Material material, Vector2 scrollSpeed, float alphaPulse, float pulseSpeed)

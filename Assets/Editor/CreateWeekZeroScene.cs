@@ -404,13 +404,12 @@ namespace AfterBlue.EditorTools
 
             for (int i = 0; i < positions.Length; i++)
             {
-                GameObject fish = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                GameObject fish = CreateFishShadowObject($"Fish Shadow {i + 1}", shadowMaterial);
                 fish.name = $"Fish Shadow {i + 1}";
                 fish.transform.SetParent(root.transform);
                 fish.transform.position = positions[i];
-                fish.transform.rotation = Quaternion.Euler(90f, i * 38f, 0f);
-                fish.transform.localScale = new Vector3(0.13f + i * 0.015f, 0.45f + i * 0.04f, 0.035f);
-                fish.GetComponent<Renderer>().sharedMaterial = shadowMaterial;
+                fish.transform.rotation = Quaternion.Euler(0f, i * 38f, 0f);
+                fish.transform.localScale = new Vector3(0.34f + i * 0.035f, 1f, 0.92f + i * 0.08f);
 
                 FishShadow shadow = fish.AddComponent<FishShadow>();
                 SerializedObject serializedShadow = new SerializedObject(shadow);
@@ -418,6 +417,50 @@ namespace AfterBlue.EditorTools
                 serializedShadow.FindProperty("moveSpeed").floatValue = 0.28f + i * 0.06f;
                 serializedShadow.ApplyModifiedProperties();
             }
+        }
+
+        private static GameObject CreateFishShadowObject(string name, Material material)
+        {
+            Mesh mesh = new Mesh
+            {
+                name = $"{name} Mesh"
+            };
+
+            Vector3[] vertices =
+            {
+                new Vector3(0f, 0f, 0.62f),
+                new Vector3(-0.26f, 0f, 0.18f),
+                new Vector3(-0.18f, 0f, -0.32f),
+                new Vector3(-0.34f, 0f, -0.58f),
+                new Vector3(0f, 0f, -0.42f),
+                new Vector3(0.34f, 0f, -0.58f),
+                new Vector3(0.18f, 0f, -0.32f),
+                new Vector3(0.26f, 0f, 0.18f)
+            };
+
+            int[] triangles =
+            {
+                0, 1, 7,
+                1, 2, 7,
+                2, 6, 7,
+                2, 3, 4,
+                2, 4, 6,
+                4, 5, 6
+            };
+
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+
+            GameObject fish = new GameObject(name);
+            MeshFilter meshFilter = fish.AddComponent<MeshFilter>();
+            MeshRenderer meshRenderer = fish.AddComponent<MeshRenderer>();
+            meshFilter.sharedMesh = mesh;
+            meshRenderer.sharedMaterial = material;
+            meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            meshRenderer.receiveShadows = false;
+            return fish;
         }
 
         private static void CreateSubmergedRoof(Transform parent, string name, Vector3 position, Quaternion rotation, Vector3 scale, Material roofMaterial, Material concreteMaterial, Material mossMaterial)

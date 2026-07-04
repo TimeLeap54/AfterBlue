@@ -22,6 +22,8 @@ namespace AfterBlue.Environment
 
         private void Update()
         {
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), 1f, Mathf.Abs(transform.localScale.z));
+
             float wave = Mathf.Sin(Time.time * turnSpeed + phase);
             direction = Quaternion.Euler(0f, wave * 55f * Time.deltaTime, 0f) * direction;
 
@@ -40,7 +42,8 @@ namespace AfterBlue.Environment
 
             if (direction.sqrMagnitude > 0.001f)
             {
-                transform.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+                float yaw = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0f, yaw, 0f);
             }
         }
     }

@@ -14,9 +14,9 @@ namespace AfterBlue.EditorTools
     {
         private const string ScenePath = "Assets/Scenes/FishingScene.unity";
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
-        private const string WaterNoiseTexturePath = "Assets/Textures/Water/water_noise_soft_v01.png";
         private const string WaterSoftPatchTexturePath = "Assets/Textures/Water/water_soft_patches_v01.png";
         private const string WaterGlintTexturePath = "Assets/Textures/Water/water_surface_glints_v01.png";
+        private const string WaterWaveBandTexturePath = "Assets/Textures/Water/water_wave_bands_v01.png";
 
         [MenuItem("AfterBlue/Setup/Create Week 0 Fishing Scene")]
         public static void CreateScene()
@@ -289,8 +289,10 @@ namespace AfterBlue.EditorTools
 
         private static void ApplyWeekThreePalette()
         {
-            Material waterMaterial = CreateMaterial("Assets/Materials/PrototypeWater.mat", new Color(0.224f, 0.784f, 0.847f, 0.78f));
+            Material waterMaterial = CreateMaterial("Assets/Materials/PrototypeWater.mat", new Color(0.28f, 0.86f, 0.9f, 0.72f));
             ConfigureTransparent(waterMaterial);
+            waterMaterial.SetColor("_EmissionColor", new Color(0.045f, 0.18f, 0.2f, 1f));
+            waterMaterial.EnableKeyword("_EMISSION");
 
             CreateMaterial("Assets/Materials/UnderwaterRuin.mat", new Color(0.12f, 0.19f, 0.21f, 1f));
             CreateMaterial("Assets/Materials/UnderwaterConcrete.mat", new Color(0.25f, 0.31f, 0.32f, 1f));
@@ -299,7 +301,8 @@ namespace AfterBlue.EditorTools
             CreateMaterial("Assets/Materials/MossAlgae.mat", new Color(0.31f, 0.435f, 0.259f, 1f));
             CreateMaterial("Assets/Materials/Ripple.mat", new Color(0.78f, 0.96f, 1f, 0.72f));
             CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterSoftPatchTexturePath, new Color(0.7f, 0.96f, 1f, 0.6f), 3100, new Vector2(1.15f, 1.15f));
-            CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.78f), 3110, new Vector2(1.35f, 1.35f));
+            CreateWaterDetailMaterial("Assets/Materials/WaterWaveBandsOverlay.mat", WaterWaveBandTexturePath, new Color(0.82f, 1f, 1f, 0.72f), 3110, new Vector2(1.05f, 1.05f));
+            CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.58f), 3120, new Vector2(1.35f, 1.35f));
 
             GameObject water = GameObject.Find("Prototype Water");
             if (water == null)
@@ -346,10 +349,12 @@ namespace AfterBlue.EditorTools
 
             GameObject root = new GameObject("Week 3 Water Detail");
             Material patchMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterSoftPatchTexturePath, new Color(0.7f, 0.96f, 1f, 0.6f), 3100, new Vector2(1.15f, 1.15f));
-            Material glintMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.78f), 3110, new Vector2(1.35f, 1.35f));
+            Material waveBandMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterWaveBandsOverlay.mat", WaterWaveBandTexturePath, new Color(0.82f, 1f, 1f, 0.72f), 3110, new Vector2(1.05f, 1.05f));
+            Material glintMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.58f), 3120, new Vector2(1.35f, 1.35f));
 
             CreateWaterOverlay(root.transform, "Soft Cyan Water Patches", 0.055f, 12.05f, patchMaterial, new Vector2(0.006f, 0.003f), 0.055f, 0.18f);
-            CreateWaterOverlay(root.transform, "Subtle Surface Glints", 0.065f, 12.0f, glintMaterial, new Vector2(-0.011f, 0.007f), 0.08f, 0.32f);
+            CreateWaterOverlay(root.transform, "Broad Moving Wave Bands", 0.068f, 12.02f, waveBandMaterial, new Vector2(-0.018f, 0.006f), 0.12f, 0.42f);
+            CreateWaterOverlay(root.transform, "Subtle Surface Glints", 0.075f, 12.0f, glintMaterial, new Vector2(-0.011f, 0.007f), 0.06f, 0.32f);
         }
 
         private static void CreateWaterOverlay(Transform parent, string name, float height, float scale, Material material, Vector2 scrollSpeed, float alphaPulse, float pulseSpeed)

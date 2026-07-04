@@ -19,3 +19,4 @@
 - Added cyan flooded village palette setup, primitive modern ruin props, and bobber water ripple effects.
 - Removed Week 3 fish shadow scene generation after readability testing; keep the script for a later polish pass.
 - Replaced the over-strong water line overlay with softer cyan water patches and subtle surface glints.
+- Added a broader moving wave-band overlay and brightened the Week 3 water base so the surface reads as water instead of a dark flat plane.

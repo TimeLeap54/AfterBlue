@@ -81,11 +81,48 @@ def save_surface_glints():
     image.save(OUT_DIR / "water_surface_glints_v01.png")
 
 
+def save_wave_bands():
+    random.seed(154)
+    alpha_mask = Image.new("L", (SIZE, SIZE), 0)
+    draw = ImageDraw.Draw(alpha_mask)
+
+    for row in range(-40, SIZE + 80, 52):
+        phase = random.uniform(0.0, math.tau)
+        amplitude = random.uniform(7.0, 18.0)
+        length = random.randint(150, 300)
+        start_x = random.randint(-80, 120)
+        width = random.choice([3, 4, 5])
+        alpha = random.randint(84, 150)
+        points = []
+
+        for i in range(0, length, 8):
+            x = start_x + i
+            y = row + math.sin(i * 0.045 + phase) * amplitude + math.sin(i * 0.12 + phase) * 2.0
+            points.append((x, y))
+
+        if len(points) > 1:
+            draw.line(points, fill=alpha, width=width)
+
+    for _ in range(22):
+        x = random.randint(0, SIZE)
+        y = random.randint(0, SIZE)
+        width = random.randint(60, 150)
+        height = random.randint(4, 10)
+        alpha = random.randint(28, 74)
+        draw.ellipse((x - width, y - height, x + width, y + height), fill=alpha)
+
+    alpha_mask = alpha_mask.filter(ImageFilter.GaussianBlur(radius=2.2))
+    image = Image.new("RGBA", (SIZE, SIZE), (232, 255, 255, 0))
+    image.putalpha(alpha_mask)
+    image.save(OUT_DIR / "water_wave_bands_v01.png")
+
+
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     save_noise()
     save_soft_patches()
     save_surface_glints()
+    save_wave_bands()
 
 
 if __name__ == "__main__":

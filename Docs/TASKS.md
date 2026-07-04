@@ -50,14 +50,14 @@
 - [x] Define cyan flooded modern village color direction
 - [x] Add WaterRipple runtime effect
 - [x] Connect Bobber land, bite, success, and fail events to ripples
-- [x] Add FishShadow movement script
+- [x] Add FishShadow movement script for later reuse
 - [x] Add FloodedVillageScenery render-setting script
 - [x] Add Week 3 editor setup menu
 - [x] Add primitive flooded village prop set
-- [x] Add fish shadow scene setup
+- [x] Remove fish shadow scene setup from Week 3 after readability test
 - [ ] Apply Week 3 setup to FishingScene in Unity
 - [ ] Verify water color, fog, and camera readability
 - [ ] Verify ripples during fishing loop
-- [ ] Verify fish shadows move under water
+- [ ] Revisit fish shadows in a later polish pass
 - [ ] Capture screenshot candidate
 - [ ] Tag week 3 milestone

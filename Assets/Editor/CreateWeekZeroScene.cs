@@ -177,7 +177,7 @@ namespace AfterBlue.EditorTools
             ApplyWeekThreePalette();
             ApplyWeekThreeCameraAndLight();
             CreateFloodedVillageSet();
-            CreateFishShadowSet();
+            RemoveFishShadowSet();
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -293,7 +293,6 @@ namespace AfterBlue.EditorTools
             CreateMaterial("Assets/Materials/AsphaltFlooded.mat", new Color(0.145f, 0.173f, 0.184f, 1f));
             CreateMaterial("Assets/Materials/RustedMetal.mat", new Color(0.478f, 0.294f, 0.208f, 1f));
             CreateMaterial("Assets/Materials/MossAlgae.mat", new Color(0.31f, 0.435f, 0.259f, 1f));
-            CreateMaterial("Assets/Materials/FishShadow.mat", new Color(0.015f, 0.09f, 0.11f, 0.82f));
             CreateMaterial("Assets/Materials/Ripple.mat", new Color(0.78f, 0.96f, 1f, 0.72f));
 
             GameObject water = GameObject.Find("Prototype Water");
@@ -381,86 +380,13 @@ namespace AfterBlue.EditorTools
             CreateCylinder(root.transform, "Submerged Rock B", new Vector3(5.6f, 0.07f, -5.6f), new Vector3(0.5f, 0.07f, 0.32f), Quaternion.Euler(0f, 0f, 90f), concrete);
         }
 
-        private static void CreateFishShadowSet()
+        private static void RemoveFishShadowSet()
         {
             GameObject oldRoot = GameObject.Find("Week 3 Fish Shadows");
             if (oldRoot != null)
             {
                 Object.DestroyImmediate(oldRoot);
             }
-
-            GameObject root = new GameObject("Week 3 Fish Shadows");
-            Material shadowMaterial = CreateMaterial("Assets/Materials/FishShadow.mat", new Color(0.015f, 0.09f, 0.11f, 0.82f));
-            ConfigureTransparent(shadowMaterial);
-
-            Vector3[] positions =
-            {
-                new Vector3(-2.2f, 0.245f, 2.8f),
-                new Vector3(1.2f, 0.245f, 3.8f),
-                new Vector3(3.6f, 0.245f, -1.3f),
-                new Vector3(-4.2f, 0.245f, -2.8f),
-                new Vector3(0.4f, 0.245f, -5.1f)
-            };
-
-            for (int i = 0; i < positions.Length; i++)
-            {
-                GameObject fish = CreateFishShadowObject($"Fish Shadow {i + 1}", shadowMaterial);
-                fish.name = $"Fish Shadow {i + 1}";
-                fish.transform.SetParent(root.transform);
-                fish.transform.position = positions[i];
-                fish.transform.rotation = Quaternion.Euler(0f, i * 38f, 0f);
-                fish.transform.localScale = new Vector3(0.68f + i * 0.06f, 1f, 1.65f + i * 0.14f);
-
-                FishShadow shadow = fish.AddComponent<FishShadow>();
-                SerializedObject serializedShadow = new SerializedObject(shadow);
-                serializedShadow.FindProperty("swimRadius").floatValue = 1.8f + i * 0.35f;
-                serializedShadow.FindProperty("moveSpeed").floatValue = 0.28f + i * 0.06f;
-                serializedShadow.ApplyModifiedProperties();
-            }
-        }
-
-        private static GameObject CreateFishShadowObject(string name, Material material)
-        {
-            Mesh mesh = new Mesh
-            {
-                name = $"{name} Mesh"
-            };
-
-            Vector3[] vertices =
-            {
-                new Vector3(0f, 0f, 0.62f),
-                new Vector3(-0.26f, 0f, 0.18f),
-                new Vector3(-0.18f, 0f, -0.32f),
-                new Vector3(-0.34f, 0f, -0.58f),
-                new Vector3(0f, 0f, -0.42f),
-                new Vector3(0.34f, 0f, -0.58f),
-                new Vector3(0.18f, 0f, -0.32f),
-                new Vector3(0.26f, 0f, 0.18f)
-            };
-
-            int[] triangles =
-            {
-                0, 1, 7,
-                1, 2, 7,
-                2, 6, 7,
-                2, 3, 4,
-                2, 4, 6,
-                4, 5, 6
-            };
-
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
-            mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
-
-            GameObject fish = new GameObject(name);
-            MeshFilter meshFilter = fish.AddComponent<MeshFilter>();
-            MeshRenderer meshRenderer = fish.AddComponent<MeshRenderer>();
-            meshFilter.sharedMesh = mesh;
-            meshRenderer.sharedMaterial = material;
-            meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            meshRenderer.receiveShadows = false;
-            return fish;
         }
 
         private static void CreateSubmergedRoof(Transform parent, string name, Vector3 position, Quaternion rotation, Vector3 scale, Material roofMaterial, Material concreteMaterial, Material mossMaterial)

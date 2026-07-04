@@ -8,7 +8,8 @@ namespace AfterBlue.Environment
         [SerializeField] private float swimRadius = 2.5f;
         [SerializeField] private float moveSpeed = 0.45f;
         [SerializeField] private float turnSpeed = 1.1f;
-        [SerializeField] private float height = 0.055f;
+        [SerializeField] private float height = 0.245f;
+        [SerializeField] private Vector2 minimumVisibleScale = new Vector2(0.62f, 1.55f);
         [SerializeField] private float phase;
 
         private Vector3 direction;
@@ -22,7 +23,10 @@ namespace AfterBlue.Environment
 
         private void Update()
         {
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), 1f, Mathf.Abs(transform.localScale.z));
+            transform.localScale = new Vector3(
+                Mathf.Max(Mathf.Abs(transform.localScale.x), minimumVisibleScale.x),
+                1f,
+                Mathf.Max(Mathf.Abs(transform.localScale.z), minimumVisibleScale.y));
 
             float wave = Mathf.Sin(Time.time * turnSpeed + phase);
             direction = Quaternion.Euler(0f, wave * 55f * Time.deltaTime, 0f) * direction;

@@ -293,7 +293,7 @@ namespace AfterBlue.EditorTools
             CreateMaterial("Assets/Materials/AsphaltFlooded.mat", new Color(0.145f, 0.173f, 0.184f, 1f));
             CreateMaterial("Assets/Materials/RustedMetal.mat", new Color(0.478f, 0.294f, 0.208f, 1f));
             CreateMaterial("Assets/Materials/MossAlgae.mat", new Color(0.31f, 0.435f, 0.259f, 1f));
-            CreateMaterial("Assets/Materials/FishShadow.mat", new Color(0.02f, 0.12f, 0.14f, 0.56f));
+            CreateMaterial("Assets/Materials/FishShadow.mat", new Color(0.015f, 0.09f, 0.11f, 0.82f));
             CreateMaterial("Assets/Materials/Ripple.mat", new Color(0.78f, 0.96f, 1f, 0.72f));
 
             GameObject water = GameObject.Find("Prototype Water");
@@ -390,16 +390,16 @@ namespace AfterBlue.EditorTools
             }
 
             GameObject root = new GameObject("Week 3 Fish Shadows");
-            Material shadowMaterial = CreateMaterial("Assets/Materials/FishShadow.mat", new Color(0.02f, 0.12f, 0.14f, 0.56f));
+            Material shadowMaterial = CreateMaterial("Assets/Materials/FishShadow.mat", new Color(0.015f, 0.09f, 0.11f, 0.82f));
             ConfigureTransparent(shadowMaterial);
 
             Vector3[] positions =
             {
-                new Vector3(-2.2f, 0.055f, 2.8f),
-                new Vector3(1.2f, 0.055f, 3.8f),
-                new Vector3(3.6f, 0.055f, -1.3f),
-                new Vector3(-4.2f, 0.055f, -2.8f),
-                new Vector3(0.4f, 0.055f, -5.1f)
+                new Vector3(-2.2f, 0.245f, 2.8f),
+                new Vector3(1.2f, 0.245f, 3.8f),
+                new Vector3(3.6f, 0.245f, -1.3f),
+                new Vector3(-4.2f, 0.245f, -2.8f),
+                new Vector3(0.4f, 0.245f, -5.1f)
             };
 
             for (int i = 0; i < positions.Length; i++)
@@ -409,7 +409,7 @@ namespace AfterBlue.EditorTools
                 fish.transform.SetParent(root.transform);
                 fish.transform.position = positions[i];
                 fish.transform.rotation = Quaternion.Euler(0f, i * 38f, 0f);
-                fish.transform.localScale = new Vector3(0.34f + i * 0.035f, 1f, 0.92f + i * 0.08f);
+                fish.transform.localScale = new Vector3(0.68f + i * 0.06f, 1f, 1.65f + i * 0.14f);
 
                 FishShadow shadow = fish.AddComponent<FishShadow>();
                 SerializedObject serializedShadow = new SerializedObject(shadow);

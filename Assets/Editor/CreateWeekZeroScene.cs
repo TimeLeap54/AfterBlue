@@ -14,6 +14,8 @@ namespace AfterBlue.EditorTools
     {
         private const string ScenePath = "Assets/Scenes/FishingScene.unity";
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
+        private const string WaterNoiseTexturePath = "Assets/Textures/Water/water_noise_soft_v01.png";
+        private const string WaterRippleTexturePath = "Assets/Textures/Water/water_ripple_lines_v01.png";
 
         [MenuItem("AfterBlue/Setup/Create Week 0 Fishing Scene")]
         public static void CreateScene()
@@ -175,6 +177,7 @@ namespace AfterBlue.EditorTools
 
             ApplyWeekTwoFishingLoop();
             ApplyWeekThreePalette();
+            CreateWaterDetailPlanes();
             ApplyWeekThreeCameraAndLight();
             CreateFloodedVillageSet();
             RemoveFishShadowSet();
@@ -294,6 +297,8 @@ namespace AfterBlue.EditorTools
             CreateMaterial("Assets/Materials/RustedMetal.mat", new Color(0.478f, 0.294f, 0.208f, 1f));
             CreateMaterial("Assets/Materials/MossAlgae.mat", new Color(0.31f, 0.435f, 0.259f, 1f));
             CreateMaterial("Assets/Materials/Ripple.mat", new Color(0.78f, 0.96f, 1f, 0.72f));
+            CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterNoiseTexturePath, new Color(0.78f, 0.98f, 1f, 0.13f));
+            CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterRippleTexturePath, new Color(0.86f, 0.99f, 1f, 0.18f));
 
             GameObject water = GameObject.Find("Prototype Water");
             if (water == null)
@@ -311,6 +316,55 @@ namespace AfterBlue.EditorTools
             RenderSettings.fogColor = new Color(0.13f, 0.42f, 0.48f, 1f);
             RenderSettings.fogDensity = 0.018f;
             RenderSettings.ambientLight = new Color(0.22f, 0.36f, 0.39f, 1f);
+        }
+
+        private static Material CreateWaterDetailMaterial(string path, string texturePath, Color color)
+        {
+            Material material = CreateMaterial(path, color);
+            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture != null)
+            {
+                material.mainTexture = texture;
+                material.mainTextureScale = new Vector2(3.5f, 3.5f);
+            }
+
+            ConfigureTransparent(material);
+            material.SetFloat("_Smoothness", 0f);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static void CreateWaterDetailPlanes()
+        {
+            GameObject oldRoot = GameObject.Find("Week 3 Water Detail");
+            if (oldRoot != null)
+            {
+                Object.DestroyImmediate(oldRoot);
+            }
+
+            GameObject root = new GameObject("Week 3 Water Detail");
+            Material noiseMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterNoiseTexturePath, new Color(0.78f, 0.98f, 1f, 0.13f));
+            Material lineMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterRippleTexturePath, new Color(0.86f, 0.99f, 1f, 0.18f));
+
+            CreateWaterOverlay(root.transform, "Soft Surface Noise", 0.031f, 12.05f, noiseMaterial, new Vector2(0.012f, 0.006f), 0.025f, 0.28f);
+            CreateWaterOverlay(root.transform, "Cyan Ripple Lines", 0.036f, 12.0f, lineMaterial, new Vector2(-0.018f, 0.011f), 0.035f, 0.42f);
+        }
+
+        private static void CreateWaterOverlay(Transform parent, string name, float height, float scale, Material material, Vector2 scrollSpeed, float alphaPulse, float pulseSpeed)
+        {
+            GameObject overlay = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            overlay.name = name;
+            overlay.transform.SetParent(parent, false);
+            overlay.transform.position = new Vector3(0f, height, 0f);
+            overlay.transform.localScale = new Vector3(scale, 1f, scale);
+            overlay.GetComponent<Renderer>().sharedMaterial = material;
+
+            WaterSurfaceController controller = overlay.AddComponent<WaterSurfaceController>();
+            SerializedObject serializedController = new SerializedObject(controller);
+            serializedController.FindProperty("scrollSpeed").vector2Value = scrollSpeed;
+            serializedController.FindProperty("alphaPulse").floatValue = alphaPulse;
+            serializedController.FindProperty("pulseSpeed").floatValue = pulseSpeed;
+            serializedController.ApplyModifiedProperties();
         }
 
         private static void ApplyWeekThreeCameraAndLight()

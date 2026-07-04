@@ -14,9 +14,7 @@ namespace AfterBlue.EditorTools
     {
         private const string ScenePath = "Assets/Scenes/FishingScene.unity";
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
-        private const string WaterSoftPatchTexturePath = "Assets/Textures/Water/water_soft_patches_v01.png";
-        private const string WaterGlintTexturePath = "Assets/Textures/Water/water_surface_glints_v01.png";
-        private const string WaterWaveBandTexturePath = "Assets/Textures/Water/water_wave_bands_v01.png";
+        private const string WaterShaderName = "AfterBlue/WaterSurfaceURP";
 
         [MenuItem("AfterBlue/Setup/Create Week 0 Fishing Scene")]
         public static void CreateScene()
@@ -289,10 +287,7 @@ namespace AfterBlue.EditorTools
 
         private static void ApplyWeekThreePalette()
         {
-            Material waterMaterial = CreateMaterial("Assets/Materials/PrototypeWater.mat", new Color(0.28f, 0.86f, 0.9f, 0.72f));
-            ConfigureTransparent(waterMaterial);
-            waterMaterial.SetColor("_EmissionColor", new Color(0.045f, 0.18f, 0.2f, 1f));
-            waterMaterial.EnableKeyword("_EMISSION");
+            Material waterMaterial = CreateWaterSurfaceMaterial();
 
             CreateMaterial("Assets/Materials/UnderwaterRuin.mat", new Color(0.12f, 0.19f, 0.21f, 1f));
             CreateMaterial("Assets/Materials/UnderwaterConcrete.mat", new Color(0.25f, 0.31f, 0.32f, 1f));
@@ -300,41 +295,52 @@ namespace AfterBlue.EditorTools
             CreateMaterial("Assets/Materials/RustedMetal.mat", new Color(0.478f, 0.294f, 0.208f, 1f));
             CreateMaterial("Assets/Materials/MossAlgae.mat", new Color(0.31f, 0.435f, 0.259f, 1f));
             CreateMaterial("Assets/Materials/Ripple.mat", new Color(0.78f, 0.96f, 1f, 0.72f));
-            CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterSoftPatchTexturePath, new Color(0.7f, 0.96f, 1f, 0.6f), 3100, new Vector2(1.15f, 1.15f));
-            CreateWaterDetailMaterial("Assets/Materials/WaterWaveBandsOverlay.mat", WaterWaveBandTexturePath, new Color(0.82f, 1f, 1f, 0.72f), 3110, new Vector2(1.05f, 1.05f));
-            CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.58f), 3120, new Vector2(1.35f, 1.35f));
 
             GameObject water = GameObject.Find("Prototype Water");
             if (water == null)
             {
-                water = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                water = new GameObject("Prototype Water");
                 water.name = "Prototype Water";
             }
 
             water.transform.localScale = new Vector3(12f, 1f, 12f);
             water.transform.position = Vector3.zero;
-            water.GetComponent<Renderer>().sharedMaterial = waterMaterial;
+            ConfigureWaterSurfaceObject(water, waterMaterial);
 
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogColor = new Color(0.13f, 0.42f, 0.48f, 1f);
-            RenderSettings.fogDensity = 0.018f;
-            RenderSettings.ambientLight = new Color(0.22f, 0.36f, 0.39f, 1f);
+            RenderSettings.fogColor = new Color(0.28f, 0.72f, 0.78f, 1f);
+            RenderSettings.fogDensity = 0.009f;
+            RenderSettings.ambientLight = new Color(0.42f, 0.66f, 0.68f, 1f);
         }
 
-        private static Material CreateWaterDetailMaterial(string path, string texturePath, Color color, int renderQueue, Vector2 textureScale)
+        private static Material CreateWaterSurfaceMaterial()
         {
-            Material material = CreateMaterial(path, color);
-            Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-            if (texture != null)
+            const string path = "Assets/Materials/PrototypeWater.mat";
+            Shader waterShader = Shader.Find(WaterShaderName);
+            if (waterShader == null)
             {
-                material.mainTexture = texture;
-                material.mainTextureScale = textureScale;
+                Debug.LogWarning($"Could not find {WaterShaderName}. Falling back to URP Unlit water color.");
+                waterShader = Shader.Find("Universal Render Pipeline/Unlit");
             }
 
-            ConfigureTransparent(material);
-            material.renderQueue = renderQueue;
-            material.SetFloat("_Smoothness", 0f);
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                material = new Material(waterShader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+
+            material.shader = waterShader;
+            SetMaterialColor(material, "_ShallowColor", new Color(0.36f, 0.92f, 0.98f, 0.78f));
+            SetMaterialColor(material, "_MidColor", new Color(0.10f, 0.62f, 0.72f, 0.78f));
+            SetMaterialColor(material, "_DeepColor", new Color(0.035f, 0.27f, 0.33f, 0.78f));
+            SetMaterialColor(material, "_HighlightColor", new Color(0.86f, 1f, 1f, 0.55f));
+            SetMaterialFloat(material, "_Alpha", 0.82f);
+            SetMaterialFloat(material, "_WaveHeight", 0.055f);
+            SetMaterialFloat(material, "_WaveScale", 1.45f);
+            SetMaterialFloat(material, "_WaveSpeed", 0.42f);
+            SetMaterialFloat(material, "_HighlightStrength", 0.44f);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -346,32 +352,98 @@ namespace AfterBlue.EditorTools
             {
                 Object.DestroyImmediate(oldRoot);
             }
-
-            GameObject root = new GameObject("Week 3 Water Detail");
-            Material patchMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterSoftPatchTexturePath, new Color(0.7f, 0.96f, 1f, 0.6f), 3100, new Vector2(1.15f, 1.15f));
-            Material waveBandMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterWaveBandsOverlay.mat", WaterWaveBandTexturePath, new Color(0.82f, 1f, 1f, 0.72f), 3110, new Vector2(1.05f, 1.05f));
-            Material glintMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterGlintTexturePath, new Color(0.86f, 0.99f, 1f, 0.58f), 3120, new Vector2(1.35f, 1.35f));
-
-            CreateWaterOverlay(root.transform, "Soft Cyan Water Patches", 0.055f, 12.05f, patchMaterial, new Vector2(0.006f, 0.003f), 0.055f, 0.18f);
-            CreateWaterOverlay(root.transform, "Broad Moving Wave Bands", 0.068f, 12.02f, waveBandMaterial, new Vector2(-0.018f, 0.006f), 0.12f, 0.42f);
-            CreateWaterOverlay(root.transform, "Subtle Surface Glints", 0.075f, 12.0f, glintMaterial, new Vector2(-0.011f, 0.007f), 0.06f, 0.32f);
         }
 
-        private static void CreateWaterOverlay(Transform parent, string name, float height, float scale, Material material, Vector2 scrollSpeed, float alphaPulse, float pulseSpeed)
+        private static void ConfigureWaterSurfaceObject(GameObject water, Material waterMaterial)
         {
-            GameObject overlay = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            overlay.name = name;
-            overlay.transform.SetParent(parent, false);
-            overlay.transform.position = new Vector3(0f, height, 0f);
-            overlay.transform.localScale = new Vector3(scale, 1f, scale);
-            overlay.GetComponent<Renderer>().sharedMaterial = material;
+            MeshFilter meshFilter = water.GetComponent<MeshFilter>();
+            if (meshFilter == null)
+            {
+                meshFilter = water.AddComponent<MeshFilter>();
+            }
 
-            WaterSurfaceController controller = overlay.AddComponent<WaterSurfaceController>();
-            SerializedObject serializedController = new SerializedObject(controller);
-            serializedController.FindProperty("scrollSpeed").vector2Value = scrollSpeed;
-            serializedController.FindProperty("alphaPulse").floatValue = alphaPulse;
-            serializedController.FindProperty("pulseSpeed").floatValue = pulseSpeed;
-            serializedController.ApplyModifiedProperties();
+            MeshRenderer meshRenderer = water.GetComponent<MeshRenderer>();
+            if (meshRenderer == null)
+            {
+                meshRenderer = water.AddComponent<MeshRenderer>();
+            }
+
+            Collider collider = water.GetComponent<Collider>();
+            if (collider != null)
+            {
+                Object.DestroyImmediate(collider);
+            }
+
+            meshFilter.sharedMesh = CreateWaterGridMesh(72, 10f);
+            meshRenderer.sharedMaterial = waterMaterial;
+        }
+
+        private static Mesh CreateWaterGridMesh(int segments, float size)
+        {
+            Mesh mesh = new Mesh
+            {
+                name = "AfterBlue Water Grid"
+            };
+
+            int vertexCount = (segments + 1) * (segments + 1);
+            Vector3[] vertices = new Vector3[vertexCount];
+            Vector2[] uvs = new Vector2[vertexCount];
+            int[] triangles = new int[segments * segments * 6];
+            float halfSize = size * 0.5f;
+
+            for (int z = 0; z <= segments; z++)
+            {
+                for (int x = 0; x <= segments; x++)
+                {
+                    int index = z * (segments + 1) + x;
+                    float u = x / (float)segments;
+                    float v = z / (float)segments;
+                    vertices[index] = new Vector3(Mathf.Lerp(-halfSize, halfSize, u), 0f, Mathf.Lerp(-halfSize, halfSize, v));
+                    uvs[index] = new Vector2(u, v);
+                }
+            }
+
+            int triangleIndex = 0;
+            for (int z = 0; z < segments; z++)
+            {
+                for (int x = 0; x < segments; x++)
+                {
+                    int bottomLeft = z * (segments + 1) + x;
+                    int bottomRight = bottomLeft + 1;
+                    int topLeft = bottomLeft + segments + 1;
+                    int topRight = topLeft + 1;
+
+                    triangles[triangleIndex++] = bottomLeft;
+                    triangles[triangleIndex++] = topLeft;
+                    triangles[triangleIndex++] = bottomRight;
+                    triangles[triangleIndex++] = bottomRight;
+                    triangles[triangleIndex++] = topLeft;
+                    triangles[triangleIndex++] = topRight;
+                }
+            }
+
+            mesh.vertices = vertices;
+            mesh.uv = uvs;
+            mesh.triangles = triangles;
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static void SetMaterialColor(Material material, string propertyName, Color color)
+        {
+            if (material.HasProperty(propertyName))
+            {
+                material.SetColor(propertyName, color);
+            }
+        }
+
+        private static void SetMaterialFloat(Material material, string propertyName, float value)
+        {
+            if (material.HasProperty(propertyName))
+            {
+                material.SetFloat(propertyName, value);
+            }
         }
 
         private static void ApplyWeekThreeCameraAndLight()

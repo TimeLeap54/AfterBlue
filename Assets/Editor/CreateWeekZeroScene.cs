@@ -297,8 +297,8 @@ namespace AfterBlue.EditorTools
             CreateMaterial("Assets/Materials/RustedMetal.mat", new Color(0.478f, 0.294f, 0.208f, 1f));
             CreateMaterial("Assets/Materials/MossAlgae.mat", new Color(0.31f, 0.435f, 0.259f, 1f));
             CreateMaterial("Assets/Materials/Ripple.mat", new Color(0.78f, 0.96f, 1f, 0.72f));
-            CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterNoiseTexturePath, new Color(0.78f, 0.98f, 1f, 0.13f));
-            CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterRippleTexturePath, new Color(0.86f, 0.99f, 1f, 0.18f));
+            CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterNoiseTexturePath, new Color(0.78f, 0.98f, 1f, 0.82f), 3100);
+            CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterRippleTexturePath, new Color(0.86f, 0.99f, 1f, 0.92f), 3110);
 
             GameObject water = GameObject.Find("Prototype Water");
             if (water == null)
@@ -318,7 +318,7 @@ namespace AfterBlue.EditorTools
             RenderSettings.ambientLight = new Color(0.22f, 0.36f, 0.39f, 1f);
         }
 
-        private static Material CreateWaterDetailMaterial(string path, string texturePath, Color color)
+        private static Material CreateWaterDetailMaterial(string path, string texturePath, Color color, int renderQueue)
         {
             Material material = CreateMaterial(path, color);
             Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
@@ -329,6 +329,7 @@ namespace AfterBlue.EditorTools
             }
 
             ConfigureTransparent(material);
+            material.renderQueue = renderQueue;
             material.SetFloat("_Smoothness", 0f);
             EditorUtility.SetDirty(material);
             return material;
@@ -343,11 +344,11 @@ namespace AfterBlue.EditorTools
             }
 
             GameObject root = new GameObject("Week 3 Water Detail");
-            Material noiseMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterNoiseTexturePath, new Color(0.78f, 0.98f, 1f, 0.13f));
-            Material lineMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterRippleTexturePath, new Color(0.86f, 0.99f, 1f, 0.18f));
+            Material noiseMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterNoiseOverlay.mat", WaterNoiseTexturePath, new Color(0.78f, 0.98f, 1f, 0.82f), 3100);
+            Material lineMaterial = CreateWaterDetailMaterial("Assets/Materials/WaterLineOverlay.mat", WaterRippleTexturePath, new Color(0.86f, 0.99f, 1f, 0.92f), 3110);
 
-            CreateWaterOverlay(root.transform, "Soft Surface Noise", 0.031f, 12.05f, noiseMaterial, new Vector2(0.012f, 0.006f), 0.025f, 0.28f);
-            CreateWaterOverlay(root.transform, "Cyan Ripple Lines", 0.036f, 12.0f, lineMaterial, new Vector2(-0.018f, 0.011f), 0.035f, 0.42f);
+            CreateWaterOverlay(root.transform, "Soft Surface Noise", 0.055f, 12.05f, noiseMaterial, new Vector2(0.012f, 0.006f), 0.08f, 0.28f);
+            CreateWaterOverlay(root.transform, "Cyan Ripple Lines", 0.065f, 12.0f, lineMaterial, new Vector2(-0.018f, 0.011f), 0.1f, 0.42f);
         }
 
         private static void CreateWaterOverlay(Transform parent, string name, float height, float scale, Material material, Vector2 scrollSpeed, float alphaPulse, float pulseSpeed)

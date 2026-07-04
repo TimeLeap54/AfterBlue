@@ -20,7 +20,7 @@ def save_noise():
             wave_b = math.sin((x * 0.018) + (y * 0.052))
             grain = random.random() * 0.35
             value = max(0.0, (wave_a * 0.35 + wave_b * 0.25 + grain) - 0.28)
-            alpha = int(min(44, value * 54))
+            alpha = int(min(112, value * 150))
             pixels[x, y] = (210, 250, 255, alpha)
 
     image = image.filter(ImageFilter.GaussianBlur(radius=1.2))
@@ -37,8 +37,8 @@ def save_ripple_lines():
         start_y = random.randint(0, SIZE)
         length = random.randint(90, 240)
         amplitude = random.uniform(4.0, 13.0)
-        thickness = random.choice([1, 1, 2])
-        alpha = random.randint(18, 48)
+        thickness = random.choice([1, 2, 2, 3])
+        alpha = random.randint(70, 145)
         points = []
 
         for i in range(0, length, 7):
@@ -54,7 +54,7 @@ def save_ripple_lines():
         y = random.randint(0, SIZE)
         radius_x = random.randint(18, 58)
         radius_y = random.randint(3, 9)
-        alpha = random.randint(12, 28)
+        alpha = random.randint(48, 96)
         draw.arc(
             (x - radius_x, y - radius_y, x + radius_x, y + radius_y),
             start=random.randint(0, 80),

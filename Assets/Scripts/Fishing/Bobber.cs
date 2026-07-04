@@ -1,3 +1,4 @@
+using AfterBlue.Environment;
 using UnityEngine;
 
 namespace AfterBlue.Fishing
@@ -65,6 +66,7 @@ namespace AfterBlue.Fishing
         {
             basePosition = position;
             transform.position = position;
+            WaterRipple.Spawn(position + Vector3.up * 0.012f, 0.12f, 0.9f, 0.9f);
         }
 
         public void SetWaiting()
@@ -77,12 +79,14 @@ namespace AfterBlue.Fishing
         {
             visualState = BobberVisualState.Bite;
             SetColor(new Color(1f, 0.82f, 0.08f, 1f));
+            WaterRipple.Spawn(basePosition + Vector3.up * 0.012f, 0.1f, 0.62f, 0.55f);
         }
 
         public void SetSuccess()
         {
             visualState = BobberVisualState.Success;
             SetColor(new Color(0.1f, 0.85f, 0.28f, 1f));
+            WaterRipple.Spawn(basePosition + Vector3.up * 0.012f, 0.16f, 1.1f, 0.75f);
         }
 
         public void SetFailed()
@@ -90,6 +94,7 @@ namespace AfterBlue.Fishing
             visualState = BobberVisualState.Failed;
             SetColor(new Color(0.45f, 0.45f, 0.45f, 1f));
             basePosition += Vector3.down * 0.12f;
+            WaterRipple.Spawn(basePosition + Vector3.up * 0.14f, 0.08f, 0.5f, 0.65f);
         }
 
         private void SetColor(Color color)

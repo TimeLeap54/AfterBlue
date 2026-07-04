@@ -44,3 +44,20 @@
 - [ ] Verify in Unity Play Mode
 - [ ] Tune cast distance, rod tip position, and bite timing
 - [ ] Tag week 2 milestone
+
+## Week 3 - Flooded Village Visual Pass
+
+- [x] Define cyan flooded modern village color direction
+- [x] Add WaterRipple runtime effect
+- [x] Connect Bobber land, bite, success, and fail events to ripples
+- [x] Add FishShadow movement script
+- [x] Add FloodedVillageScenery render-setting script
+- [x] Add Week 3 editor setup menu
+- [x] Add primitive flooded village prop set
+- [x] Add fish shadow scene setup
+- [ ] Apply Week 3 setup to FishingScene in Unity
+- [ ] Verify water color, fog, and camera readability
+- [ ] Verify ripples during fishing loop
+- [ ] Verify fish shadows move under water
+- [ ] Capture screenshot candidate
+- [ ] Tag week 3 milestone

@@ -15,3 +15,5 @@
 - Added Unity MCP project setup and editor settings.
 - Started Week 2 fishing loop implementation on `codex/week2-fishing-loop`.
 - Added runtime fishing state machine, bobber casting, fishing line, bite timing, temporary fish roll table, and debug fishing HUD.
+- Started Week 3 flooded village visual pass on `codex/week3-flooded-village`.
+- Added cyan flooded village palette setup, primitive modern ruin props, fish shadows, and bobber water ripple effects.

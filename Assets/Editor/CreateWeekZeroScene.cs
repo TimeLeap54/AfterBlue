@@ -332,15 +332,15 @@ namespace AfterBlue.EditorTools
             }
 
             material.shader = waterShader;
-            SetMaterialColor(material, "_ShallowColor", new Color(0.36f, 0.92f, 0.98f, 0.78f));
-            SetMaterialColor(material, "_MidColor", new Color(0.10f, 0.62f, 0.72f, 0.78f));
-            SetMaterialColor(material, "_DeepColor", new Color(0.035f, 0.27f, 0.33f, 0.78f));
-            SetMaterialColor(material, "_HighlightColor", new Color(0.86f, 1f, 1f, 0.55f));
+            SetMaterialColor(material, "_ShallowColor", new Color(0.32f, 0.82f, 0.88f, 0.78f));
+            SetMaterialColor(material, "_MidColor", new Color(0.08f, 0.52f, 0.62f, 0.78f));
+            SetMaterialColor(material, "_DeepColor", new Color(0.03f, 0.24f, 0.30f, 0.78f));
+            SetMaterialColor(material, "_HighlightColor", new Color(0.82f, 0.98f, 1f, 0.48f));
             SetMaterialFloat(material, "_Alpha", 0.82f);
-            SetMaterialFloat(material, "_WaveHeight", 0.055f);
-            SetMaterialFloat(material, "_WaveScale", 1.45f);
-            SetMaterialFloat(material, "_WaveSpeed", 0.42f);
-            SetMaterialFloat(material, "_HighlightStrength", 0.44f);
+            SetMaterialFloat(material, "_WaveHeight", 0.035f);
+            SetMaterialFloat(material, "_WaveScale", 0.72f);
+            SetMaterialFloat(material, "_WaveSpeed", 0.32f);
+            SetMaterialFloat(material, "_HighlightStrength", 0.30f);
             EditorUtility.SetDirty(material);
             return material;
         }

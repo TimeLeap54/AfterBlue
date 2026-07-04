@@ -2,15 +2,15 @@ Shader "AfterBlue/WaterSurfaceURP"
 {
     Properties
     {
-        _ShallowColor ("Shallow Cyan", Color) = (0.36, 0.92, 0.98, 0.78)
-        _MidColor ("Mid Teal", Color) = (0.10, 0.62, 0.72, 0.78)
-        _DeepColor ("Deep Blue Green", Color) = (0.03, 0.26, 0.32, 0.78)
-        _HighlightColor ("Wave Highlight", Color) = (0.86, 1.0, 1.0, 0.55)
+        _ShallowColor ("Shallow Cyan", Color) = (0.32, 0.82, 0.88, 0.78)
+        _MidColor ("Mid Teal", Color) = (0.08, 0.52, 0.62, 0.78)
+        _DeepColor ("Deep Blue Green", Color) = (0.03, 0.24, 0.30, 0.78)
+        _HighlightColor ("Caustic Highlight", Color) = (0.82, 0.98, 1.0, 0.48)
         _Alpha ("Alpha", Range(0, 1)) = 0.78
-        _WaveHeight ("Wave Height", Range(0, 0.25)) = 0.055
-        _WaveScale ("Wave Scale", Range(0.1, 8)) = 1.45
-        _WaveSpeed ("Wave Speed", Range(0, 4)) = 0.42
-        _HighlightStrength ("Highlight Strength", Range(0, 1)) = 0.38
+        _WaveHeight ("Wave Height", Range(0, 0.25)) = 0.035
+        _WaveScale ("Wave Scale", Range(0.1, 8)) = 0.72
+        _WaveSpeed ("Wave Speed", Range(0, 4)) = 0.32
+        _HighlightStrength ("Caustic Strength", Range(0, 1)) = 0.30
     }
 
     SubShader
@@ -63,17 +63,58 @@ Shader "AfterBlue/WaterSurfaceURP"
                 float wave : TEXCOORD2;
             };
 
+            float2 Hash22(float2 p)
+            {
+                float3 p3 = frac(float3(p.xyx) * 0.1031);
+                p3 += dot(p3, p3.yzx + 33.33);
+                return frac((p3.xx + p3.yz) * p3.zy);
+            }
+
+            float CellularEdge(float2 p, float time)
+            {
+                float2 cell = floor(p);
+                float2 local = frac(p);
+                float nearest = 8.0;
+                float secondNearest = 8.0;
+
+                [unroll]
+                for (int y = -1; y <= 1; y++)
+                {
+                    [unroll]
+                    for (int x = -1; x <= 1; x++)
+                    {
+                        float2 offset = float2(x, y);
+                        float2 randomPoint = Hash22(cell + offset);
+                        randomPoint = 0.5 + 0.38 * sin(time + 6.2831 * randomPoint);
+                        float2 delta = offset + randomPoint - local;
+                        float distanceToPoint = dot(delta, delta);
+
+                        if (distanceToPoint < nearest)
+                        {
+                            secondNearest = nearest;
+                            nearest = distanceToPoint;
+                        }
+                        else if (distanceToPoint < secondNearest)
+                        {
+                            secondNearest = distanceToPoint;
+                        }
+                    }
+                }
+
+                float edge = secondNearest - nearest;
+                return 1.0 - smoothstep(0.018, 0.095, edge);
+            }
+
             Varyings vert(Attributes input)
             {
                 Varyings output;
                 float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
                 float time = _Time.y * _WaveSpeed;
-                float2 p = positionWS.xz * _WaveScale;
 
-                float broad = sin(p.x * 0.45 + p.y * 0.18 + time);
-                float cross = cos(p.x * -0.22 + p.y * 0.52 + time * 1.35);
-                float small = sin((p.x + p.y) * 1.35 + time * 2.1);
-                float wave = broad * 0.55 + cross * 0.32 + small * 0.13;
+                float broadX = sin(positionWS.x * 0.55 + time);
+                float broadZ = cos(positionWS.z * 0.48 + time * 1.27);
+                float crossing = sin((positionWS.x + positionWS.z) * 0.32 + time * 0.72);
+                float wave = broadX * 0.45 + broadZ * 0.38 + crossing * 0.17;
 
                 positionWS.y += wave * _WaveHeight;
                 output.positionHCS = TransformWorldToHClip(positionWS);
@@ -88,18 +129,17 @@ Shader "AfterBlue/WaterSurfaceURP"
                 float time = _Time.y * _WaveSpeed;
                 float2 p = input.positionWS.xz * _WaveScale;
 
-                float broadBand = sin(p.x * 0.58 + p.y * 0.16 + time * 1.2);
-                float diagonalBand = sin(p.x * -0.32 + p.y * 0.72 + time * 1.55);
-                float fineRipple = sin((p.x + p.y) * 2.2 + time * 2.6);
-                float mixedWave = broadBand * 0.52 + diagonalBand * 0.34 + fineRipple * 0.14;
+                float largeCells = CellularEdge(p * 0.72 + float2(time * 0.08, -time * 0.05), time);
+                float smallCells = CellularEdge(p * 1.18 + float2(-time * 0.06, time * 0.075), time * 1.21);
+                float caustic = saturate(largeCells * 0.72 + smallCells * 0.34);
+                caustic = smoothstep(0.42, 0.92, caustic);
 
-                float depthMix = saturate(0.56 + mixedWave * 0.22 + input.uv.y * 0.12);
+                float softVariation = sin(p.x * 0.37 + time) * 0.08 + cos(p.y * 0.41 - time * 0.7) * 0.08;
+                float depthMix = saturate(0.58 + softVariation + input.uv.y * 0.08);
                 half3 water = lerp(_DeepColor.rgb, _MidColor.rgb, depthMix);
-                water = lerp(water, _ShallowColor.rgb, saturate(depthMix - 0.45) * 0.62);
+                water = lerp(water, _ShallowColor.rgb, saturate(depthMix - 0.48) * 0.5);
 
-                float crest = smoothstep(0.62, 0.96, mixedWave);
-                float longHighlight = smoothstep(0.72, 0.95, broadBand) * 0.55;
-                half3 highlighted = lerp(water, _HighlightColor.rgb, saturate((crest + longHighlight) * _HighlightStrength));
+                half3 highlighted = lerp(water, _HighlightColor.rgb, caustic * _HighlightStrength);
 
                 return half4(highlighted, _Alpha);
             }

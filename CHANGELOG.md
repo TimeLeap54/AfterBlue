@@ -21,3 +21,4 @@
 - Replaced the over-strong water line overlay with softer cyan water patches and subtle surface glints.
 - Added a broader moving wave-band overlay and brightened the Week 3 water base so the surface reads as water instead of a dark flat plane.
 - Switched the Week 3 water surface from stacked transparent texture overlays to a lightweight procedural URP water shader with sine/cosine wave color bands and vertex motion.
+- Removed the club-like straight wave-band overlay path and replaced it with subtle procedural cellular caustics plus low-amplitude Y-axis wave motion.

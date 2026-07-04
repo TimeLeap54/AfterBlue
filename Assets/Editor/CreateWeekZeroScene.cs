@@ -14,6 +14,8 @@ namespace AfterBlue.EditorTools
     {
         private const string ScenePath = "Assets/Scenes/FishingScene.unity";
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
+        private const string FloodedRoofModelPath = "Assets/Art/Exports/flooded_roof_modern_v01.fbx";
+        private const string RustedUtilityPoleModelPath = "Assets/Art/Exports/rusted_utility_pole_v01.fbx";
         private const string WaterShaderName = "AfterBlue/WaterSurfaceURP";
 
         [MenuItem("AfterBlue/Setup/Create Week 0 Fishing Scene")]
@@ -512,14 +514,28 @@ namespace AfterBlue.EditorTools
             Material moss = CreateMaterial("Assets/Materials/MossAlgae.mat", new Color(0.31f, 0.435f, 0.259f, 1f));
             Material bobberRed = CreateMaterial("Assets/Materials/PrototypeBuoyRed.mat", new Color(0.91f, 0.35f, 0.35f, 1f));
 
-            CreateSubmergedRoof(root.transform, "Submerged House Roof A", new Vector3(-4.7f, 0.08f, 5.0f), Quaternion.Euler(0f, 12f, 0f), new Vector3(3.5f, 0.18f, 2.35f), ruin, concrete, moss);
-            CreateSubmergedRoof(root.transform, "Submerged House Roof B", new Vector3(4.0f, 0.06f, 5.8f), Quaternion.Euler(0f, -18f, 0f), new Vector3(3.0f, 0.16f, 2.0f), ruin, concrete, moss);
-            CreateSubmergedRoof(root.transform, "Submerged House Roof C", new Vector3(7.2f, 0.04f, -2.8f), Quaternion.Euler(0f, 22f, 0f), new Vector3(3.4f, 0.16f, 2.2f), ruin, concrete, moss);
+            if (!CreateFloodedRoofAsset(root.transform, "Submerged House Roof A", new Vector3(-4.7f, 0.08f, 5.0f), Quaternion.Euler(0f, 12f, 0f), Vector3.one))
+            {
+                CreateSubmergedRoof(root.transform, "Submerged House Roof A", new Vector3(-4.7f, 0.08f, 5.0f), Quaternion.Euler(0f, 12f, 0f), new Vector3(3.5f, 0.18f, 2.35f), ruin, concrete, moss);
+            }
+
+            if (!CreateFloodedRoofAsset(root.transform, "Submerged House Roof B", new Vector3(4.0f, 0.06f, 5.8f), Quaternion.Euler(0f, -18f, 0f), new Vector3(0.86f, 0.92f, 0.86f)))
+            {
+                CreateSubmergedRoof(root.transform, "Submerged House Roof B", new Vector3(4.0f, 0.06f, 5.8f), Quaternion.Euler(0f, -18f, 0f), new Vector3(3.0f, 0.16f, 2.0f), ruin, concrete, moss);
+            }
+
+            if (!CreateFloodedRoofAsset(root.transform, "Submerged House Roof C", new Vector3(7.2f, 0.04f, -2.8f), Quaternion.Euler(0f, 22f, 0f), new Vector3(0.96f, 0.9f, 0.96f)))
+            {
+                CreateSubmergedRoof(root.transform, "Submerged House Roof C", new Vector3(7.2f, 0.04f, -2.8f), Quaternion.Euler(0f, 22f, 0f), new Vector3(3.4f, 0.16f, 2.2f), ruin, concrete, moss);
+            }
 
             CreateRoadSegment(root.transform, "Flooded Asphalt Road A", new Vector3(-3.2f, 0.025f, -5.8f), Quaternion.Euler(0f, -7f, 0f), new Vector3(7.2f, 0.05f, 1.65f), asphalt, concrete);
             CreateRoadSegment(root.transform, "Flooded Asphalt Road B", new Vector3(3.8f, 0.02f, -7.0f), Quaternion.Euler(0f, -7f, 0f), new Vector3(6.0f, 0.05f, 1.65f), asphalt, concrete);
 
-            CreateUtilityPole(root.transform, "Leaning Utility Pole", new Vector3(-6.6f, 0.78f, -1.5f), Quaternion.Euler(0f, 0f, -17f), rust, moss);
+            if (!CreateUtilityPoleAsset(root.transform, "Leaning Utility Pole", new Vector3(-6.6f, 0.2f, -1.5f), Quaternion.Euler(0f, -22f, 0f), new Vector3(1.05f, 1.05f, 1.05f)))
+            {
+                CreateUtilityPole(root.transform, "Leaning Utility Pole", new Vector3(-6.6f, 0.78f, -1.5f), Quaternion.Euler(0f, 0f, -17f), rust, moss);
+            }
             CreateFloodedTrafficLight(root.transform, "Flooded Traffic Light", new Vector3(2.6f, 0.68f, -4.1f), Quaternion.Euler(0f, 18f, -7f), rust, bobberRed);
             CreateWindowWall(root.transform, "Broken Window Wall A", new Vector3(-7.4f, 0.26f, 2.6f), Quaternion.Euler(0f, -24f, 0f), concrete, moss);
             CreateWindowWall(root.transform, "Broken Window Wall B", new Vector3(6.0f, 0.22f, 2.2f), Quaternion.Euler(0f, 31f, 0f), concrete, moss);
@@ -538,6 +554,34 @@ namespace AfterBlue.EditorTools
             {
                 Object.DestroyImmediate(oldRoot);
             }
+        }
+
+        private static bool CreateFloodedRoofAsset(Transform parent, string name, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            return CreateSceneryAsset(parent, FloodedRoofModelPath, name, position, rotation, scale);
+        }
+
+        private static bool CreateUtilityPoleAsset(Transform parent, string name, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            return CreateSceneryAsset(parent, RustedUtilityPoleModelPath, name, position, rotation, scale);
+        }
+
+        private static bool CreateSceneryAsset(Transform parent, string assetPath, string name, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (asset == null)
+            {
+                Debug.LogWarning($"Could not load scenery asset at {assetPath}. Falling back to primitive scenery for {name}.");
+                return false;
+            }
+
+            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            instance.name = name;
+            instance.transform.SetParent(parent, false);
+            instance.transform.SetPositionAndRotation(position, rotation);
+            instance.transform.localScale = scale;
+            return true;
         }
 
         private static void CreateSubmergedRoof(Transform parent, string name, Vector3 position, Quaternion rotation, Vector3 scale, Material roofMaterial, Material concreteMaterial, Material mossMaterial)

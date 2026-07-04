@@ -23,3 +23,4 @@
 - Switched the Week 3 water surface from stacked transparent texture overlays to a lightweight procedural URP water shader with sine/cosine wave color bands and vertex motion.
 - Removed the club-like straight wave-band overlay path and replaced it with subtle procedural cellular caustics plus low-amplitude Y-axis wave motion.
 - Ensured Week 3 setup restores the Blender boat FBX and reduced water caustic density/strength for readability.
+- Added Blender-generated low-poly flooded roof and rusted utility pole assets for the Week 3 modern submerged village pass.

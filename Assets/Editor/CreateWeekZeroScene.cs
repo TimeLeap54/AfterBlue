@@ -175,6 +175,7 @@ namespace AfterBlue.EditorTools
             Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
 
             ApplyWeekTwoFishingLoop();
+            EnsureWeekThreeBoatModel();
             ApplyWeekThreePalette();
             CreateWaterDetailPlanes();
             ApplyWeekThreeCameraAndLight();
@@ -184,6 +185,23 @@ namespace AfterBlue.EditorTools
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             Debug.Log("Applied AfterBlue week 3 Flooded Village visual pass.");
+        }
+
+        private static void EnsureWeekThreeBoatModel()
+        {
+            GameObject boat = GameObject.Find("PlayerBoat");
+            if (boat == null)
+            {
+                boat = new GameObject("PlayerBoat");
+                boat.transform.position = new Vector3(0f, 0.18f, 0f);
+            }
+
+            if (boat.GetComponent<BoatController>() == null)
+            {
+                boat.AddComponent<BoatController>();
+            }
+
+            ReplacePrototypeBoatModel(boat);
         }
 
         private static Material CreateMaterial(string path, Color color)
@@ -337,10 +355,10 @@ namespace AfterBlue.EditorTools
             SetMaterialColor(material, "_DeepColor", new Color(0.03f, 0.24f, 0.30f, 0.78f));
             SetMaterialColor(material, "_HighlightColor", new Color(0.82f, 0.98f, 1f, 0.48f));
             SetMaterialFloat(material, "_Alpha", 0.82f);
-            SetMaterialFloat(material, "_WaveHeight", 0.035f);
-            SetMaterialFloat(material, "_WaveScale", 0.72f);
-            SetMaterialFloat(material, "_WaveSpeed", 0.32f);
-            SetMaterialFloat(material, "_HighlightStrength", 0.30f);
+            SetMaterialFloat(material, "_WaveHeight", 0.028f);
+            SetMaterialFloat(material, "_WaveScale", 0.36f);
+            SetMaterialFloat(material, "_WaveSpeed", 0.24f);
+            SetMaterialFloat(material, "_HighlightStrength", 0.13f);
             EditorUtility.SetDirty(material);
             return material;
         }

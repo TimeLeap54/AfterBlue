@@ -7,10 +7,10 @@ Shader "AfterBlue/WaterSurfaceURP"
         _DeepColor ("Deep Blue Green", Color) = (0.03, 0.24, 0.30, 0.78)
         _HighlightColor ("Caustic Highlight", Color) = (0.82, 0.98, 1.0, 0.48)
         _Alpha ("Alpha", Range(0, 1)) = 0.78
-        _WaveHeight ("Wave Height", Range(0, 0.25)) = 0.035
-        _WaveScale ("Wave Scale", Range(0.1, 8)) = 0.72
-        _WaveSpeed ("Wave Speed", Range(0, 4)) = 0.32
-        _HighlightStrength ("Caustic Strength", Range(0, 1)) = 0.30
+        _WaveHeight ("Wave Height", Range(0, 0.25)) = 0.028
+        _WaveScale ("Wave Scale", Range(0.1, 8)) = 0.36
+        _WaveSpeed ("Wave Speed", Range(0, 4)) = 0.24
+        _HighlightStrength ("Caustic Strength", Range(0, 1)) = 0.13
     }
 
     SubShader
@@ -129,10 +129,10 @@ Shader "AfterBlue/WaterSurfaceURP"
                 float time = _Time.y * _WaveSpeed;
                 float2 p = input.positionWS.xz * _WaveScale;
 
-                float largeCells = CellularEdge(p * 0.72 + float2(time * 0.08, -time * 0.05), time);
-                float smallCells = CellularEdge(p * 1.18 + float2(-time * 0.06, time * 0.075), time * 1.21);
-                float caustic = saturate(largeCells * 0.72 + smallCells * 0.34);
-                caustic = smoothstep(0.42, 0.92, caustic);
+                float largeCells = CellularEdge(p * 0.54 + float2(time * 0.05, -time * 0.035), time);
+                float smallCells = CellularEdge(p * 0.82 + float2(-time * 0.04, time * 0.055), time * 1.12);
+                float caustic = saturate(largeCells * 0.52 + smallCells * 0.18);
+                caustic = smoothstep(0.55, 1.0, caustic);
 
                 float softVariation = sin(p.x * 0.37 + time) * 0.08 + cos(p.y * 0.41 - time * 0.7) * 0.08;
                 float depthMix = saturate(0.58 + softVariation + input.uv.y * 0.08);

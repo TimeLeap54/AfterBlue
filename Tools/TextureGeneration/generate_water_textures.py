@@ -27,50 +27,65 @@ def save_noise():
     image.save(OUT_DIR / "water_noise_soft_v01.png")
 
 
-def save_ripple_lines():
+def save_soft_patches():
+    random.seed(128)
+    alpha_mask = Image.new("L", (SIZE, SIZE), 0)
+    draw = ImageDraw.Draw(alpha_mask)
+
+    for _ in range(30):
+        x = random.randint(-80, SIZE + 80)
+        y = random.randint(-80, SIZE + 80)
+        radius_x = random.randint(70, 180)
+        radius_y = random.randint(45, 135)
+        alpha = random.randint(14, 42)
+        draw.ellipse((x - radius_x, y - radius_y, x + radius_x, y + radius_y), fill=alpha)
+
+    alpha_mask = alpha_mask.filter(ImageFilter.GaussianBlur(radius=18.0))
+    image = Image.new("RGBA", (SIZE, SIZE), (36, 144, 164, 0))
+    image.putalpha(alpha_mask)
+    image.save(OUT_DIR / "water_soft_patches_v01.png")
+
+
+def save_surface_glints():
     random.seed(83)
-    image = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(image)
+    alpha_mask = Image.new("L", (SIZE, SIZE), 0)
+    draw = ImageDraw.Draw(alpha_mask)
 
-    for _ in range(42):
-        start_x = random.randint(-120, SIZE)
-        start_y = random.randint(0, SIZE)
-        length = random.randint(90, 240)
-        amplitude = random.uniform(4.0, 13.0)
-        thickness = random.choice([1, 2, 2, 3])
-        alpha = random.randint(70, 145)
-        points = []
-
-        for i in range(0, length, 7):
-            x = start_x + i
-            y = start_y + math.sin(i * 0.075 + random.random() * 0.2) * amplitude
-            points.append((x % SIZE, y % SIZE))
-
-        if len(points) > 1:
-            draw.line(points, fill=(225, 252, 255, alpha), width=thickness)
-
-    for _ in range(22):
+    for _ in range(52):
         x = random.randint(0, SIZE)
         y = random.randint(0, SIZE)
-        radius_x = random.randint(18, 58)
-        radius_y = random.randint(3, 9)
-        alpha = random.randint(48, 96)
-        draw.arc(
-            (x - radius_x, y - radius_y, x + radius_x, y + radius_y),
-            start=random.randint(0, 80),
-            end=random.randint(140, 330),
-            fill=(230, 255, 255, alpha),
-            width=1,
-        )
+        length = random.randint(10, 42)
+        thickness = random.choice([1, 1, 2])
+        alpha = random.randint(18, 68)
+        angle = random.uniform(-0.42, 0.28)
 
-    image = image.filter(ImageFilter.GaussianBlur(radius=0.55))
-    image.save(OUT_DIR / "water_ripple_lines_v01.png")
+        for segment in range(random.choice([1, 1, 2])):
+            gap = segment * random.randint(12, 24)
+            sx = x + math.cos(angle) * gap
+            sy = y + math.sin(angle) * gap
+            ex = sx + math.cos(angle) * length
+            ey = sy + math.sin(angle) * length
+            draw.line((sx, sy, ex, ey), fill=alpha, width=thickness)
+
+    for _ in range(18):
+        x = random.randint(0, SIZE)
+        y = random.randint(0, SIZE)
+        width = random.randint(24, 72)
+        height = random.randint(4, 10)
+        alpha = random.randint(10, 32)
+        draw.ellipse((x - width, y - height, x + width, y + height), fill=alpha)
+
+    alpha_mask = alpha_mask.filter(ImageFilter.GaussianBlur(radius=1.1))
+    image = Image.new("RGBA", (SIZE, SIZE), (218, 252, 255, 0))
+    image.putalpha(alpha_mask)
+    image.save(OUT_DIR / "water_surface_glints_v01.png")
 
 
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     save_noise()
-    save_ripple_lines()
+    save_soft_patches()
+    save_surface_glints()
 
 
 if __name__ == "__main__":

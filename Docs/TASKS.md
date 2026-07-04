@@ -55,6 +55,7 @@
 - [x] Add Week 3 editor setup menu
 - [x] Add primitive flooded village prop set
 - [x] Remove fish shadow scene setup from Week 3 after readability test
+- [x] Replace crack-like water line texture with soft patch and glint overlays
 - [ ] Apply Week 3 setup to FishingScene in Unity
 - [ ] Verify water color, fog, and camera readability
 - [ ] Verify ripples during fishing loop

@@ -24,3 +24,4 @@
 - Removed the club-like straight wave-band overlay path and replaced it with subtle procedural cellular caustics plus low-amplitude Y-axis wave motion.
 - Ensured Week 3 setup restores the Blender boat FBX and reduced water caustic density/strength for readability.
 - Added Blender-generated low-poly flooded roof and rusted utility pole assets for the Week 3 modern submerged village pass.
+- Added generated grime/slate/rust texture atlases and rebuilt the Week 3 roof and utility pole assets with more visible surface detail.

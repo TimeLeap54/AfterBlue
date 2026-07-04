@@ -1,5 +1,6 @@
 from pathlib import Path
 import math
+import random
 
 import bpy
 from mathutils import Vector
@@ -9,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 BLENDER_DIR = ROOT / "Assets" / "Art" / "Blender"
 EXPORT_DIR = ROOT / "Assets" / "Art" / "Exports"
 PREVIEW_DIR = ROOT / "Temp"
+TEXTURE_DIR = ROOT / "Assets" / "Textures" / "Props"
 
 
 def ensure_dirs():
@@ -18,8 +20,8 @@ def ensure_dirs():
 
 
 def clear_scene():
-    bpy.ops.object.select_all(action="SELECT")
-    bpy.ops.object.delete()
+    for obj in list(bpy.data.objects):
+        bpy.data.objects.remove(obj, do_unlink=True)
 
 
 def material(name, color, roughness=0.75):
@@ -30,6 +32,27 @@ def material(name, color, roughness=0.75):
     if bsdf:
         bsdf.inputs["Base Color"].default_value = color
         bsdf.inputs["Roughness"].default_value = roughness
+    return mat
+
+
+def textured_material(name, color, texture_name, roughness=0.82):
+    mat = material(name, color, roughness)
+    texture_path = TEXTURE_DIR / texture_name
+    if not texture_path.exists():
+        return mat
+
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    bsdf = nodes.get("Principled BSDF")
+    tex_coord = nodes.new(type="ShaderNodeTexCoord")
+    image_node = nodes.new(type="ShaderNodeTexImage")
+    image_node.image = bpy.data.images.load(str(texture_path))
+    image_node.extension = "REPEAT"
+
+    if bsdf:
+        links.new(tex_coord.outputs["Generated"], image_node.inputs["Vector"])
+        links.new(image_node.outputs["Color"], bsdf.inputs["Base Color"])
+
     return mat
 
 
@@ -108,30 +131,54 @@ def export_asset(blend_path, fbx_path, preview_path):
 def create_roof():
     clear_scene()
 
-    wet_roof = material("wet dark roof concrete", (0.11, 0.18, 0.20, 1))
-    edge = material("damp concrete edge", (0.28, 0.34, 0.35, 1))
+    wet_roof = textured_material("slate roof tile grime", (0.11, 0.18, 0.20, 1), "roof_slate_grime_v01.png")
+    edge = textured_material("wet cracked concrete", (0.28, 0.34, 0.35, 1), "wet_concrete_grime_v01.png")
     glass = material("dark broken skylight glass", (0.08, 0.16, 0.18, 0.72), roughness=0.35)
     moss = material("moss algae streaks", (0.22, 0.37, 0.18, 1))
     metal = material("wet oxidized metal", (0.32, 0.33, 0.31, 1))
+    wood = textured_material("rotted exposed wood", (0.22, 0.14, 0.09, 1), "rusted_pole_grime_v01.png")
     black = material("black roof void", (0.02, 0.03, 0.035, 1))
 
     cube("main flat flooded roof slab", (0, 0, 0.04), (3.5, 2.25, 0.08), wet_roof)
+    for row in range(7):
+        for col in range(10):
+            if random_skip := ((row in (2, 3) and col in (1, 2, 3)) or (row == 5 and col == 8)):
+                continue
+            x = -1.48 + col * 0.33 + (0.16 if row % 2 else 0)
+            y = -0.88 + row * 0.28
+            tile = cube(
+                f"individual slate tile {row:02d}_{col:02d}",
+                (x, y, 0.115 + (row % 3) * 0.002),
+                (0.30, 0.24, 0.018),
+                wet_roof,
+                rotation=(0, 0, math.radians((col % 3 - 1) * 1.5)),
+            )
+
     cube("raised front concrete lip", (0, -1.13, 0.13), (3.7, 0.12, 0.12), edge)
     cube("raised back concrete lip", (0, 1.13, 0.13), (3.7, 0.12, 0.12), edge)
     cube("raised left concrete lip", (-1.75, 0, 0.13), (0.12, 2.1, 0.12), edge)
     cube("broken right concrete lip", (1.45, 0.42, 0.13), (0.72, 0.12, 0.12), edge, rotation=(0, 0, math.radians(3)))
 
-    cube("jagged black roof breach", (-0.78, 0.38, 0.18), (0.95, 0.55, 0.035), black, rotation=(0, 0, math.radians(-8)))
-    cube("collapsed board across breach", (-0.55, 0.38, 0.25), (1.0, 0.10, 0.08), edge, rotation=(0, 0, math.radians(18)))
-    cube("short broken board", (-0.92, 0.12, 0.25), (0.55, 0.09, 0.07), edge, rotation=(0, 0, math.radians(-28)))
+    cube("jagged black roof breach", (-0.78, 0.38, 0.18), (1.08, 0.68, 0.035), black, rotation=(0, 0, math.radians(-8)))
+    cube("collapsed board across breach", (-0.55, 0.38, 0.25), (1.0, 0.10, 0.08), wood, rotation=(0, 0, math.radians(18)))
+    cube("short broken board", (-0.92, 0.12, 0.25), (0.55, 0.09, 0.07), wood, rotation=(0, 0, math.radians(-28)))
+    cube("splintered roof beam", (-0.45, 0.64, 0.24), (0.92, 0.075, 0.075), wood, rotation=(0, 0, math.radians(-12)))
 
     cube("square skylight frame", (0.78, -0.24, 0.2), (0.68, 0.52, 0.08), edge)
     cube("dark skylight glass inset", (0.78, -0.24, 0.25), (0.52, 0.36, 0.035), glass)
+    cube("broken skylight crack a", (0.78, -0.24, 0.275), (0.48, 0.025, 0.012), edge, rotation=(0, 0, math.radians(31)))
+    cube("broken skylight crack b", (0.83, -0.17, 0.28), (0.30, 0.018, 0.012), edge, rotation=(0, 0, math.radians(-42)))
     cube("small rooftop vent base", (1.18, 0.55, 0.2), (0.38, 0.30, 0.10), metal)
     cylinder("round roof turbine vent", (1.18, 0.55, 0.38), 0.16, 0.16, metal, vertices=12, rotation=(math.radians(90), 0, 0))
+    cube("chimney block", (1.35, 0.82, 0.42), (0.38, 0.34, 0.48), edge)
+    cube("chimney cap", (1.35, 0.82, 0.71), (0.48, 0.42, 0.08), metal)
 
     cube("long algae streak", (-0.35, -0.62, 0.22), (1.25, 0.13, 0.035), moss, rotation=(0, 0, math.radians(6)))
     cube("corner algae patch", (-1.22, 0.92, 0.22), (0.68, 0.18, 0.035), moss, rotation=(0, 0, math.radians(-15)))
+    cube("white mineral crust front", (-1.05, -1.18, 0.23), (0.7, 0.04, 0.05), material("white mineral crust", (0.78, 0.78, 0.68, 1)))
+    cube("submerged front wall hint", (0, -1.24, -0.32), (3.2, 0.08, 0.72), edge)
+    cube("dark broken window row", (-0.75, -1.29, -0.24), (0.52, 0.035, 0.36), black)
+    cube("dark broken doorway", (0.15, -1.29, -0.30), (0.42, 0.035, 0.46), black)
     cube("waterline underside hint", (0.0, 0.0, -0.035), (3.25, 1.95, 0.035), black)
 
     setup_camera(target=(0, 0, 0.12), distance=5.5)
@@ -145,8 +192,8 @@ def create_roof():
 def create_utility_pole():
     clear_scene()
 
-    rust = material("rusted wet metal", (0.42, 0.25, 0.17, 1))
-    dark_rust = material("dark corroded metal", (0.18, 0.13, 0.10, 1))
+    rust = textured_material("rusted wet pole texture", (0.42, 0.25, 0.17, 1), "rusted_pole_grime_v01.png")
+    dark_rust = textured_material("dark corroded metal", (0.18, 0.13, 0.10, 1), "rusted_pole_grime_v01.png")
     cable = material("black rubber cable", (0.015, 0.014, 0.013, 1), roughness=0.9)
     algae = material("algae waterline", (0.22, 0.36, 0.16, 1))
     ceramic = material("dirty ceramic insulator", (0.66, 0.63, 0.55, 1))
@@ -168,6 +215,11 @@ def create_utility_pole():
     cylinder_between("dangling cable", (0.15, -0.08, 1.78), (0.02, -0.12, 1.05), 0.014, cable, vertices=6)
     cylinder_between("lamp bent arm", (-0.28, 0.02, 1.35), (-0.85, 0.02, 1.22), 0.035, rust, vertices=8)
     cylinder("broken lamp head", (-0.98, 0.02, 1.17), 0.10, 0.12, dark_rust, vertices=10, rotation=(0, math.radians(90), 0))
+    cube("faded warning label", (-0.08, -0.078, 0.82), (0.16, 0.012, 0.22), material("faded pole label", (0.62, 0.56, 0.42, 1)))
+    cube("rusted metal band lower", (0, 0, 0.58), (0.20, 0.018, 0.045), dark_rust)
+    cube("rusted metal band upper", (0, 0, 1.42), (0.20, 0.018, 0.045), dark_rust)
+    for i, x in enumerate((-0.34, -0.18, 0.18, 0.36)):
+        cylinder_between(f"hanging loose wire {i}", (x, -0.08, 1.76), (x + 0.05, -0.12, 0.62 + i * 0.08), 0.011, cable, vertices=5)
     cube("green algae wet base", (0, 0, 0.13), (0.20, 0.20, 0.26), algae)
 
     root = bpy.data.objects.new("rusted_utility_pole_v01_root_tilt", None)

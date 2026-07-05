@@ -13,9 +13,28 @@ Unity ScriptableObjects are the default data format.
 - PreferredBait
 - LocationIds
 - CatchDifficulty
+- SpawnWeight
+- BiteWindow
 - JournalText
 - ModelPrefab
 - IconSprite
+
+## BaitData
+
+- BaitId
+- DisplayName
+- Price
+- RarityBonus
+- TargetFishTags
+
+## RodData
+
+- RodId
+- DisplayName
+- Price
+- ReelPower
+- LineStability
+- CatchWindowBonus
 
 ## LocationData
 
@@ -41,3 +60,8 @@ Unity ScriptableObjects are the default data format.
 - CurrentRod
 - PlayTime
 
+## Week 4 Prototype Save
+
+The current Week 4 fish codex prototype uses `PlayerPrefs` with JSON under
+`AfterBlue.FishCollectionLog.v1`. Move this into the final SaveSystem when
+shop, money, and progression data are implemented.

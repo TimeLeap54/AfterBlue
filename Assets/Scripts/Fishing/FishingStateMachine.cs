@@ -1,3 +1,5 @@
+using AfterBlue.Data;
+using AfterBlue.Journal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,20 +23,23 @@ namespace AfterBlue.Fishing
         [SerializeField] private FishingCastController castController;
         [SerializeField] private FishingLine fishingLine;
         [SerializeField] private FishingDebugUI debugUI;
+        [SerializeField] private FishCollectionLog collectionLog;
+        [SerializeField] private FishData[] availableFish;
         [SerializeField] private float minBiteDelay = 2f;
         [SerializeField] private float maxBiteDelay = 5f;
         [SerializeField] private KeyCode actionKey = KeyCode.Space;
 
         private float biteTimer;
         private float biteWindowTimer;
-        private FishRollEntry pendingFish;
+        private FishData pendingFish;
         private FishCatchResult lastResult = FishCatchResult.None;
 
         public FishingState CurrentState => currentState;
         public float BiteTimer => biteTimer;
         public float BiteWindowTimer => biteWindowTimer;
         public FishCatchResult LastResult => lastResult;
-        public FishRollEntry PendingFish => pendingFish;
+        public FishData PendingFish => pendingFish;
+        public FishData[] AvailableFish => availableFish;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void BootstrapFishingSystem()
@@ -136,6 +141,20 @@ namespace AfterBlue.Fishing
                 }
             }
 
+            if (collectionLog == null)
+            {
+                collectionLog = GetComponent<FishCollectionLog>();
+                if (collectionLog == null)
+                {
+                    collectionLog = gameObject.AddComponent<FishCollectionLog>();
+                }
+            }
+
+            if ((availableFish == null || availableFish.Length == 0) && collectionLog.KnownFish.Length > 0)
+            {
+                availableFish = collectionLog.KnownFish;
+            }
+
             if (playerBoat != null && rodTip == null)
             {
                 rodTip = castController.EnsureRodTip(playerBoat);
@@ -171,6 +190,12 @@ namespace AfterBlue.Fishing
                 return;
             }
 
+            if (availableFish == null || availableFish.Length == 0)
+            {
+                Debug.LogWarning("Fishing loop needs FishData entries before casting. Run AfterBlue > Setup > Apply Week 4 Collection Data.");
+                return;
+            }
+
             lastResult = FishCatchResult.None;
             pendingFish = default;
             biteTimer = 0f;
@@ -195,7 +220,14 @@ namespace AfterBlue.Fishing
 
         private void BeginBite()
         {
-            pendingFish = FishRollTable.Roll();
+            pendingFish = FishRollTable.Roll(availableFish);
+            if (pendingFish == null)
+            {
+                Debug.LogWarning("Fish roll failed because no valid FishData entries were available.");
+                FailCatch();
+                return;
+            }
+
             biteWindowTimer = pendingFish.BiteWindow;
             castController.ActiveBobber?.SetBite();
             SetState(FishingState.Bite);
@@ -205,7 +237,8 @@ namespace AfterBlue.Fishing
         {
             SetState(FishingState.Hooked);
             float size = Random.Range(pendingFish.MinSize, pendingFish.MaxSize);
-            lastResult = FishCatchResult.Caught(pendingFish.DisplayName, pendingFish.Rarity, size);
+            lastResult = FishCatchResult.Caught(pendingFish, size);
+            collectionLog.RegisterCatch(lastResult);
             castController.ActiveBobber?.SetSuccess();
             SetState(FishingState.Result);
         }

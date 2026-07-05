@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7822acb73ee40634b86f85df04355c2b, type: 3}
+  m_Name: flooded_village
+  m_EditorClassIdentifier: 
+  locationId: flooded_village
+  displayName: Flooded Village
+  description: A quiet modern village sunk below clear cyan water.
+  sceneName: FishingScene
+  backgroundPrefab: {fileID: 0}
+  availableFishIds:
+  - rust_minnow
+  - signal_carp
+  - roof_goby
+  - glass_scale
+  - wire_eel
+  - algae_bream
+  - blue_wraith
+  - neon_vein
+  requiredProgress: 0
+  ambientColor: {r: 0.13, g: 0.42, b: 0.48, a: 1}
+  musicTrack: {fileID: 0}
+  journalEntryIds:
+  - flooded_roofs
+  - leaning_utility_pole
+  - drowned_road

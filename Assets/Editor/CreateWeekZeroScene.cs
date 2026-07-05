@@ -1,7 +1,10 @@
 using AfterBlue.Boat;
 using AfterBlue.Core;
+using AfterBlue.Data;
 using AfterBlue.Environment;
 using AfterBlue.Fishing;
+using AfterBlue.Journal;
+using AfterBlue.UI;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -17,6 +20,10 @@ namespace AfterBlue.EditorTools
         private const string FloodedRoofModelPath = "Assets/Art/Exports/flooded_roof_modern_v01.fbx";
         private const string RustedUtilityPoleModelPath = "Assets/Art/Exports/rusted_utility_pole_v01.fbx";
         private const string WaterShaderName = "AfterBlue/WaterSurfaceURP";
+        private const string FishDataFolder = "Assets/Data/Fish";
+        private const string LocationDataFolder = "Assets/Data/Locations";
+        private const string BaitDataFolder = "Assets/Data/Baits";
+        private const string RodDataFolder = "Assets/Data/Rods";
 
         [MenuItem("AfterBlue/Setup/Create Week 0 Fishing Scene")]
         public static void CreateScene()
@@ -189,6 +196,25 @@ namespace AfterBlue.EditorTools
             Debug.Log("Applied AfterBlue week 3 Flooded Village visual pass.");
         }
 
+        [MenuItem("AfterBlue/Setup/Apply Week 4 Collection Data")]
+        public static void ApplyWeekFourCollectionData()
+        {
+            Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+            ApplyWeekThreeFloodedVillage();
+
+            FishData[] fish = CreateWeekFourFishData();
+            LocationData location = CreateWeekFourLocationData(fish);
+            CreateWeekFourBaitData();
+            CreateWeekFourRodData();
+            ConfigureWeekFourFishingComponents(fish, location);
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            Debug.Log("Applied AfterBlue week 4 collection data and fish codex loop.");
+        }
+
         private static void EnsureWeekThreeBoatModel()
         {
             GameObject boat = GameObject.Find("PlayerBoat");
@@ -204,6 +230,200 @@ namespace AfterBlue.EditorTools
             }
 
             ReplacePrototypeBoatModel(boat);
+        }
+
+        private static FishData[] CreateWeekFourFishData()
+        {
+            EnsureAssetFolder(FishDataFolder);
+
+            return new[]
+            {
+                CreateFishData("rust_minnow", "Rust Minnow", FishRarity.Common, 8, 8f, 16f, 46f, 1.35f, 0.8f,
+                    "A small fish that nests around rusted signs and roof gutters."),
+                CreateFishData("signal_carp", "Signal Carp", FishRarity.Common, 12, 18f, 34f, 32f, 1.25f, 0.95f,
+                    "Its scales blink faintly under drowned traffic lights."),
+                CreateFishData("roof_goby", "Roof Goby", FishRarity.Common, 10, 10f, 21f, 36f, 1.3f, 0.9f,
+                    "A blunt little fish that hides between roof tiles."),
+                CreateFishData("glass_scale", "Glass Scale", FishRarity.Uncommon, 22, 14f, 28f, 18f, 1.05f, 1.15f,
+                    "Its body is almost transparent in bright cyan water."),
+                CreateFishData("wire_eel", "Wire Eel", FishRarity.Uncommon, 26, 35f, 62f, 13f, 1.0f, 1.25f,
+                    "A long eel often found near drowned utility cables."),
+                CreateFishData("algae_bream", "Algae Bream", FishRarity.Uncommon, 20, 20f, 42f, 16f, 1.1f, 1.1f,
+                    "Green algae grows along its back like wet moss."),
+                CreateFishData("blue_wraith", "Blue Wraith", FishRarity.Rare, 55, 24f, 48f, 5f, 0.82f, 1.55f,
+                    "A quiet rare fish that appears as a blue shadow under concrete slabs."),
+                CreateFishData("neon_vein", "Neon Vein", FishRarity.Mutated, 90, 16f, 32f, 2f, 0.7f, 1.8f,
+                    "A mutated fish with a thin neon line pulsing beneath its skin.")
+            };
+        }
+
+        private static FishData CreateFishData(
+            string fishId,
+            string displayName,
+            FishRarity rarity,
+            int basePrice,
+            float minSize,
+            float maxSize,
+            float spawnWeight,
+            float biteWindow,
+            float catchDifficulty,
+            string journalText)
+        {
+            string path = $"{FishDataFolder}/{fishId}.asset";
+            FishData data = AssetDatabase.LoadAssetAtPath<FishData>(path);
+            if (data == null)
+            {
+                data = ScriptableObject.CreateInstance<FishData>();
+                AssetDatabase.CreateAsset(data, path);
+            }
+
+            SerializedObject serializedObject = new SerializedObject(data);
+            serializedObject.FindProperty("fishId").stringValue = fishId;
+            serializedObject.FindProperty("displayName").stringValue = displayName;
+            serializedObject.FindProperty("rarity").enumValueIndex = (int)rarity;
+            serializedObject.FindProperty("basePrice").intValue = basePrice;
+            serializedObject.FindProperty("minSize").floatValue = minSize;
+            serializedObject.FindProperty("maxSize").floatValue = maxSize;
+            serializedObject.FindProperty("preferredBaitId").stringValue = "basic_bait";
+            SetStringArray(serializedObject.FindProperty("locationIds"), new[] { "flooded_village" });
+            serializedObject.FindProperty("catchDifficulty").floatValue = catchDifficulty;
+            serializedObject.FindProperty("spawnWeight").floatValue = spawnWeight;
+            serializedObject.FindProperty("biteWindow").floatValue = biteWindow;
+            serializedObject.FindProperty("journalText").stringValue = journalText;
+            serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(data);
+            return data;
+        }
+
+        private static LocationData CreateWeekFourLocationData(FishData[] fish)
+        {
+            EnsureAssetFolder(LocationDataFolder);
+
+            string path = $"{LocationDataFolder}/flooded_village.asset";
+            LocationData data = AssetDatabase.LoadAssetAtPath<LocationData>(path);
+            if (data == null)
+            {
+                data = ScriptableObject.CreateInstance<LocationData>();
+                AssetDatabase.CreateAsset(data, path);
+            }
+
+            SerializedObject serializedObject = new SerializedObject(data);
+            serializedObject.FindProperty("locationId").stringValue = "flooded_village";
+            serializedObject.FindProperty("displayName").stringValue = "Flooded Village";
+            serializedObject.FindProperty("description").stringValue = "A quiet modern village sunk below clear cyan water.";
+            serializedObject.FindProperty("sceneName").stringValue = "FishingScene";
+            SetStringArray(serializedObject.FindProperty("availableFishIds"), fish.Select(item => item.FishId).ToArray());
+            serializedObject.FindProperty("requiredProgress").intValue = 0;
+            serializedObject.FindProperty("ambientColor").colorValue = new Color(0.13f, 0.42f, 0.48f);
+            SetStringArray(serializedObject.FindProperty("journalEntryIds"), new[] { "flooded_roofs", "leaning_utility_pole", "drowned_road" });
+            serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(data);
+            return data;
+        }
+
+        private static void CreateWeekFourBaitData()
+        {
+            EnsureAssetFolder(BaitDataFolder);
+
+            CreateBaitData("basic_bait", "Damp Crumbs", 3, 0f, new[] { "common" });
+            CreateBaitData("glow_worm", "Glow Worm", 12, 0.12f, new[] { "uncommon", "rare" });
+            CreateBaitData("rust_flake", "Rust Flake", 18, 0.2f, new[] { "mutated" });
+        }
+
+        private static void CreateBaitData(string baitId, string displayName, int price, float rarityBonus, string[] targetFishTags)
+        {
+            string path = $"{BaitDataFolder}/{baitId}.asset";
+            BaitData data = AssetDatabase.LoadAssetAtPath<BaitData>(path);
+            if (data == null)
+            {
+                data = ScriptableObject.CreateInstance<BaitData>();
+                AssetDatabase.CreateAsset(data, path);
+            }
+
+            SerializedObject serializedObject = new SerializedObject(data);
+            serializedObject.FindProperty("baitId").stringValue = baitId;
+            serializedObject.FindProperty("displayName").stringValue = displayName;
+            serializedObject.FindProperty("price").intValue = price;
+            serializedObject.FindProperty("rarityBonus").floatValue = rarityBonus;
+            SetStringArray(serializedObject.FindProperty("targetFishTags"), targetFishTags);
+            serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(data);
+        }
+
+        private static void CreateWeekFourRodData()
+        {
+            EnsureAssetFolder(RodDataFolder);
+
+            CreateRodData("starter_rod", "Splinter Rod", 0, 1f, 1f, 0f);
+            CreateRodData("salvage_rod", "Salvage Rod", 45, 1.18f, 1.1f, 0.08f);
+            CreateRodData("signal_rod", "Signal Rod", 120, 1.35f, 1.28f, 0.16f);
+        }
+
+        private static void CreateRodData(string rodId, string displayName, int price, float reelPower, float lineStability, float catchWindowBonus)
+        {
+            string path = $"{RodDataFolder}/{rodId}.asset";
+            RodData data = AssetDatabase.LoadAssetAtPath<RodData>(path);
+            if (data == null)
+            {
+                data = ScriptableObject.CreateInstance<RodData>();
+                AssetDatabase.CreateAsset(data, path);
+            }
+
+            SerializedObject serializedObject = new SerializedObject(data);
+            serializedObject.FindProperty("rodId").stringValue = rodId;
+            serializedObject.FindProperty("displayName").stringValue = displayName;
+            serializedObject.FindProperty("price").intValue = price;
+            serializedObject.FindProperty("reelPower").floatValue = reelPower;
+            serializedObject.FindProperty("lineStability").floatValue = lineStability;
+            serializedObject.FindProperty("catchWindowBonus").floatValue = catchWindowBonus;
+            serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(data);
+        }
+
+        private static void ConfigureWeekFourFishingComponents(FishData[] fish, LocationData location)
+        {
+            GameObject gameManager = GameObject.Find("GameManager");
+            if (gameManager == null)
+            {
+                gameManager = new GameObject("GameManager");
+                gameManager.AddComponent<GameManager>();
+            }
+
+            FishCollectionLog collectionLog = gameManager.GetComponent<FishCollectionLog>();
+            if (collectionLog == null)
+            {
+                collectionLog = gameManager.AddComponent<FishCollectionLog>();
+            }
+
+            FishingStateMachine stateMachine = gameManager.GetComponent<FishingStateMachine>();
+            if (stateMachine == null)
+            {
+                stateMachine = gameManager.AddComponent<FishingStateMachine>();
+            }
+
+            FishCodexDebugUI codexUI = gameManager.GetComponent<FishCodexDebugUI>();
+            if (codexUI == null)
+            {
+                codexUI = gameManager.AddComponent<FishCodexDebugUI>();
+            }
+
+            SerializedObject logObject = new SerializedObject(collectionLog);
+            SetObjectArray(logObject.FindProperty("knownFish"), fish);
+            logObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(collectionLog);
+
+            SerializedObject stateObject = new SerializedObject(stateMachine);
+            SetObjectArray(stateObject.FindProperty("availableFish"), fish);
+            stateObject.FindProperty("collectionLog").objectReferenceValue = collectionLog;
+            stateObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(stateMachine);
+
+            SerializedObject codexObject = new SerializedObject(codexUI);
+            codexObject.FindProperty("collectionLog").objectReferenceValue = collectionLog;
+            codexObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(codexUI);
+
+            Debug.Log($"Configured Week 4 fishing data for {location.DisplayName} with {fish.Length} fish.");
         }
 
         private static Material CreateMaterial(string path, Color color)
@@ -716,6 +936,41 @@ namespace AfterBlue.EditorTools
             SerializedObject serializedObject = new SerializedObject(target);
             serializedObject.FindProperty(propertyName).boolValue = value;
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private static void SetStringArray(SerializedProperty property, string[] values)
+        {
+            property.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++)
+            {
+                property.GetArrayElementAtIndex(i).stringValue = values[i];
+            }
+        }
+
+        private static void SetObjectArray<T>(SerializedProperty property, T[] values)
+            where T : Object
+        {
+            property.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++)
+            {
+                property.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
+            }
+        }
+
+        private static void EnsureAssetFolder(string folderPath)
+        {
+            string[] parts = folderPath.Split('/');
+            string currentPath = parts[0];
+            for (int i = 1; i < parts.Length; i++)
+            {
+                string nextPath = $"{currentPath}/{parts[i]}";
+                if (!AssetDatabase.IsValidFolder(nextPath))
+                {
+                    AssetDatabase.CreateFolder(currentPath, parts[i]);
+                }
+
+                currentPath = nextPath;
+            }
         }
     }
 }

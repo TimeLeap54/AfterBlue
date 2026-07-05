@@ -62,3 +62,21 @@
 - [ ] Revisit fish shadows in a later polish pass
 - [ ] Capture screenshot candidate
 - [ ] Tag week 3 milestone
+
+## Week 4 - Data Structure & Fish Codex
+
+- [x] Extend FishData for weighted catch tables and bite windows
+- [x] Add BaitData and RodData ScriptableObject schemas
+- [x] Generate 8 flooded village fish data assets
+- [x] Generate 3 bait data assets
+- [x] Generate 3 rod data assets
+- [x] Generate Flooded Village LocationData
+- [x] Replace hardcoded fish roll table with FishData-based roll table
+- [x] Register successful catches into a fish collection log
+- [x] Persist prototype fish records through PlayerPrefs JSON
+- [x] Add simple Tab/J fish codex debug UI
+- [x] Add Week 4 editor setup menu
+- [ ] Verify Play Mode catch registration manually
+- [ ] Verify Tab/J codex display manually
+- [ ] Tune fish weights, size ranges, and bite windows
+- [ ] Tag week 4 milestone

@@ -25,3 +25,13 @@
 - Ensured Week 3 setup restores the Blender boat FBX and reduced water caustic density/strength for readability.
 - Added Blender-generated low-poly flooded roof and rusted utility pole assets for the Week 3 modern submerged village pass.
 - Added generated grime/slate/rust texture atlases and rebuilt the Week 3 roof and utility pole assets with more visible surface detail.
+
+## 2026-07-06
+
+- Switched Blender integration to the official Blender Lab MCP server and verified `execute_blender_code`.
+- Started Week 4 collection-data pass.
+- Added FishData catch weights and bite windows.
+- Added BaitData and RodData schemas plus starter data assets.
+- Added eight flooded-village fish data assets and the first LocationData asset.
+- Replaced the hardcoded fish roll table with a FishData-driven roll table.
+- Added a prototype fish collection log, PlayerPrefs JSON persistence, and a Tab/J debug codex UI.

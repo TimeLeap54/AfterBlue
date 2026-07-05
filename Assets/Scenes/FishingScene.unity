@@ -2266,6 +2266,8 @@ MonoBehaviour:
   castController: {fileID: 0}
   fishingLine: {fileID: 0}
   debugUI: {fileID: 0}
+  collectionLog: {fileID: 0}
+  availableFish: []
   minBiteDelay: 2
   maxBiteDelay: 5
   actionKey: 32

@@ -32,7 +32,8 @@ namespace AfterBlue.Fishing
             else if (stateMachine.CurrentState == FishingState.Bite)
             {
                 GUILayout.Label($"Press Space! Window: {stateMachine.BiteWindowTimer:0.0}s");
-                GUILayout.Label($"Tension: {stateMachine.PendingFish.Rarity}");
+                string rarity = stateMachine.PendingFish != null ? stateMachine.PendingFish.Rarity.ToString() : "Unknown";
+                GUILayout.Label($"Tension: {rarity}");
             }
             else
             {

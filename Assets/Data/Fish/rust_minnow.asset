@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eaece39fd53a94690b88a915ae40d0, type: 3}
+  m_Name: rust_minnow
+  m_EditorClassIdentifier: 
+  fishId: rust_minnow
+  displayName: Rust Minnow
+  rarity: 0
+  basePrice: 8
+  minSize: 8
+  maxSize: 16
+  preferredBaitId: basic_bait
+  locationIds:
+  - flooded_village
+  catchDifficulty: 0.8
+  spawnWeight: 46
+  biteWindow: 1.35
+  journalText: A small fish that nests around rusted signs and roof gutters.
+  modelPrefab: {fileID: 0}
+  iconSprite: {fileID: 0}

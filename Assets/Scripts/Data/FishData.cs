@@ -23,6 +23,8 @@ namespace AfterBlue.Data
         [SerializeField] private string preferredBaitId;
         [SerializeField] private string[] locationIds;
         [SerializeField] private float catchDifficulty = 1f;
+        [SerializeField] private float spawnWeight = 10f;
+        [SerializeField] private float biteWindow = 1.2f;
         [TextArea]
         [SerializeField] private string journalText;
         [SerializeField] private GameObject modelPrefab;
@@ -37,9 +39,10 @@ namespace AfterBlue.Data
         public string PreferredBaitId => preferredBaitId;
         public string[] LocationIds => locationIds;
         public float CatchDifficulty => catchDifficulty;
+        public float SpawnWeight => spawnWeight;
+        public float BiteWindow => biteWindow;
         public string JournalText => journalText;
         public GameObject ModelPrefab => modelPrefab;
         public Sprite IconSprite => iconSprite;
     }
 }
-

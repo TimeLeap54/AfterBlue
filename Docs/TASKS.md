@@ -83,6 +83,7 @@ Goal: make the Week6 map read like a flooded world by solving water visibility, 
 - [x] Preserve `Map_01_Week6.unity`.
 - [x] Create `Assets/AfterBlue/Scenes/Map_01/Map_01_Week7.unity` from the Week6 foundation.
 - [x] Add `AfterBlue > Setup > Apply Week 7 Water And Asset Pass`.
+- [x] Wire the imported `IgniteCoders/Simple Water Shader` asset into the Week7 builder as the first water candidate.
 - [ ] Define water material target for shallow, medium, and deep areas.
 - [ ] Decide which objects should be below water, partly above water, or clearly above water.
 - [ ] Create H1/H2/H3 asset sourcing table: reuse existing proxy, free asset, Blender MCP, custom Blender, or defer.

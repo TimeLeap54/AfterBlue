@@ -32,6 +32,13 @@ Status: complete.
 
 ### W7-B Water Readability
 
+Status: candidate wiring complete, visual review pending.
+
+- Imported candidate: `Assets/IgniteCoders/Simple Water Shader`.
+- Week7 menu uses `WaterBlock_50m.prefab` when the asset is available.
+- Week7 menu applies `Water_mat_03.mat` to the large 900 x 600m water surface.
+- Week7 debug guide materials are written under `Assets/AfterBlue/Materials/Week7` so Week6 debug materials stay stable.
+- Fallback behavior: if the imported water prefab or material is missing, the builder falls back to the old simple water plane.
 - Reduce debug field dominance.
 - Define shallow, medium, and deep water material targets.
 - Make submerged silhouettes visible without looking like objects are sitting on top of the water.

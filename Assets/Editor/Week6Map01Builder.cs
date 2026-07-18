@@ -12,6 +12,9 @@ namespace AfterBlue.EditorTools
         private const string Week6ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity";
         private const string Week7ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week7.unity";
         private const string DebugMaterialFolder = "Assets/AfterBlue/Materials/Debug";
+        private const string Week7MaterialFolder = "Assets/AfterBlue/Materials/Week7";
+        private const string Week7WaterBlockPrefabPath = "Assets/IgniteCoders/Simple Water Shader/Prefabs/WaterBlock_50m.prefab";
+        private const string Week7WaterMaterialPath = "Assets/IgniteCoders/Simple Water Shader/Resources/Water_mat_03.mat";
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
         private const string RoofModelPath = "Assets/Art/Exports/flooded_roof_modern_v01.fbx";
         private const string UtilityPoleModelPath = "Assets/Art/Exports/rusted_utility_pole_v01.fbx";
@@ -35,41 +38,48 @@ namespace AfterBlue.EditorTools
         [MenuItem("AfterBlue/Setup/Apply Week 6 Map 01")]
         public static void ApplyWeek6Map01()
         {
-            ApplyMap01(Week6ScenePath, "Map_01_Week6", "WEEK6_GOAL_MapSize_ZoneLoop_Movement", $"W6_BC_LOOP_{ActiveScaleLabel}_Boat9p5ms_MainStartH1MH2H3D", "Week 6 Map_01");
+            ApplyMap01(Week6ScenePath, "Map_01_Week6", "WEEK6_GOAL_MapSize_ZoneLoop_Movement", $"W6_BC_LOOP_{ActiveScaleLabel}_Boat9p5ms_MainStartH1MH2H3D", "Week 6 Map_01", false);
         }
 
         [MenuItem("AfterBlue/Setup/Apply Week 7 Water And Asset Pass")]
         public static void ApplyWeek7WaterAndAssetPass()
         {
-            ApplyMap01(Week7ScenePath, "Map_01_Week7", "WEEK7_GOAL_Water_SubmergedReadability_AssetPlan", $"W7_A_SCENE_SETUP_{ActiveScaleLabel}_Boat9p5ms_FromWeek6Foundation", "Week 7 Water And Asset Pass");
+            ApplyMap01(Week7ScenePath, "Map_01_Week7", "WEEK7_GOAL_Water_SubmergedReadability_AssetPlan", $"W7_B_WATER_READABILITY_{ActiveScaleLabel}_IgniteCodersSimpleWater", "Week 7 Water And Asset Pass", true);
         }
 
-        private static void ApplyMap01(string scenePath, string sceneName, string goalName, string specName, string logLabel)
+        private static void ApplyMap01(string scenePath, string sceneName, string goalName, string specName, string logLabel, bool useWeek7Water)
         {
             EnsureFolder("Assets/AfterBlue");
             EnsureFolder("Assets/AfterBlue/Scenes");
             EnsureFolder("Assets/AfterBlue/Scenes/Map_01");
             EnsureFolder("Assets/AfterBlue/Materials");
-            EnsureFolder(DebugMaterialFolder);
+            string materialFolder = useWeek7Water ? Week7MaterialFolder : DebugMaterialFolder;
+            EnsureFolder(materialFolder);
 
-            Material water = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Water_Base.mat", new Color(0.04f, 0.55f, 0.62f, 0.68f), true);
-            Material shallow = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Depth_Shallow_H1.mat", new Color(0.35f, 0.96f, 0.72f, 0.36f), true);
-            Material medium = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Depth_Medium.mat", new Color(0.05f, 0.70f, 0.76f, 0.32f), true);
-            Material h2Zone = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Zone_H2_TealViolet.mat", new Color(0.15f, 0.52f, 0.96f, 0.34f), true);
-            Material h3Zone = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Zone_H3_DeepViolet.mat", new Color(0.22f, 0.16f, 0.58f, 0.46f), true);
-            Material startZone = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Zone_Start_Warm.mat", new Color(1f, 0.56f, 0.12f, 0.48f), true);
-            Material returnZone = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Zone_Return.mat", new Color(0.23f, 0.68f, 0.92f, 0.28f), true);
-            Material route = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Route_Main.mat", new Color(0.57f, 0.94f, 1f, 0.64f), true);
-            Material boundary = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Boundary.mat", new Color(0.72f, 0.94f, 1f, 0.82f), true);
-            Material road = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_AsphaltProxy.mat", new Color(0.08f, 0.13f, 0.16f, 1f), false);
-            Material concrete = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_ConcreteProxy.mat", new Color(0.42f, 0.54f, 0.56f, 1f), false);
-            Material roof = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_RoofProxy.mat", new Color(0.11f, 0.24f, 0.27f, 1f), false);
-            Material wood = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_WoodProxy.mat", new Color(0.38f, 0.27f, 0.18f, 1f), false);
-            Material rust = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_RustMetalProxy.mat", new Color(0.56f, 0.25f, 0.12f, 1f), false);
-            Material vegetation = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_VegetationProxy.mat", new Color(0.20f, 0.43f, 0.22f, 1f), false);
-            Material warmLight = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_WarmLightProxy.mat", new Color(1f, 0.72f, 0.30f, 1f), false);
-            Material ripple = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_RippleLines.mat", new Color(0.74f, 1f, 1f, 0.55f), true);
-            Material shadow = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_SubmergedShadow.mat", new Color(0.02f, 0.07f, 0.09f, 0.52f), true);
+            Material water = useWeek7Water ? LoadMaterial(Week7WaterMaterialPath) : null;
+            if (water == null)
+            {
+                water = CreateMaterial($"{materialFolder}/MAT_S2_Water_Base.mat", new Color(0.04f, 0.55f, 0.62f, 0.68f), true);
+            }
+
+            float guideAlphaScale = useWeek7Water ? 0.42f : 1f;
+            Material shallow = CreateMaterial($"{materialFolder}/MAT_S2_Depth_Shallow_H1.mat", WithAlpha(new Color(0.35f, 0.96f, 0.72f, 0.36f), guideAlphaScale), true);
+            Material medium = CreateMaterial($"{materialFolder}/MAT_S2_Depth_Medium.mat", WithAlpha(new Color(0.05f, 0.70f, 0.76f, 0.32f), guideAlphaScale), true);
+            Material h2Zone = CreateMaterial($"{materialFolder}/MAT_S2_Zone_H2_TealViolet.mat", WithAlpha(new Color(0.15f, 0.52f, 0.96f, 0.34f), guideAlphaScale), true);
+            Material h3Zone = CreateMaterial($"{materialFolder}/MAT_S2_Zone_H3_DeepViolet.mat", WithAlpha(new Color(0.22f, 0.16f, 0.58f, 0.46f), guideAlphaScale), true);
+            Material startZone = CreateMaterial($"{materialFolder}/MAT_S2_Zone_Start_Warm.mat", WithAlpha(new Color(1f, 0.56f, 0.12f, 0.48f), guideAlphaScale), true);
+            Material returnZone = CreateMaterial($"{materialFolder}/MAT_S2_Zone_Return.mat", WithAlpha(new Color(0.23f, 0.68f, 0.92f, 0.28f), guideAlphaScale), true);
+            Material route = CreateMaterial($"{materialFolder}/MAT_S2_Route_Main.mat", WithAlpha(new Color(0.57f, 0.94f, 1f, 0.64f), useWeek7Water ? 0.55f : 1f), true);
+            Material boundary = CreateMaterial($"{materialFolder}/MAT_S2_Boundary.mat", WithAlpha(new Color(0.72f, 0.94f, 1f, 0.82f), useWeek7Water ? 0.46f : 1f), true);
+            Material road = CreateMaterial($"{materialFolder}/MAT_S2_AsphaltProxy.mat", new Color(0.08f, 0.13f, 0.16f, 1f), false);
+            Material concrete = CreateMaterial($"{materialFolder}/MAT_S2_ConcreteProxy.mat", new Color(0.42f, 0.54f, 0.56f, 1f), false);
+            Material roof = CreateMaterial($"{materialFolder}/MAT_S2_RoofProxy.mat", new Color(0.11f, 0.24f, 0.27f, 1f), false);
+            Material wood = CreateMaterial($"{materialFolder}/MAT_S2_WoodProxy.mat", new Color(0.38f, 0.27f, 0.18f, 1f), false);
+            Material rust = CreateMaterial($"{materialFolder}/MAT_S2_RustMetalProxy.mat", new Color(0.56f, 0.25f, 0.12f, 1f), false);
+            Material vegetation = CreateMaterial($"{materialFolder}/MAT_S2_VegetationProxy.mat", new Color(0.20f, 0.43f, 0.22f, 1f), false);
+            Material warmLight = CreateMaterial($"{materialFolder}/MAT_S2_WarmLightProxy.mat", new Color(1f, 0.72f, 0.30f, 1f), false);
+            Material ripple = CreateMaterial($"{materialFolder}/MAT_S2_RippleLines.mat", WithAlpha(new Color(0.74f, 1f, 1f, 0.55f), useWeek7Water ? 0.70f : 1f), true);
+            Material shadow = CreateMaterial($"{materialFolder}/MAT_S2_SubmergedShadow.mat", WithAlpha(new Color(0.02f, 0.07f, 0.09f, 0.52f), useWeek7Water ? 0.62f : 1f), true);
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             scene.name = sceneName;
@@ -86,7 +96,7 @@ namespace AfterBlue.EditorTools
             Transform fishingZones = CreateChild(root.transform, "08_FISHING_ZONES");
             Transform debug = CreateChild(root.transform, "99_DEBUG");
 
-            CreateWaterAndDepthPatches(waterRoot, water, shallow, medium, h2Zone, h3Zone, startZone, returnZone);
+            CreateWaterAndDepthPatches(waterRoot, water, shallow, medium, h2Zone, h3Zone, startZone, returnZone, useWeek7Water);
             CreateGameplayAreaGuide(mapGuides, boundary);
             CreateBoundaryFrame(boundaryRoot, boundary);
             CreateRouteGuides(routes, route);
@@ -111,10 +121,9 @@ namespace AfterBlue.EditorTools
             Debug.Log($"Applied {logLabel}. Scene: {scenePath}");
         }
 
-        private static void CreateWaterAndDepthPatches(Transform parent, Material water, Material shallow, Material medium, Material h2, Material h3, Material start, Material ret)
+        private static void CreateWaterAndDepthPatches(Transform parent, Material water, Material shallow, Material medium, Material h2, Material h3, Material start, Material ret, bool useWeek7Water)
         {
-            GameObject baseWater = CreateBox(parent, $"Water_Base_{FormatSize(WaterWidth, WaterDepth)}", new Vector3(0f, -0.05f, 0f), new Vector3(WaterWidth, 0.10f, WaterDepth), Quaternion.identity, water);
-            DestroyCollider(baseWater);
+            CreateWaterSurface(parent, water, useWeek7Water);
 
             CreateFlatEllipse(parent, "Depth_Start_Warm_Shelf", Start, ScaleSize(28f, 24f, ZoneFieldScale), start);
             CreateFlatEllipse(parent, "Depth_H1_Shallow_Mint_Field", H1, ScaleSize(58f, 46f, ZoneFieldScale), shallow);
@@ -122,6 +131,32 @@ namespace AfterBlue.EditorTools
             CreateFlatEllipse(parent, "Depth_H2_Traffic_Light_Field", H2, ScaleSize(56f, 44f, ZoneFieldScale), h2);
             CreateFlatEllipse(parent, "Depth_H3_Deep_Debris_Field", H3, ScaleSize(66f, 54f, ZoneFieldScale), h3);
             CreateFlatEllipse(parent, "Depth_D_Return_Water_Field", D, ScaleSize(42f, 34f, ZoneFieldScale), ret);
+        }
+
+        private static void CreateWaterSurface(Transform parent, Material water, bool useWeek7Water)
+        {
+            if (useWeek7Water)
+            {
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(Week7WaterBlockPrefabPath);
+                if (prefab != null)
+                {
+                    GameObject waterObject = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                    waterObject.name = $"Water_IgniteCodersSimple_{FormatSize(WaterWidth, WaterDepth)}";
+                    waterObject.transform.SetParent(parent, false);
+                    waterObject.transform.localPosition = new Vector3(0f, 0f, 0f);
+                    waterObject.transform.localRotation = Quaternion.identity;
+                    waterObject.transform.localScale = new Vector3(WaterWidth / 50f, 1f, WaterDepth / 50f);
+                    foreach (Renderer renderer in waterObject.GetComponentsInChildren<Renderer>())
+                    {
+                        renderer.sharedMaterial = water;
+                    }
+                    DestroyCollidersRecursively(waterObject);
+                    return;
+                }
+            }
+
+            GameObject baseWater = CreateBox(parent, $"Water_Base_{FormatSize(WaterWidth, WaterDepth)}", new Vector3(0f, -0.05f, 0f), new Vector3(WaterWidth, 0.10f, WaterDepth), Quaternion.identity, water);
+            DestroyCollider(baseWater);
         }
 
         private static void CreateGameplayAreaGuide(Transform parent, Material material)
@@ -585,6 +620,25 @@ namespace AfterBlue.EditorTools
             {
                 Object.DestroyImmediate(collider);
             }
+        }
+
+        private static void DestroyCollidersRecursively(GameObject obj)
+        {
+            foreach (Collider collider in obj.GetComponentsInChildren<Collider>())
+            {
+                Object.DestroyImmediate(collider);
+            }
+        }
+
+        private static Material LoadMaterial(string path)
+        {
+            return AssetDatabase.LoadAssetAtPath<Material>(path);
+        }
+
+        private static Color WithAlpha(Color color, float alphaScale)
+        {
+            color.a *= alphaScale;
+            return color;
         }
 
         private static Material CreateMaterial(string path, Color color, bool transparent)

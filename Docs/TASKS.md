@@ -10,7 +10,7 @@ This roadmap supersedes the old Week 0-4 task list. It follows the final game de
 - [x] S0 baseline stabilization docs exist.
 - [x] S1 fishing behavior lock candidate exists.
 - [x] Week 6 Map_01 builder exists.
-- [x] Map_01 scale test is currently on the 192 x 128m P1 candidate after rejecting the first 96 x 64m and 112 x 72m view checks.
+- [x] Map_01 scale test is currently on the 640 x 420m W6-A candidate after rejecting 96 x 64m, 112 x 72m, and 192 x 128m as too small-feeling.
 
 ## S0 - Week 04 Baseline Stabilization
 
@@ -47,11 +47,11 @@ Goal: verify the launch-map size and boat movement metrics before art, props, wa
 - [x] Add P0 spec marker object under `00_SYSTEM` in the Week 6 builder.
 - [x] Create debug materials under `Assets/AfterBlue/Materials/Debug`.
 - [x] Reject the first 96 x 64m view check as too small-feeling.
-- [x] Create 280 x 192m water blockout.
-- [x] Create 192 x 128m gameplay guide.
-- [x] Add four corner markers at X -96/96 and Z -64/64.
-- [x] Add 0m/10m/20m speed markers.
-- [x] Add S/A/M/B/C/D zone markers expanded by 2.0x.
+- [x] Create 900 x 600m water plane.
+- [x] Create 640 x 420m gameplay guide.
+- [x] Add four corner markers at X -320/320 and Z -210/210.
+- [x] Add 0m/50m/100m speed markers.
+- [x] Add S/A/M/B/C/D zone markers expanded by 6.0x.
 - [x] Raise boat forward speed to 7.2m/s and reverse speed to 3.2m/s for the large-map test.
 - [x] Add edge crossing markers for horizontal and vertical travel checks.
 - [x] Add primary and support route guides between S/A/M/B/C/D.
@@ -59,7 +59,7 @@ Goal: verify the launch-map size and boat movement metrics before art, props, wa
 - [x] Add Week5-style proxy language to Week 6: supply buoy, roofs, submerged roads, tilted traffic light, utility poles, debris, vegetation, ripple rings.
 - [ ] Regenerate and open `Map_01_Week6.unity` in Unity.
 - [ ] Measure current boat real size against the 1.8 x 4.5m reference cube.
-- [ ] Measure 20m straight travel time.
+- [ ] Measure 100m straight travel time.
 - [ ] Measure average movement speed.
 - [ ] Measure comfortable U-turn diameter.
 - [ ] Measure stop distance.
@@ -69,12 +69,12 @@ Goal: verify the launch-map size and boat movement metrics before art, props, wa
 - [ ] Check whether Start, H1, H2, H3, M, and D read as large zones from the gameplay camera.
 - [ ] Check whether H2 is the strongest landmark candidate.
 - [ ] Check whether central water still feels open enough after proxy placement.
-- [ ] Decide 192 x 128 keep / expand / shrink.
+- [ ] Decide 640 x 420 keep / expand / shrink.
 
 Pass criteria:
 
 - Movement metrics are recorded as actual numbers.
-- 192 x 128m is either kept or rejected for a concrete reason.
+- 640 x 420m is either kept or rejected for a concrete reason.
 - No Blender props, free assets, real water shader, house production, background production, or detailed obstacles are added during this stage.
 
 ## S3 / Week7 - Map_01 Hero Layout

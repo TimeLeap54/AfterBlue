@@ -15,11 +15,15 @@ namespace AfterBlue.EditorTools
         private const string RoofModelPath = "Assets/Art/Exports/flooded_roof_modern_v01.fbx";
         private const string UtilityPoleModelPath = "Assets/Art/Exports/rusted_utility_pole_v01.fbx";
 
-        private const float GameplayWidth = 192f;
-        private const float GameplayDepth = 128f;
-        private const float WaterWidth = 280f;
-        private const float WaterDepth = 192f;
-        private const float NodeExpansion = 2.0f;
+        private const float GameplayWidth = 640f;
+        private const float GameplayDepth = 420f;
+        private const float WaterWidth = 900f;
+        private const float WaterDepth = 600f;
+        private const float NodeExpansion = 6.0f;
+        private const float ZoneFieldScale = 2.15f;
+        private const float FishingFieldScale = 2.0f;
+        private const string ActiveScaleLabel = "640x420";
+        private const string RejectedScaleLabel = "192x128";
 
         private static readonly Vector3 Start = ExpandNode(-38f, -20f);
         private static readonly Vector3 H1 = ExpandNode(-28f, 14f);
@@ -88,8 +92,8 @@ namespace AfterBlue.EditorTools
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = new Color(0.42f, 0.65f, 0.68f, 1f);
-            RenderSettings.fogStartDistance = 70f;
-            RenderSettings.fogEndDistance = 175f;
+            RenderSettings.fogStartDistance = 150f;
+            RenderSettings.fogEndDistance = 650f;
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
@@ -98,31 +102,45 @@ namespace AfterBlue.EditorTools
 
         private static void CreateWaterAndDepthPatches(Transform parent, Material water, Material shallow, Material medium, Material h2, Material h3, Material start, Material ret)
         {
-            GameObject baseWater = CreateBox(parent, "Water_Base_280x192", new Vector3(0f, -0.05f, 0f), new Vector3(WaterWidth, 0.10f, WaterDepth), Quaternion.identity, water);
+            GameObject baseWater = CreateBox(parent, $"Water_Base_{FormatSize(WaterWidth, WaterDepth)}", new Vector3(0f, -0.05f, 0f), new Vector3(WaterWidth, 0.10f, WaterDepth), Quaternion.identity, water);
             DestroyCollider(baseWater);
 
-            CreateFlatEllipse(parent, "Depth_Start_Warm_Shelf", Start, new Vector2(28f, 24f), start);
-            CreateFlatEllipse(parent, "Depth_H1_Shallow_Mint_Field", H1, new Vector2(58f, 46f), shallow);
-            CreateFlatEllipse(parent, "Depth_M_Central_Open_Water", M, new Vector2(68f, 46f), medium);
-            CreateFlatEllipse(parent, "Depth_H2_Traffic_Light_Field", H2, new Vector2(56f, 44f), h2);
-            CreateFlatEllipse(parent, "Depth_H3_Deep_Debris_Field", H3, new Vector2(66f, 54f), h3);
-            CreateFlatEllipse(parent, "Depth_D_Return_Water_Field", D, new Vector2(42f, 34f), ret);
+            CreateFlatEllipse(parent, "Depth_Start_Warm_Shelf", Start, ScaleSize(28f, 24f, ZoneFieldScale), start);
+            CreateFlatEllipse(parent, "Depth_H1_Shallow_Mint_Field", H1, ScaleSize(58f, 46f, ZoneFieldScale), shallow);
+            CreateFlatEllipse(parent, "Depth_M_Central_Open_Water", M, ScaleSize(68f, 46f, ZoneFieldScale), medium);
+            CreateFlatEllipse(parent, "Depth_H2_Traffic_Light_Field", H2, ScaleSize(56f, 44f, ZoneFieldScale), h2);
+            CreateFlatEllipse(parent, "Depth_H3_Deep_Debris_Field", H3, ScaleSize(66f, 54f, ZoneFieldScale), h3);
+            CreateFlatEllipse(parent, "Depth_D_Return_Water_Field", D, ScaleSize(42f, 34f, ZoneFieldScale), ret);
         }
 
         private static void CreateGameplayAreaGuide(Transform parent, Material material)
         {
-            GameObject guide = CreateBox(parent, "GameplayArea_192x128", new Vector3(0f, -0.035f, 0f), new Vector3(GameplayWidth, 0.02f, GameplayDepth), Quaternion.identity, material);
+            GameObject guide = CreateBox(parent, $"GameplayArea_{ActiveScaleLabel}", new Vector3(0f, -0.035f, 0f), new Vector3(GameplayWidth, 0.02f, GameplayDepth), Quaternion.identity, material);
             DestroyCollider(guide);
+            CreateRejectedScaleFrame(parent, material);
+        }
+
+        private static void CreateRejectedScaleFrame(Transform parent, Material material)
+        {
+            const float oldWidth = 192f;
+            const float oldDepth = 128f;
+            const float y = 0.12f;
+            float halfWidth = oldWidth * 0.5f;
+            float halfDepth = oldDepth * 0.5f;
+            DestroyCollider(CreateBox(parent, $"Rejected_{RejectedScaleLabel}_North", new Vector3(0f, y, halfDepth), new Vector3(oldWidth, 0.05f, 0.30f), Quaternion.identity, material));
+            DestroyCollider(CreateBox(parent, $"Rejected_{RejectedScaleLabel}_South", new Vector3(0f, y, -halfDepth), new Vector3(oldWidth, 0.05f, 0.30f), Quaternion.identity, material));
+            DestroyCollider(CreateBox(parent, $"Rejected_{RejectedScaleLabel}_East", new Vector3(halfWidth, y, 0f), new Vector3(0.30f, 0.05f, oldDepth), Quaternion.identity, material));
+            DestroyCollider(CreateBox(parent, $"Rejected_{RejectedScaleLabel}_West", new Vector3(-halfWidth, y, 0f), new Vector3(0.30f, 0.05f, oldDepth), Quaternion.identity, material));
         }
 
         private static void CreateBoundaryFrame(Transform parent, Material material)
         {
             float halfWidth = GameplayWidth * 0.5f;
             float halfDepth = GameplayDepth * 0.5f;
-            DestroyCollider(CreateBox(parent, "Boundary_North_192x128", new Vector3(0f, 0.18f, halfDepth), new Vector3(GameplayWidth, 0.12f, 0.18f), Quaternion.identity, material));
-            DestroyCollider(CreateBox(parent, "Boundary_South_192x128", new Vector3(0f, 0.18f, -halfDepth), new Vector3(GameplayWidth, 0.12f, 0.18f), Quaternion.identity, material));
-            DestroyCollider(CreateBox(parent, "Boundary_East_192x128", new Vector3(halfWidth, 0.18f, 0f), new Vector3(0.18f, 0.12f, GameplayDepth), Quaternion.identity, material));
-            DestroyCollider(CreateBox(parent, "Boundary_West_192x128", new Vector3(-halfWidth, 0.18f, 0f), new Vector3(0.18f, 0.12f, GameplayDepth), Quaternion.identity, material));
+            DestroyCollider(CreateBox(parent, $"Boundary_North_{ActiveScaleLabel}", new Vector3(0f, 0.18f, halfDepth), new Vector3(GameplayWidth, 0.12f, 0.18f), Quaternion.identity, material));
+            DestroyCollider(CreateBox(parent, $"Boundary_South_{ActiveScaleLabel}", new Vector3(0f, 0.18f, -halfDepth), new Vector3(GameplayWidth, 0.12f, 0.18f), Quaternion.identity, material));
+            DestroyCollider(CreateBox(parent, $"Boundary_East_{ActiveScaleLabel}", new Vector3(halfWidth, 0.18f, 0f), new Vector3(0.18f, 0.12f, GameplayDepth), Quaternion.identity, material));
+            DestroyCollider(CreateBox(parent, $"Boundary_West_{ActiveScaleLabel}", new Vector3(-halfWidth, 0.18f, 0f), new Vector3(0.18f, 0.12f, GameplayDepth), Quaternion.identity, material));
         }
 
         private static void CreateRouteGuides(Transform parent, Material material)
@@ -139,21 +157,21 @@ namespace AfterBlue.EditorTools
 
         private static void CreateLargeZoneFields(Transform parent, Material start, Material h1, Material mid, Material h2, Material h3, Material ret)
         {
-            CreateZoneCluster(parent, "ZONE_S_Start_Supply_Large", Start, new Vector2(18f, 16f), start);
-            CreateZoneCluster(parent, "ZONE_H1_ShallowResidential_Large", H1, new Vector2(46f, 34f), h1);
-            CreateZoneCluster(parent, "ZONE_M_CentralWater_Large", M, new Vector2(52f, 34f), mid);
-            CreateZoneCluster(parent, "ZONE_H2_TrafficLight_Large", H2, new Vector2(44f, 34f), h2);
-            CreateZoneCluster(parent, "ZONE_H3_DeepDebris_Large", H3, new Vector2(52f, 42f), h3);
-            CreateZoneCluster(parent, "ZONE_D_ReturnWater_Large", D, new Vector2(34f, 26f), ret);
+            CreateZoneCluster(parent, "ZONE_S_Start_Supply_Large", Start, ScaleSize(18f, 16f, ZoneFieldScale), start);
+            CreateZoneCluster(parent, "ZONE_H1_ShallowResidential_Large", H1, ScaleSize(46f, 34f, ZoneFieldScale), h1);
+            CreateZoneCluster(parent, "ZONE_M_CentralWater_Large", M, ScaleSize(52f, 34f, ZoneFieldScale), mid);
+            CreateZoneCluster(parent, "ZONE_H2_TrafficLight_Large", H2, ScaleSize(44f, 34f, ZoneFieldScale), h2);
+            CreateZoneCluster(parent, "ZONE_H3_DeepDebris_Large", H3, ScaleSize(52f, 42f, ZoneFieldScale), h3);
+            CreateZoneCluster(parent, "ZONE_D_ReturnWater_Large", D, ScaleSize(34f, 26f, ZoneFieldScale), ret);
         }
 
         private static void CreateFishingZoneFields(Transform parent, Material h1, Material mid, Material h2, Material h3, Material ret)
         {
-            CreateFlatEllipse(parent, "FZ_H1_ShallowVillage_Readable", H1 + new Vector3(4f, 0f, -3f), new Vector2(38f, 26f), h1);
-            CreateFlatEllipse(parent, "FZ_M_CentralFreeWater_Readable", M + new Vector3(6f, 0f, -6f), new Vector2(42f, 28f), mid);
-            CreateFlatEllipse(parent, "FZ_H2_Intersection_Readable", H2 + new Vector3(-3f, 0f, -4f), new Vector2(36f, 28f), h2);
-            CreateFlatEllipse(parent, "FZ_H3_DeepDebris_Readable", H3 + new Vector3(-4f, 0f, 2f), new Vector2(42f, 34f), h3);
-            CreateFlatEllipse(parent, "FZ_D_ReturnWater_Readable", D + new Vector3(5f, 0f, 2f), new Vector2(30f, 22f), ret);
+            CreateFlatEllipse(parent, "FZ_H1_ShallowVillage_Readable", H1 + new Vector3(12f, 0f, -9f), ScaleSize(38f, 26f, FishingFieldScale), h1);
+            CreateFlatEllipse(parent, "FZ_M_CentralFreeWater_Readable", M + new Vector3(18f, 0f, -18f), ScaleSize(42f, 28f, FishingFieldScale), mid);
+            CreateFlatEllipse(parent, "FZ_H2_Intersection_Readable", H2 + new Vector3(-9f, 0f, -12f), ScaleSize(36f, 28f, FishingFieldScale), h2);
+            CreateFlatEllipse(parent, "FZ_H3_DeepDebris_Readable", H3 + new Vector3(-12f, 0f, 6f), ScaleSize(42f, 34f, FishingFieldScale), h3);
+            CreateFlatEllipse(parent, "FZ_D_ReturnWater_Readable", D + new Vector3(15f, 0f, 6f), ScaleSize(30f, 22f, FishingFieldScale), ret);
         }
 
         private static void CreateWeek5StyleProxies(Transform landmarks, Transform obstacles, Material road, Material concrete, Material roof, Material wood, Material rust, Material vegetation, Material warmLight, Material shadow)
@@ -305,9 +323,10 @@ namespace AfterBlue.EditorTools
 
         private static void CreateSpeedAndCrossingMarkers(Transform parent, Material route, Material boundary)
         {
-            DestroyCollider(CreateBox(parent, "SpeedMarker_0m", new Vector3(0f, 1f, -10f), new Vector3(0.2f, 2f, 0.2f), Quaternion.identity, route));
-            DestroyCollider(CreateBox(parent, "SpeedMarker_10m", new Vector3(0f, 1f, 0f), new Vector3(0.2f, 2f, 0.2f), Quaternion.identity, route));
-            DestroyCollider(CreateBox(parent, "SpeedMarker_20m", new Vector3(0f, 1f, 10f), new Vector3(0.2f, 2f, 0.2f), Quaternion.identity, route));
+            DestroyCollider(CreateBox(parent, "SpeedMarker_0m", new Vector3(0f, 1f, -50f), new Vector3(0.35f, 3f, 0.35f), Quaternion.identity, route));
+            DestroyCollider(CreateBox(parent, "SpeedMarker_50m", new Vector3(0f, 1f, 0f), new Vector3(0.35f, 3f, 0.35f), Quaternion.identity, route));
+            DestroyCollider(CreateBox(parent, "SpeedMarker_100m", new Vector3(0f, 1f, 50f), new Vector3(0.35f, 3f, 0.35f), Quaternion.identity, route));
+            DestroyCollider(CreateBox(parent, "SpeedMeasure_Line_100m", new Vector3(0f, 0.08f, 0f), new Vector3(0.20f, 0.04f, 100f), Quaternion.identity, route));
 
             float halfWidth = GameplayWidth * 0.5f;
             float halfDepth = GameplayDepth * 0.5f;
@@ -394,7 +413,7 @@ namespace AfterBlue.EditorTools
             notes.transform.SetParent(parent, false);
             notes.transform.localPosition = Vector3.zero;
 
-            GameObject spec = new GameObject("P1_TEST_192x128_Boat7p2ms_ZoneScale");
+            GameObject spec = new GameObject($"W6_A_SCALE_{ActiveScaleLabel}_Reject_{RejectedScaleLabel}_Boat7p2ms");
             spec.transform.SetParent(parent, false);
             spec.transform.localPosition = new Vector3(0f, 0f, 2f);
         }
@@ -624,6 +643,16 @@ namespace AfterBlue.EditorTools
         private static Vector3 ExpandNode(float x, float z)
         {
             return new Vector3(x * NodeExpansion, 0f, z * NodeExpansion);
+        }
+
+        private static Vector2 ScaleSize(float x, float y, float scale)
+        {
+            return new Vector2(x * scale, y * scale);
+        }
+
+        private static string FormatSize(float width, float depth)
+        {
+            return $"{width:0}x{depth:0}";
         }
 
         private static Vector3 Mid(Vector3 start, Vector3 end, float t)

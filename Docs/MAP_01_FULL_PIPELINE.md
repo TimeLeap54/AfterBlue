@@ -46,7 +46,7 @@ Do not build the entire map as one Blender mesh.
 
 ## Current Position
 
-Current work is Week 6 Map_01. The 192 x 128m large-map candidate is active, and the Week 6 scene adds large proxy destinations on top of it.
+Current work is Week 6 Map_01. W6-A promotes the active candidate to 640 x 420m, with 192 x 128m kept only as a rejected comparison frame.
 
 Active scene:
 
@@ -58,9 +58,9 @@ Active menu:
 
 Current test candidate:
 
-- Gameplay area: 192 x 128m
-- Water blockout: 280 x 192m
-- Nodes: S, A, M, B, C, D expanded by 2.0x
+- Gameplay area: 640 x 420m
+- Water plane: 900 x 600m
+- Nodes: S, A, M, B, C, D expanded by 6.0x
 - Routes: S-A, S-D, A-M, A-B, M-B, M-D, B-C, C-D
 
 ## Current Non-Goals

@@ -4,10 +4,10 @@ S2 now starts from the final 0-1 production spec. The goal is not a pretty map. 
 
 ## Current Test Hypothesis
 
-- Gameplay area: 192 x 128m
-- X range: -96 to 96
-- Z range: -64 to 64
-- Water visual blockout: 280 x 192m
+- Gameplay area: 640 x 420m
+- X range: -320 to 320
+- Z range: -210 to 210
+- Water visual plane: 900 x 600m
 - Unity scale: 1 unit = 1 meter
 - Water height: Y 0
 - Test scene: `Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity`
@@ -17,13 +17,13 @@ S2 now starts from the final 0-1 production spec. The goal is not a pretty map. 
 ## Do Now
 
 - Verify current boat size against a 1.8 x 4.5m reference cube.
-- Measure 20m straight travel time.
+- Measure 100m straight travel time.
 - Measure average speed.
 - Measure comfortable U-turn diameter.
 - Measure stop distance after releasing input.
 - Measure horizontal and vertical crossing times.
 - Measure empty outer loop time.
-- Decide whether 192 x 128m should be kept, expanded again, or reduced.
+- Decide whether 640 x 420m should be kept, expanded again, or reduced.
 
 ## Do Not Do Yet
 
@@ -44,33 +44,33 @@ This creates the exact 0-1 blockout scene specified by the latest Map_01 product
 
 ## Zone Nodes
 
-- S Start / Supply: (-76, -40)
-- A Shallow Village: (-56, 28)
-- M Central Water: (-12, 4)
-- B Intersection: (48, 28)
-- C Deep Debris: (60, -36)
-- D Return Water: (-16, -40)
+- S Start / Supply: (-228, -120)
+- A Shallow Village: (-168, 84)
+- M Central Water: (-36, 12)
+- B Intersection: (144, 84)
+- C Deep Debris: (180, -108)
+- D Return Water: (-48, -120)
 
 ## Decision Rules
 
-Keep 192 x 128m if:
+Keep 640 x 420m if:
 
-- Horizontal crossing is 25-38 seconds.
-- Empty outer loop is 75-110 seconds.
-- Most zone travel is 8-20 seconds.
+- Horizontal crossing is 60-95 seconds before W6-D speed tuning.
+- Empty outer loop is 2-4 minutes before W6-D speed tuning.
+- Most adjacent zone travel is 25-60 seconds before W6-D speed tuning.
 - Whole map is not visible from center at once.
 - Movement does not feel too long or too short.
 
 Consider a larger size if:
 
-- Horizontal crossing is under 23 seconds.
-- Empty outer loop is under 70 seconds.
+- Horizontal crossing is under 55 seconds before W6-D speed tuning.
+- Empty outer loop is under 2 minutes before W6-D speed tuning.
 - Opposite landmarks read too easily.
 - Zones feel too close together.
 
 Consider a smaller size if:
 
-- Horizontal crossing is over 40 seconds.
-- Empty outer loop is over 120 seconds.
+- Horizontal crossing is over 100 seconds before W6-D speed tuning.
+- Empty outer loop is over 4 minutes before W6-D speed tuning.
 - Zone travel already feels dull.
 - Empty water travel is too long.

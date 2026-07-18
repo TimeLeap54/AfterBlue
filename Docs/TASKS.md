@@ -12,6 +12,7 @@ This roadmap supersedes the old Week 0-4 task list. It follows the final game de
 - [x] Week 6 Map_01 builder exists.
 - [x] Map_01 scale test is currently on the 640 x 420m W6-A candidate after rejecting 96 x 64m, 112 x 72m, and 192 x 128m as too small-feeling.
 - [x] Week 6 Map_01 spatial foundation candidate is closed.
+- [x] Week 7 branch and scene setup exists.
 
 ## S0 - Week 04 Baseline Stabilization
 
@@ -78,6 +79,10 @@ Pass criteria:
 
 Goal: make the Week6 map read like a flooded world by solving water visibility, underwater object height, and the first practical asset plan.
 
+- [x] Create `week07` branch from the closed Week6 foundation.
+- [x] Preserve `Map_01_Week6.unity`.
+- [x] Create `Assets/AfterBlue/Scenes/Map_01/Map_01_Week7.unity` from the Week6 foundation.
+- [x] Add `AfterBlue > Setup > Apply Week 7 Water And Asset Pass`.
 - [ ] Define water material target for shallow, medium, and deep areas.
 - [ ] Decide which objects should be below water, partly above water, or clearly above water.
 - [ ] Create H1/H2/H3 asset sourcing table: reuse existing proxy, free asset, Blender MCP, custom Blender, or defer.

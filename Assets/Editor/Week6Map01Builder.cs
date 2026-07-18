@@ -9,7 +9,8 @@ namespace AfterBlue.EditorTools
 {
     public static class Week6Map01Builder
     {
-        private const string ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity";
+        private const string Week6ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity";
+        private const string Week7ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week7.unity";
         private const string DebugMaterialFolder = "Assets/AfterBlue/Materials/Debug";
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
         private const string RoofModelPath = "Assets/Art/Exports/flooded_roof_modern_v01.fbx";
@@ -33,6 +34,17 @@ namespace AfterBlue.EditorTools
 
         [MenuItem("AfterBlue/Setup/Apply Week 6 Map 01")]
         public static void ApplyWeek6Map01()
+        {
+            ApplyMap01(Week6ScenePath, "Map_01_Week6", "WEEK6_GOAL_MapSize_ZoneLoop_Movement", $"W6_BC_LOOP_{ActiveScaleLabel}_Boat9p5ms_MainStartH1MH2H3D", "Week 6 Map_01");
+        }
+
+        [MenuItem("AfterBlue/Setup/Apply Week 7 Water And Asset Pass")]
+        public static void ApplyWeek7WaterAndAssetPass()
+        {
+            ApplyMap01(Week7ScenePath, "Map_01_Week7", "WEEK7_GOAL_Water_SubmergedReadability_AssetPlan", $"W7_A_SCENE_SETUP_{ActiveScaleLabel}_Boat9p5ms_FromWeek6Foundation", "Week 7 Water And Asset Pass");
+        }
+
+        private static void ApplyMap01(string scenePath, string sceneName, string goalName, string specName, string logLabel)
         {
             EnsureFolder("Assets/AfterBlue");
             EnsureFolder("Assets/AfterBlue/Scenes");
@@ -60,9 +72,9 @@ namespace AfterBlue.EditorTools
             Material shadow = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_SubmergedShadow.mat", new Color(0.02f, 0.07f, 0.09f, 0.52f), true);
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            scene.name = "Map_01_Week6";
+            scene.name = sceneName;
 
-            GameObject root = new GameObject("Map_01_Week6");
+            GameObject root = new GameObject(sceneName);
             Transform system = CreateChild(root.transform, "00_SYSTEM");
             Transform waterRoot = CreateChild(root.transform, "01_WATER");
             Transform mapGuides = CreateChild(root.transform, "02_MAP_GUIDES");
@@ -84,7 +96,7 @@ namespace AfterBlue.EditorTools
             CreateWaterLines(waterRoot, ripple);
             CreateSpeedAndCrossingMarkers(debug, route, boundary);
             CreateBoatAndCamera(system, warmLight);
-            CreateNotes(system);
+            CreateNotes(system, goalName, specName);
             CreateLighting(system);
 
             RenderSettings.ambientLight = new Color(0.55f, 0.68f, 0.70f, 1f);
@@ -94,9 +106,9 @@ namespace AfterBlue.EditorTools
             RenderSettings.fogStartDistance = 150f;
             RenderSettings.fogEndDistance = 650f;
 
-            EditorSceneManager.SaveScene(scene, ScenePath);
+            EditorSceneManager.SaveScene(scene, scenePath);
             AssetDatabase.SaveAssets();
-            Debug.Log($"Applied Week 6 Map_01. Scene: {ScenePath}");
+            Debug.Log($"Applied {logLabel}. Scene: {scenePath}");
         }
 
         private static void CreateWaterAndDepthPatches(Transform parent, Material water, Material shallow, Material medium, Material h2, Material h3, Material start, Material ret)
@@ -408,13 +420,13 @@ namespace AfterBlue.EditorTools
             lightObject.transform.rotation = Quaternion.Euler(45f, -35f, 0f);
         }
 
-        private static void CreateNotes(Transform parent)
+        private static void CreateNotes(Transform parent, string goalName, string specName)
         {
-            GameObject notes = new GameObject("WEEK6_GOAL_MapSize_ZoneLoop_Movement");
+            GameObject notes = new GameObject(goalName);
             notes.transform.SetParent(parent, false);
             notes.transform.localPosition = Vector3.zero;
 
-            GameObject spec = new GameObject($"W6_BC_LOOP_{ActiveScaleLabel}_Boat9p5ms_MainStartH1MH2H3D");
+            GameObject spec = new GameObject(specName);
             spec.transform.SetParent(parent, false);
             spec.transform.localPosition = new Vector3(0f, 0f, 2f);
         }

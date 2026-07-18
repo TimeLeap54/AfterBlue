@@ -56,6 +56,14 @@ Active menu:
 
 `AfterBlue > Setup > Apply Week 6 Map 01`
 
+Next active Week7 setup:
+
+`AfterBlue > Setup > Apply Week 7 Water And Asset Pass`
+
+Week7 scene:
+
+`Assets/AfterBlue/Scenes/Map_01/Map_01_Week7.unity`
+
 Current test candidate:
 
 - Gameplay area: 640 x 420m

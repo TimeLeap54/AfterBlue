@@ -2,13 +2,32 @@ using UnityEngine;
 
 namespace AfterBlue.Boat
 {
+    public enum BoatMovementSpace
+    {
+        WorldAxes,
+        CameraRelative
+    }
+
+    public enum BoatControlStyle
+    {
+        DirectMove,
+        HeadingSteer
+    }
+
     public sealed class BoatController : MonoBehaviour
     {
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 5f;
+        [SerializeField] private float reverseSpeed = 2f;
         [SerializeField] private float rotationSpeed = 8f;
+        [SerializeField] private float steeringTurnSpeed = 95f;
         [SerializeField] private float acceleration = 14f;
         [SerializeField] private float deceleration = 10f;
+        [SerializeField] private BoatMovementSpace movementSpace = BoatMovementSpace.WorldAxes;
+        [SerializeField] private BoatControlStyle controlStyle = BoatControlStyle.DirectMove;
+        [SerializeField] private Transform inputReferenceTransform;
+        [SerializeField] private bool rotateWhileReversing = true;
+        [SerializeField] private bool invertSteeringWhenReversing = true;
         [SerializeField] private bool showDebugOverlay = true;
         [SerializeField] private bool createPrototypeReferenceMarkers = true;
 
@@ -33,7 +52,14 @@ namespace AfterBlue.Boat
         private void Update()
         {
             currentInput = ReadMoveInput();
-            Vector3 desiredDirection = new Vector3(currentInput.x, 0f, currentInput.y);
+
+            if (controlStyle == BoatControlStyle.HeadingSteer)
+            {
+                UpdateHeadingSteerMovement(currentInput);
+                return;
+            }
+
+            Vector3 desiredDirection = ResolveDesiredDirection(currentInput);
 
             if (desiredDirection.sqrMagnitude > 1f)
             {
@@ -46,11 +72,58 @@ namespace AfterBlue.Boat
 
             transform.position += currentVelocity * Time.deltaTime;
 
-            if (currentVelocity.sqrMagnitude > 0.001f)
+            bool shouldRotate = rotateWhileReversing || Vector3.Dot(currentVelocity.normalized, transform.forward) > -0.2f;
+            if (currentVelocity.sqrMagnitude > 0.001f && shouldRotate)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(currentVelocity.normalized, Vector3.up);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             }
+        }
+
+        private void UpdateHeadingSteerMovement(Vector2 input)
+        {
+            float throttle = Mathf.Clamp(input.y, -1f, 1f);
+            float steering = Mathf.Clamp(input.x, -1f, 1f);
+            float throttleAbs = Mathf.Abs(throttle);
+
+            if (Mathf.Abs(steering) > 0.01f)
+            {
+                float movingFactor = Mathf.Clamp01(Mathf.Max(throttleAbs, currentVelocity.magnitude / Mathf.Max(moveSpeed, 0.01f)));
+                float reverseFactor = throttle < -0.05f ? 0.72f : 1f;
+                float steeringDirection = throttle < -0.05f && invertSteeringWhenReversing ? -1f : 1f;
+                float yaw = steering * steeringDirection * steeringTurnSpeed * reverseFactor * Mathf.Lerp(0.28f, 1f, movingFactor) * Time.deltaTime;
+                transform.Rotate(0f, yaw, 0f, Space.World);
+            }
+
+            float speedLimit = throttle >= 0f ? moveSpeed : reverseSpeed;
+            Vector3 targetVelocity = transform.forward * throttle * speedLimit;
+            float rate = throttleAbs > 0.01f ? acceleration : deceleration;
+            currentVelocity = Vector3.MoveTowards(currentVelocity, targetVelocity, rate * Time.deltaTime);
+            transform.position += currentVelocity * Time.deltaTime;
+        }
+
+        private Vector3 ResolveDesiredDirection(Vector2 input)
+        {
+            if (movementSpace != BoatMovementSpace.CameraRelative)
+            {
+                return new Vector3(input.x, 0f, input.y);
+            }
+
+            Transform reference = inputReferenceTransform != null ? inputReferenceTransform : Camera.main != null ? Camera.main.transform : null;
+            if (reference == null)
+            {
+                return new Vector3(input.x, 0f, input.y);
+            }
+
+            Vector3 forward = Vector3.ProjectOnPlane(reference.forward, Vector3.up).normalized;
+            Vector3 right = Vector3.ProjectOnPlane(reference.right, Vector3.up).normalized;
+
+            if (forward.sqrMagnitude < 0.001f || right.sqrMagnitude < 0.001f)
+            {
+                return new Vector3(input.x, 0f, input.y);
+            }
+
+            return right * input.x + forward * input.y;
         }
 
         private Vector2 ReadMoveInput()
@@ -217,22 +290,28 @@ namespace AfterBlue.Boat
             }
 
             GameObject root = new GameObject("Prototype Reference Markers");
-            Material roofMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"))
+            Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
+            if (shader == null)
+            {
+                return;
+            }
+
+            Material roofMaterial = new Material(shader)
             {
                 color = new Color(0.08f, 0.18f, 0.22f, 1f)
             };
 
-            Material roadMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"))
+            Material roadMaterial = new Material(shader)
             {
                 color = new Color(0.12f, 0.13f, 0.14f, 1f)
             };
 
-            Material poleMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"))
+            Material poleMaterial = new Material(shader)
             {
                 color = new Color(0.18f, 0.16f, 0.13f, 1f)
             };
 
-            Material buoyMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"))
+            Material buoyMaterial = new Material(shader)
             {
                 color = new Color(0.9f, 0.18f, 0.12f, 1f)
             };

@@ -38,3 +38,10 @@ sysinfo.txt
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Local agent/output scratch
+.agents/
+
+# Blender backup files
+*.blend1
+*.blend1.meta

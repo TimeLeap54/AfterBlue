@@ -99,14 +99,33 @@ Support routes:
 - Does H3 feel deeper and heavier without becoming unreadably dark?
 - Does central water still leave enough open navigation space?
 
-## Remaining Week 6 Questions
+## Week 6 Lock Result
 
-- Confirm whether the W6-B/C main loop feels like a real travel route, not a short circuit.
-- Confirm whether 9.5m/s remains comfortable after the W6-B/C layout.
-- Confirm whether the camera can guide the player without showing the whole map at once.
-- Too many structures sit on top of the water instead of being submerged.
-- Transparent guide fields can block water readability.
-- A water/depth pass is needed before further art placement decisions.
+Week 6 is closed as the Map_01 spatial foundation candidate.
+
+Locked for the next pass:
+
+- Gameplay area: 640 x 420m.
+- Water plane: 900 x 600m.
+- Boat movement candidate: 9.5m/s forward, 4.1m/s reverse, acceleration 14.0, deceleration 11.0.
+- Main loop: `Start -> H1 -> M -> H2 -> H3 -> D -> Start`.
+- Support routes: `Start -> M`, `H1 -> H2`, `M -> D`.
+- H1/H2/H3 are locked as role and location anchors only, not as final art.
+
+Manual judgement:
+
+- 96 x 64m, 112 x 72m, and 192 x 128m felt too compact.
+- 7.2m/s felt too slow on the large map.
+- 9.5m/s felt acceptable for the Week 6 candidate.
+- W6-B/C layout is acceptable enough to move into water, submerged readability, and asset planning.
+
+## Deferred To Week 7
+
+- Water/depth/submerged readability.
+- Height rules for submerged roofs, roads, debris, and landmark props.
+- H1/H2/H3 asset sourcing from free assets and/or Blender MCP.
+- Water transparency, water texture, guide-field visibility, and underwater occlusion.
+- Detailed collision, final art density, and final camera polish.
 
 ## Non-Goals
 

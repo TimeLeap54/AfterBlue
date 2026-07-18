@@ -14,25 +14,19 @@ S2 now starts from the final 0-1 production spec. The goal is not a pretty map. 
 - Boat forward speed: 9.5m/s
 - Boat reverse speed: 4.1m/s
 
-## Do Now
+## Week 6 Result
 
-- Verify current boat size against a 1.8 x 4.5m reference cube.
-- Measure 100m straight travel time.
-- Measure average speed.
-- Measure comfortable U-turn diameter.
-- Measure stop distance after releasing input.
-- Measure horizontal and vertical crossing times.
-- Measure empty outer loop time.
-- Decide whether 640 x 420m should be kept, expanded again, or reduced.
+- Keep 640 x 420m as the next-pass candidate.
+- Keep 9.5m/s forward and 4.1m/s reverse as the next-pass movement candidate.
+- Keep the W6-B/C node layout and main loop for Week7 work.
+- Treat exact stopwatch measurements as useful follow-up data, not a blocker for Week6 closure.
 
-## Do Not Do Yet
+## Do Next
 
-- Blender prop placement
-- Free asset placement
-- Real water shader
-- Flooded house production
-- Mountain/background production
-- Detailed obstacle placement
+- Water/depth/submerged readability.
+- Underwater object height rules.
+- Asset sourcing for H1/H2/H3.
+- First representative H2 water and landmark slice.
 
 ## Week 6 Builder
 

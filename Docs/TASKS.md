@@ -11,6 +11,7 @@ This roadmap supersedes the old Week 0-4 task list. It follows the final game de
 - [x] S1 fishing behavior lock candidate exists.
 - [x] Week 6 Map_01 builder exists.
 - [x] Map_01 scale test is currently on the 640 x 420m W6-A candidate after rejecting 96 x 64m, 112 x 72m, and 192 x 128m as too small-feeling.
+- [x] Week 6 Map_01 spatial foundation candidate is closed.
 
 ## S0 - Week 04 Baseline Stabilization
 
@@ -36,7 +37,7 @@ Remaining later polish:
 - [ ] Reduce reliance on debug UI.
 - [ ] Log fight timing and failure reasons.
 
-## S2 / Week6 - Map_01 Size And Readability Test
+## S2 / Week6 - Map_01 Spatial Foundation Lock
 
 Goal: verify the launch-map size and boat movement metrics before art, props, water shader, or obstacle placement.
 
@@ -60,44 +61,36 @@ Goal: verify the launch-map size and boat movement metrics before art, props, wa
 - [x] Set support routes to Start-M, H1-H2, and M-D.
 - [x] Replace small yellow zone dots with larger color-coded Start/H1/M/H2/H3/D fields in Week 6.
 - [x] Add Week5-style proxy language to Week 6: supply buoy, roofs, submerged roads, tilted traffic light, utility poles, debris, vegetation, ripple rings.
-- [ ] Regenerate and open `Map_01_Week6.unity` in Unity.
-- [ ] Measure current boat real size against the 1.8 x 4.5m reference cube.
-- [ ] Measure 100m straight travel time.
-- [ ] Measure average movement speed.
-- [ ] Measure comfortable U-turn diameter.
-- [ ] Measure stop distance.
-- [ ] Measure horizontal crossing time.
-- [ ] Measure vertical crossing time.
-- [ ] Measure empty outer loop time.
-- [ ] Measure main loop time from Start through H1/M/H2/H3/D back to Start.
-- [ ] Check whether Start, H1, H2, H3, M, and D read as large zones from the gameplay camera.
-- [ ] Check whether H2 is the strongest landmark candidate.
-- [ ] Check whether central water still feels open enough after proxy placement.
-- [ ] Decide 640 x 420 keep / expand / shrink.
+- [x] Regenerate and open `Map_01_Week6.unity` in Unity.
+- [x] Check whether Start, H1, H2, H3, M, and D read as large zones from the gameplay camera.
+- [x] Accept 640 x 420m as the next-pass candidate.
+- [x] Accept 9.5m/s forward and 4.1m/s reverse as the next-pass movement candidate.
+- [x] Close Week6 as a spatial foundation candidate.
+- [x] Defer underwater asset/material accuracy to Week7.
 
 Pass criteria:
 
-- Movement metrics are recorded as actual numbers.
-- 640 x 420m is either kept or rejected for a concrete reason.
+- Movement and scale are accepted as practical candidates, even if exact stopwatch tables remain optional.
+- 640 x 420m is kept for the next pass for a concrete reason.
 - No Blender props, free assets, real water shader, house production, background production, or detailed obstacles are added during this stage.
 
-## S3 / Week7 - Map_01 Hero Layout
+## S3 / Week7 - Water, Submerged Readability, And Asset Planning
 
-Goal: add representative hero silhouettes directly on Map_01, not in a detached art lab.
+Goal: make the Week6 map read like a flooded world by solving water visibility, underwater object height, and the first practical asset plan.
 
-- [ ] Start supply buoy hero blockout.
-- [ ] H1 representative flooded house/roof silhouette.
-- [ ] H2 tilted traffic light and crosswalk hero layout.
-- [ ] H3 large deep debris silhouette.
-- [ ] Distant background silhouettes.
-- [ ] Confirm no hero blockout blocks normal boating.
+- [ ] Define water material target for shallow, medium, and deep areas.
+- [ ] Decide which objects should be below water, partly above water, or clearly above water.
+- [ ] Create H1/H2/H3 asset sourcing table: reuse existing proxy, free asset, Blender MCP, custom Blender, or defer.
+- [ ] Replace guide-field dominance with water-first readability.
+- [ ] Build one representative H2 water/depth/asset slice directly inside `Map_01_Week6.unity` or its Week7 successor.
+- [ ] Confirm no representative asset blocks normal boating.
 
 Pass criteria:
 
-- H1/H2/H3 are readable from navigation camera.
-- H2 works as the representative screenshot composition.
-- H3 feels deep, not horror.
-- Start remains visually simple.
+- Water surface and underwater silhouettes are readable from the navigation camera.
+- H1/H2/H3 remain readable without giant debug fields.
+- H2 becomes the first representative screenshot composition.
+- The asset plan is small enough to actually produce.
 
 ## S4 / Week8 - Modular Kit Production
 

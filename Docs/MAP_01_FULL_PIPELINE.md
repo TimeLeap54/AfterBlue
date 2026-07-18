@@ -46,7 +46,7 @@ Do not build the entire map as one Blender mesh.
 
 ## Current Position
 
-Current work is Week 6 Map_01. W6-A promotes the active candidate to 640 x 420m, with 192 x 128m kept only as a rejected comparison frame.
+Week 6 Map_01 is closed as the spatial foundation candidate. W6-A promoted the active candidate to 640 x 420m, with 192 x 128m kept only as a rejected comparison frame.
 
 Active scene:
 
@@ -65,16 +65,16 @@ Current test candidate:
 - Main route: Start-H1-M-H2-H3-D-Start
 - Support routes: Start-M, H1-H2, M-D
 
-## Current Non-Goals
+## Week 7 Carryover
 
-Do not add these until Week 6 readability and movement measurements are recorded:
+Start the next pass from the Week6 candidate and solve:
 
-- Final Blender prop placement
-- Free asset placement pass
-- Real water shader
-- Final flooded house production
-- Mountain/background production
-- Final collision and obstacle pass
+- Water/depth/submerged readability.
+- Final Blender prop and free asset sourcing decisions.
+- Real water shader or practical Unity water material.
+- Representative H2 flooded road, traffic light, and underwater object slice.
+- Height rules for submerged roads, roofs, debris, and landmarks.
+- Later full flooded house, background, collision, and obstacle passes.
 
 ## Reference Image Role
 

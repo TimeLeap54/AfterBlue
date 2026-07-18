@@ -360,12 +360,12 @@ namespace AfterBlue.EditorTools
 
             BoatController controller = boat.AddComponent<BoatController>();
             SerializedObject controllerObject = new SerializedObject(controller);
-            controllerObject.FindProperty("moveSpeed").floatValue = 7.2f;
-            controllerObject.FindProperty("reverseSpeed").floatValue = 3.2f;
+            controllerObject.FindProperty("moveSpeed").floatValue = 9.5f;
+            controllerObject.FindProperty("reverseSpeed").floatValue = 4.1f;
             controllerObject.FindProperty("rotationSpeed").floatValue = 8f;
             controllerObject.FindProperty("steeringTurnSpeed").floatValue = 82f;
-            controllerObject.FindProperty("acceleration").floatValue = 11.0f;
-            controllerObject.FindProperty("deceleration").floatValue = 9.0f;
+            controllerObject.FindProperty("acceleration").floatValue = 14.0f;
+            controllerObject.FindProperty("deceleration").floatValue = 11.0f;
             controllerObject.FindProperty("movementSpace").enumValueIndex = (int)BoatMovementSpace.WorldAxes;
             controllerObject.FindProperty("controlStyle").enumValueIndex = (int)BoatControlStyle.HeadingSteer;
             controllerObject.FindProperty("rotateWhileReversing").boolValue = false;
@@ -413,7 +413,7 @@ namespace AfterBlue.EditorTools
             notes.transform.SetParent(parent, false);
             notes.transform.localPosition = Vector3.zero;
 
-            GameObject spec = new GameObject($"W6_A_SCALE_{ActiveScaleLabel}_Reject_{RejectedScaleLabel}_Boat7p2ms");
+            GameObject spec = new GameObject($"W6_D_SCALE_{ActiveScaleLabel}_Boat9p5ms_Reverse4p1ms");
             spec.transform.SetParent(parent, false);
             spec.transform.localPosition = new Vector3(0f, 0f, 2f);
         }

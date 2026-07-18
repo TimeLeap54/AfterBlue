@@ -21,7 +21,8 @@ Make the player camera read clear destinations on the large map before final art
 - W6-A active gameplay area: 640 x 420m.
 - W6-A active water plane: 900 x 600m.
 - Treat 192 x 128m as a rejected small-map reference frame, not the current candidate.
-- Keep boat speed at 7.2m/s forward and 3.2m/s reverse.
+- W6-D active boat speed: 9.5m/s forward and 4.1m/s reverse.
+- Treat 7.2m/s forward and 3.2m/s reverse as the rejected slow baseline for 640 x 420m.
 - Replace small yellow point markers with large color-coded habitat fields.
 - Reuse Week5 visual language as proxy structure: roof, road, traffic light, debris, buoy, ripple cues.
 - Do not treat this as final art.
@@ -35,6 +36,17 @@ Goal: make Map_01 large enough that Start/H1/M/H2/H3/D read as separate travel d
 - Node expansion: 6.0x from the original planning coordinates.
 - Rejected reference frame: 192 x 128m remains visible as a comparison guide.
 - Measurement markers use a 100m line instead of the old 20m test line.
+
+## W6-D Movement Segment
+
+Goal: match boat speed to the 640 x 420m map without making the world feel small again.
+
+- Active forward speed: 9.5m/s.
+- Active reverse speed: 4.1m/s.
+- Active acceleration: 14.0.
+- Active deceleration: 11.0.
+- Rejected slow baseline: 7.2m/s forward, 3.2m/s reverse.
+- User loop check: about 5 minutes at the slower baseline, with 9.5m/s feeling better.
 
 ## Zone Color Language
 
@@ -67,7 +79,7 @@ Goal: make Map_01 large enough that Start/H1/M/H2/H3/D read as separate travel d
 ## Remaining Week 6 Questions
 
 - Confirm whether 640 x 420m finally gives enough distance between destinations.
-- Confirm whether the boat speed still works at this scale or needs W6-D tuning.
+- Confirm whether 9.5m/s remains comfortable after W6-B/C route layout tuning.
 - Confirm whether the camera can guide the player without showing the whole map at once.
 - Too many structures sit on top of the water instead of being submerged.
 - Transparent guide fields can block water readability.

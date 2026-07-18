@@ -61,6 +61,7 @@ Current test candidate:
 - Gameplay area: 640 x 420m
 - Water plane: 900 x 600m
 - Nodes: S, A, M, B, C, D expanded by 6.0x
+- Boat speed: 9.5m/s forward, 4.1m/s reverse
 - Routes: S-A, S-D, A-M, A-B, M-B, M-D, B-C, C-D
 
 ## Current Non-Goals

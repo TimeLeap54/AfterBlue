@@ -52,7 +52,8 @@ Goal: verify the launch-map size and boat movement metrics before art, props, wa
 - [x] Add four corner markers at X -320/320 and Z -210/210.
 - [x] Add 0m/50m/100m speed markers.
 - [x] Add S/A/M/B/C/D zone markers expanded by 6.0x.
-- [x] Raise boat forward speed to 7.2m/s and reverse speed to 3.2m/s for the large-map test.
+- [x] Reject 7.2m/s forward and 3.2m/s reverse as too slow-feeling for the large-map test.
+- [x] Set W6-D boat speed candidate to 9.5m/s forward and 4.1m/s reverse.
 - [x] Add edge crossing markers for horizontal and vertical travel checks.
 - [x] Add primary and support route guides between S/A/M/B/C/D.
 - [x] Replace small yellow zone dots with larger color-coded Start/H1/M/H2/H3/D fields in Week 6.

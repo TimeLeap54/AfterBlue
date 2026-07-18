@@ -25,8 +25,8 @@ This creates:
 - Unity scale: 1 unit = 1 meter
 - Water height: Y 0
 - Boat reference cube: 1.8m wide x 4.5m long
-- Boat forward speed: 7.2m/s
-- Boat reverse speed: 3.2m/s
+- Boat forward speed: 9.5m/s
+- Boat reverse speed: 4.1m/s
 - Node markers: S, A, M, B, C, D
 - Route markers: S-A, S-D, A-M, A-B, M-B, M-D, B-C, C-D
 - Measurement markers: 0m, 50m, 100m
@@ -41,6 +41,8 @@ This creates:
 - 112 x 72m was also rejected as too small-feeling after user manual scale testing.
 - 192 x 128m was rejected as still too compact after the Week6 readability check.
 - 640 x 420m is the current W6-A candidate, not final locked scale.
+- 7.2m/s forward and 3.2m/s reverse were rejected as too slow-feeling for the large map.
+- 9.5m/s forward and 4.1m/s reverse are the current W6-D movement candidates.
 - Final Blender props and real water shader are deferred until after the readability test.
 - H1/H2/H3 landmark art is deferred until the map size and movement metrics are measured.
 

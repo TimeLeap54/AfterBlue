@@ -11,8 +11,8 @@ S2 now starts from the final 0-1 production spec. The goal is not a pretty map. 
 - Unity scale: 1 unit = 1 meter
 - Water height: Y 0
 - Test scene: `Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity`
-- Boat forward speed: 7.2m/s
-- Boat reverse speed: 3.2m/s
+- Boat forward speed: 9.5m/s
+- Boat reverse speed: 4.1m/s
 
 ## Do Now
 
@@ -55,22 +55,22 @@ This creates the exact 0-1 blockout scene specified by the latest Map_01 product
 
 Keep 640 x 420m if:
 
-- Horizontal crossing is 60-95 seconds before W6-D speed tuning.
-- Empty outer loop is 2-4 minutes before W6-D speed tuning.
-- Most adjacent zone travel is 25-60 seconds before W6-D speed tuning.
+- Horizontal crossing is 45-75 seconds at the W6-D speed candidate.
+- Empty outer loop is 3-5 minutes at the W6-D speed candidate.
+- Most adjacent zone travel is 20-50 seconds at the W6-D speed candidate.
 - Whole map is not visible from center at once.
 - Movement does not feel too long or too short.
 
 Consider a larger size if:
 
-- Horizontal crossing is under 55 seconds before W6-D speed tuning.
-- Empty outer loop is under 2 minutes before W6-D speed tuning.
+- Horizontal crossing is under 40 seconds at the W6-D speed candidate.
+- Empty outer loop is under 3 minutes at the W6-D speed candidate.
 - Opposite landmarks read too easily.
 - Zones feel too close together.
 
 Consider a smaller size if:
 
-- Horizontal crossing is over 100 seconds before W6-D speed tuning.
-- Empty outer loop is over 4 minutes before W6-D speed tuning.
+- Horizontal crossing is over 80 seconds at the W6-D speed candidate.
+- Empty outer loop is over 5 minutes at the W6-D speed candidate.
 - Zone travel already feels dull.
 - Empty water travel is too long.

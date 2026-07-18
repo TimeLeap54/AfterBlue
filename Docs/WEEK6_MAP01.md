@@ -33,7 +33,7 @@ Goal: make Map_01 large enough that Start/H1/M/H2/H3/D read as separate travel d
 
 - Active candidate: 640 x 420m gameplay area.
 - Water support plane: 900 x 600m.
-- Node expansion: 6.0x from the original planning coordinates.
+- W6-B/C uses direct designed coordinates instead of raw scaled planning coordinates.
 - Rejected reference frame: 192 x 128m remains visible as a comparison guide.
 - Measurement markers use a 100m line instead of the old 20m test line.
 
@@ -47,6 +47,29 @@ Goal: match boat speed to the 640 x 420m map without making the world feel small
 - Active deceleration: 11.0.
 - Rejected slow baseline: 7.2m/s forward, 3.2m/s reverse.
 - User loop check: about 5 minutes at the slower baseline, with 9.5m/s feeling better.
+
+## W6-B/C Zone And Loop Segment
+
+Goal: make Map_01 read as a playable travel loop, not a compact board of nearby points.
+
+Active node coordinates:
+
+- Start / Supply: (-270, -165)
+- H1 Shallow Residential: (-230, 135)
+- M Central Open Water: (-30, 20)
+- H2 Traffic Light: (235, 120)
+- H3 Deep Debris: (250, -155)
+- D Return Water: (-90, -170)
+
+Main loop:
+
+`Start -> H1 -> M -> H2 -> H3 -> D -> Start`
+
+Support routes:
+
+- `Start -> M`
+- `H1 -> H2`
+- `M -> D`
 
 ## Zone Color Language
 
@@ -78,8 +101,8 @@ Goal: match boat speed to the 640 x 420m map without making the world feel small
 
 ## Remaining Week 6 Questions
 
-- Confirm whether 640 x 420m finally gives enough distance between destinations.
-- Confirm whether 9.5m/s remains comfortable after W6-B/C route layout tuning.
+- Confirm whether the W6-B/C main loop feels like a real travel route, not a short circuit.
+- Confirm whether 9.5m/s remains comfortable after the W6-B/C layout.
 - Confirm whether the camera can guide the player without showing the whole map at once.
 - Too many structures sit on top of the water instead of being submerged.
 - Transparent guide fields can block water readability.

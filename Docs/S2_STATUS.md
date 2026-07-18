@@ -27,8 +27,9 @@ This creates:
 - Boat reference cube: 1.8m wide x 4.5m long
 - Boat forward speed: 9.5m/s
 - Boat reverse speed: 4.1m/s
-- Node markers: S, A, M, B, C, D
-- Route markers: S-A, S-D, A-M, A-B, M-B, M-D, B-C, C-D
+- Node markers: Start, H1, M, H2, H3, D
+- Main route: Start-H1-M-H2-H3-D-Start
+- Support routes: Start-M, H1-H2, M-D
 - Measurement markers: 0m, 50m, 100m
 - Week 6 replaces small yellow dots with large color-coded area fields.
 - Week 6 adds Start/H1/M/H2/H3/D proxy clusters for camera readability.
@@ -43,6 +44,7 @@ This creates:
 - 640 x 420m is the current W6-A candidate, not final locked scale.
 - 7.2m/s forward and 3.2m/s reverse were rejected as too slow-feeling for the large map.
 - 9.5m/s forward and 4.1m/s reverse are the current W6-D movement candidates.
+- W6-B/C replaces raw 6.0x scaled nodes with direct layout coordinates for a clearer travel loop.
 - Final Blender props and real water shader are deferred until after the readability test.
 - H1/H2/H3 landmark art is deferred until the map size and movement metrics are measured.
 
@@ -56,6 +58,8 @@ This creates:
 - Horizontal crossing time
 - Vertical crossing time
 - Empty outer loop time
+- Main loop time: Start-H1-M-H2-H3-D-Start
+- Adjacent route times: Start-H1, H1-M, M-H2, H2-H3, H3-D, D-Start
 - Keep 640 x 420 / expand / shrink decision
 
 ## Next

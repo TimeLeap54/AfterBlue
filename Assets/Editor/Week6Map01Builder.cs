@@ -19,18 +19,17 @@ namespace AfterBlue.EditorTools
         private const float GameplayDepth = 420f;
         private const float WaterWidth = 900f;
         private const float WaterDepth = 600f;
-        private const float NodeExpansion = 6.0f;
         private const float ZoneFieldScale = 2.15f;
         private const float FishingFieldScale = 2.0f;
         private const string ActiveScaleLabel = "640x420";
         private const string RejectedScaleLabel = "192x128";
 
-        private static readonly Vector3 Start = ExpandNode(-38f, -20f);
-        private static readonly Vector3 H1 = ExpandNode(-28f, 14f);
-        private static readonly Vector3 M = ExpandNode(-6f, 2f);
-        private static readonly Vector3 H2 = ExpandNode(24f, 14f);
-        private static readonly Vector3 H3 = ExpandNode(30f, -18f);
-        private static readonly Vector3 D = ExpandNode(-8f, -20f);
+        private static readonly Vector3 Start = new Vector3(-270f, 0f, -165f);
+        private static readonly Vector3 H1 = new Vector3(-230f, 0f, 135f);
+        private static readonly Vector3 M = new Vector3(-30f, 0f, 20f);
+        private static readonly Vector3 H2 = new Vector3(235f, 0f, 120f);
+        private static readonly Vector3 H3 = new Vector3(250f, 0f, -155f);
+        private static readonly Vector3 D = new Vector3(-90f, 0f, -170f);
 
         [MenuItem("AfterBlue/Setup/Apply Week 6 Map 01")]
         public static void ApplyWeek6Map01()
@@ -145,14 +144,15 @@ namespace AfterBlue.EditorTools
 
         private static void CreateRouteGuides(Transform parent, Material material)
         {
-            CreateRoute(parent, "Route_S_to_A", Start, H1, material);
-            CreateRoute(parent, "Route_S_to_D", Start, D, material);
-            CreateRoute(parent, "Route_A_to_M", H1, M, material);
-            CreateRoute(parent, "Route_A_to_B", H1, H2, material);
-            CreateRoute(parent, "Route_M_to_B", M, H2, material);
-            CreateRoute(parent, "Route_M_to_D", M, D, material);
-            CreateRoute(parent, "Route_B_to_C", H2, H3, material);
-            CreateRoute(parent, "Route_C_to_D", H3, D, material);
+            CreateRoute(parent, "Route_Main_Start_to_H1", Start, H1, material);
+            CreateRoute(parent, "Route_Main_H1_to_M", H1, M, material);
+            CreateRoute(parent, "Route_Main_M_to_H2", M, H2, material);
+            CreateRoute(parent, "Route_Main_H2_to_H3", H2, H3, material);
+            CreateRoute(parent, "Route_Main_H3_to_D", H3, D, material);
+            CreateRoute(parent, "Route_Main_D_to_Start", D, Start, material);
+            CreateRoute(parent, "Route_Support_Start_to_M", Start, M, material);
+            CreateRoute(parent, "Route_Support_H1_to_H2", H1, H2, material);
+            CreateRoute(parent, "Route_Support_M_to_D", M, D, material);
         }
 
         private static void CreateLargeZoneFields(Transform parent, Material start, Material h1, Material mid, Material h2, Material h3, Material ret)
@@ -316,9 +316,10 @@ namespace AfterBlue.EditorTools
             CreateRing(parent, "Ripple_H2_Bobber", H2 + new Vector3(-5f, 0.04f, -4f), 6f, material);
             CreateRing(parent, "Ripple_H3_Deep_Water", H3 + new Vector3(-7f, 0.04f, 4f), 8f, material);
 
-            CreateFlowArrow(parent, "Flow_Start_to_H1", Mid(Start, H1, 0.52f), Start, H1, material);
-            CreateFlowArrow(parent, "Flow_M_to_H2", Mid(M, H2, 0.52f), M, H2, material);
-            CreateFlowArrow(parent, "Flow_H2_to_H3", Mid(H2, H3, 0.50f), H2, H3, material);
+            CreateFlowArrow(parent, "Flow_Main_Start_to_H1", Mid(Start, H1, 0.52f), Start, H1, material);
+            CreateFlowArrow(parent, "Flow_Main_M_to_H2", Mid(M, H2, 0.52f), M, H2, material);
+            CreateFlowArrow(parent, "Flow_Main_H2_to_H3", Mid(H2, H3, 0.50f), H2, H3, material);
+            CreateFlowArrow(parent, "Flow_Return_H3_to_D", Mid(H3, D, 0.50f), H3, D, material);
         }
 
         private static void CreateSpeedAndCrossingMarkers(Transform parent, Material route, Material boundary)
@@ -409,11 +410,11 @@ namespace AfterBlue.EditorTools
 
         private static void CreateNotes(Transform parent)
         {
-            GameObject notes = new GameObject("WEEK6_GOAL_MapSize_Movement_ZoneRead");
+            GameObject notes = new GameObject("WEEK6_GOAL_MapSize_ZoneLoop_Movement");
             notes.transform.SetParent(parent, false);
             notes.transform.localPosition = Vector3.zero;
 
-            GameObject spec = new GameObject($"W6_D_SCALE_{ActiveScaleLabel}_Boat9p5ms_Reverse4p1ms");
+            GameObject spec = new GameObject($"W6_BC_LOOP_{ActiveScaleLabel}_Boat9p5ms_MainStartH1MH2H3D");
             spec.transform.SetParent(parent, false);
             spec.transform.localPosition = new Vector3(0f, 0f, 2f);
         }
@@ -638,11 +639,6 @@ namespace AfterBlue.EditorTools
                 EnsureFolder(parent);
                 AssetDatabase.CreateFolder(parent, name);
             }
-        }
-
-        private static Vector3 ExpandNode(float x, float z)
-        {
-            return new Vector3(x * NodeExpansion, 0f, z * NodeExpansion);
         }
 
         private static Vector2 ScaleSize(float x, float y, float scale)

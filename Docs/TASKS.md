@@ -51,11 +51,13 @@ Goal: verify the launch-map size and boat movement metrics before art, props, wa
 - [x] Create 640 x 420m gameplay guide.
 - [x] Add four corner markers at X -320/320 and Z -210/210.
 - [x] Add 0m/50m/100m speed markers.
-- [x] Add S/A/M/B/C/D zone markers expanded by 6.0x.
+- [x] Replace raw scaled S/A/M/B/C/D markers with direct W6-B/C layout coordinates.
 - [x] Reject 7.2m/s forward and 3.2m/s reverse as too slow-feeling for the large-map test.
 - [x] Set W6-D boat speed candidate to 9.5m/s forward and 4.1m/s reverse.
 - [x] Add edge crossing markers for horizontal and vertical travel checks.
 - [x] Add primary and support route guides between S/A/M/B/C/D.
+- [x] Set main loop to Start-H1-M-H2-H3-D-Start.
+- [x] Set support routes to Start-M, H1-H2, and M-D.
 - [x] Replace small yellow zone dots with larger color-coded Start/H1/M/H2/H3/D fields in Week 6.
 - [x] Add Week5-style proxy language to Week 6: supply buoy, roofs, submerged roads, tilted traffic light, utility poles, debris, vegetation, ripple rings.
 - [ ] Regenerate and open `Map_01_Week6.unity` in Unity.
@@ -67,6 +69,7 @@ Goal: verify the launch-map size and boat movement metrics before art, props, wa
 - [ ] Measure horizontal crossing time.
 - [ ] Measure vertical crossing time.
 - [ ] Measure empty outer loop time.
+- [ ] Measure main loop time from Start through H1/M/H2/H3/D back to Start.
 - [ ] Check whether Start, H1, H2, H3, M, and D read as large zones from the gameplay camera.
 - [ ] Check whether H2 is the strongest landmark candidate.
 - [ ] Check whether central water still feels open enough after proxy placement.

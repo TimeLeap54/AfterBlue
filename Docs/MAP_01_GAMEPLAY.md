@@ -44,12 +44,24 @@ This creates the exact 0-1 blockout scene specified by the latest Map_01 product
 
 ## Zone Nodes
 
-- S Start / Supply: (-228, -120)
-- A Shallow Village: (-168, 84)
-- M Central Water: (-36, 12)
-- B Intersection: (144, 84)
-- C Deep Debris: (180, -108)
-- D Return Water: (-48, -120)
+- Start / Supply: (-270, -165)
+- H1 Shallow Residential: (-230, 135)
+- M Central Open Water: (-30, 20)
+- H2 Traffic Light: (235, 120)
+- H3 Deep Debris: (250, -155)
+- D Return Water: (-90, -170)
+
+## Route Loop
+
+Main loop:
+
+`Start -> H1 -> M -> H2 -> H3 -> D -> Start`
+
+Support routes:
+
+- `Start -> M`
+- `H1 -> H2`
+- `M -> D`
 
 ## Decision Rules
 

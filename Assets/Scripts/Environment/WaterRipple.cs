@@ -39,7 +39,13 @@ namespace AfterBlue.Environment
             lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             lineRenderer.receiveShadows = false;
 
-            runtimeMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"))
+            Shader shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Sprites/Default");
+            if (shader == null)
+            {
+                return;
+            }
+
+            runtimeMaterial = new Material(shader)
             {
                 color = color
             };
@@ -53,7 +59,10 @@ namespace AfterBlue.Environment
             float radius = Mathf.Lerp(startRadius, endRadius, t);
             float alpha = Mathf.Lerp(color.a, 0f, t);
 
-            runtimeMaterial.color = new Color(color.r, color.g, color.b, alpha);
+            if (runtimeMaterial != null)
+            {
+                runtimeMaterial.color = new Color(color.r, color.g, color.b, alpha);
+            }
             lineRenderer.startWidth = Mathf.Lerp(lineWidth, lineWidth * 0.35f, t);
             lineRenderer.endWidth = lineRenderer.startWidth;
 

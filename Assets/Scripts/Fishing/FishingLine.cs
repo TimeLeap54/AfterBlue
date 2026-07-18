@@ -10,6 +10,7 @@ namespace AfterBlue.Fishing
         [SerializeField] private float lineWidth = 0.018f;
 
         private LineRenderer lineRenderer;
+        private Material runtimeMaterial;
 
         private void Awake()
         {
@@ -20,11 +21,17 @@ namespace AfterBlue.Fishing
             lineRenderer.useWorldSpace = true;
             lineRenderer.enabled = false;
 
-            Material material = new Material(Shader.Find("Universal Render Pipeline/Unlit"))
+            Shader shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Sprites/Default");
+            if (shader == null)
+            {
+                return;
+            }
+
+            runtimeMaterial = new Material(shader)
             {
                 color = new Color(0.9f, 0.86f, 0.72f, 1f)
             };
-            lineRenderer.sharedMaterial = material;
+            lineRenderer.sharedMaterial = runtimeMaterial;
         }
 
         private void LateUpdate()
@@ -45,6 +52,26 @@ namespace AfterBlue.Fishing
         {
             rodTip = nextRodTip;
             bobber = nextBobber;
+        }
+
+        public void SetStress(float stress)
+        {
+            if (runtimeMaterial == null)
+            {
+                return;
+            }
+
+            Color calm = new Color(0.9f, 0.86f, 0.72f, 1f);
+            Color warning = new Color(1f, 0.62f, 0.18f, 1f);
+            Color danger = new Color(1f, 0.18f, 0.12f, 1f);
+            runtimeMaterial.color = stress < 0.72f
+                ? Color.Lerp(calm, warning, Mathf.Clamp01(stress / 0.72f))
+                : Color.Lerp(warning, danger, Mathf.Clamp01((stress - 0.72f) / 0.28f));
+        }
+
+        public void ResetAppearance()
+        {
+            SetStress(0f);
         }
     }
 }

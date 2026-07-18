@@ -69,6 +69,9 @@ namespace AfterBlue.Journal
                 return;
             }
 
+            saveData ??= new FishCollectionSaveData();
+            saveData.records ??= new List<FishCollectionRecord>();
+
             FishCollectionRecord record = saveData.records.Find(item => item.FishId == result.FishId);
             if (record == null)
             {
@@ -81,6 +84,8 @@ namespace AfterBlue.Journal
 
             Save();
             Debug.Log($"Fish registered: {result.FishName} / {result.SizeCm:0.0} cm");
+            Debug.Log("[Save] Collection saved");
+            Debug.Log($"[Save] Fish count: {saveData.records.Count}");
         }
 
         public bool HasCaught(string fishId)
@@ -104,11 +109,30 @@ namespace AfterBlue.Journal
             if (!PlayerPrefs.HasKey(PlayerPrefsKey))
             {
                 saveData = new FishCollectionSaveData();
+                Debug.Log("[Load] Collection save not found");
                 return;
             }
 
-            string json = PlayerPrefs.GetString(PlayerPrefsKey);
-            saveData = JsonUtility.FromJson<FishCollectionSaveData>(json) ?? new FishCollectionSaveData();
+            try
+            {
+                string json = PlayerPrefs.GetString(PlayerPrefsKey);
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    saveData = new FishCollectionSaveData();
+                    Debug.Log("[Load] Collection save was empty");
+                    return;
+                }
+
+                saveData = JsonUtility.FromJson<FishCollectionSaveData>(json) ?? new FishCollectionSaveData();
+                saveData.records ??= new List<FishCollectionRecord>();
+                Debug.Log("[Load] Collection loaded");
+                Debug.Log($"[Load] Fish count: {saveData.records.Count}");
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"Fish collection save could not be loaded. Starting with empty data. {exception.Message}");
+                saveData = new FishCollectionSaveData();
+            }
         }
 
         public void Clear()

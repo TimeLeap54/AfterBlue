@@ -19,14 +19,26 @@ namespace AfterBlue.UI
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.J))
+            if (SafeGetKeyDown(KeyCode.Tab) || SafeGetKeyDown(KeyCode.J))
             {
                 visible = !visible;
             }
 
-            if (visible && Input.GetKeyDown(KeyCode.F9))
+            if (visible && SafeGetKeyDown(KeyCode.F9))
             {
                 collectionLog?.Clear();
+            }
+        }
+
+        private static bool SafeGetKeyDown(KeyCode keyCode)
+        {
+            try
+            {
+                return Input.GetKeyDown(keyCode);
+            }
+            catch (System.InvalidOperationException)
+            {
+                return false;
             }
         }
 

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 893333c8dbaa6b44b874f39690778eff, type: 3}
+  m_Name: ProxyFishPool
+  m_EditorClassIdentifier: 
+  entries:
+  - fishId: common_fish
+    displayName: Common Fish
+    baseWeight: 45
+    primaryHabitat: 2
+    depthBand: 1
+    behaviorPatternId: s1_blue_minnow_calm
+  - fishId: h1_fish
+    displayName: H1 Fish
+    baseWeight: 26
+    primaryHabitat: 1
+    depthBand: 0
+    behaviorPatternId: s1_blue_minnow_calm
+  - fishId: h2_fish
+    displayName: H2 Fish
+    baseWeight: 20
+    primaryHabitat: 3
+    depthBand: 1
+    behaviorPatternId: s1_signal_fin_dart
+  - fishId: h3_fish
+    displayName: H3 Fish
+    baseWeight: 12
+    primaryHabitat: 4
+    depthBand: 2
+    behaviorPatternId: s1_concrete_carp_heavy

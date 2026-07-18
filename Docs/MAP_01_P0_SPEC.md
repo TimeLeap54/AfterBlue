@@ -12,11 +12,11 @@ P0 locks the working rules before map size and art decisions.
 
 ## Active Scene
 
-`Assets/AfterBlue/Scenes/Map_01/Map_01_Week6_Blockout.unity`
+`Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity`
 
 ## Required Hierarchy
 
-- `Map_01_Week6_Blockout`
+- `Map_01_Week6`
 - `00_SYSTEM`
 - `01_WATER`
 - `02_MAP_GUIDES`
@@ -30,7 +30,7 @@ P0 locks the working rules before map size and art decisions.
 
 ## Builder Support
 
-`Assets/Editor/Week6Map01BlockoutBuilder.cs` now creates:
+`Assets/Editor/Week6Map01Builder.cs` now creates:
 
 - the full required hierarchy
 - `Water_Blockout` centered at Y -0.05 with top surface at Y 0
@@ -46,4 +46,4 @@ P0 locks the working rules before map size and art decisions.
 
 Use:
 
-`AfterBlue > Setup > Apply Week 6 Map 01 Blockout`
+`AfterBlue > Setup > Apply Week 6 Map 01`

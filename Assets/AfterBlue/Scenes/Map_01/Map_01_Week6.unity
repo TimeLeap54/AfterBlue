@@ -635,7 +635,7 @@ GameObject:
   m_Component:
   - component: {fileID: 63357466}
   m_Layer: 0
-  m_Name: P1_TEST_192x128_Boat7p2ms_ZoneScaleReadability
+  m_Name: P1_TEST_192x128_Boat7p2ms_ZoneScale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -666,7 +666,7 @@ GameObject:
   m_Component:
   - component: {fileID: 78540200}
   m_Layer: 0
-  m_Name: D_Light_Obstacle_Readability
+  m_Name: D_Light_Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3339,7 +3339,7 @@ GameObject:
   m_Component:
   - component: {fileID: 381485221}
   m_Layer: 0
-  m_Name: D_ReturnWater_Readability
+  m_Name: D_ReturnWater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4378,7 +4378,7 @@ GameObject:
   - component: {fileID: 525171830}
   - component: {fileID: 525171829}
   m_Layer: 0
-  m_Name: GameplayArea_Readability_192x128
+  m_Name: GameplayArea_192x128
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6229,7 +6229,7 @@ GameObject:
   m_Component:
   - component: {fileID: 727020731}
   m_Layer: 0
-  m_Name: Start_Supply_Buoy_Readability
+  m_Name: Start_Supply_Buoy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7521,7 +7521,7 @@ GameObject:
   m_Component:
   - component: {fileID: 844696042}
   m_Layer: 0
-  m_Name: STAGE02_GOAL_Readability_Not_FinalArt
+  m_Name: WEEK6_GOAL_MapSize_Movement_ZoneRead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8207,7 +8207,7 @@ GameObject:
   m_Component:
   - component: {fileID: 958835990}
   m_Layer: 0
-  m_Name: M_Central_SubmergedRoad_Readability
+  m_Name: M_Central_SubmergedRoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8358,7 +8358,7 @@ GameObject:
   - component: {fileID: 968953328}
   - component: {fileID: 968953327}
   m_Layer: 0
-  m_Name: Water_Blockout_280x192
+  m_Name: Water_Base_280x192
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8908,7 +8908,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1040764239}
   m_Layer: 0
-  m_Name: H2_TrafficLight_Readability
+  m_Name: H2_TrafficLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10037,7 +10037,7 @@ GameObject:
   - component: {fileID: 1154508006}
   - component: {fileID: 1154508007}
   m_Layer: 0
-  m_Name: Ripple_H2_Bobber_Readability
+  m_Name: Ripple_H2_Bobber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10513,7 +10513,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1170175315}
   m_Layer: 0
-  m_Name: H3_DeepDebris_Readability
+  m_Name: H3_DeepDebris
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10961,7 +10961,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1226033006}
   m_Layer: 0
-  m_Name: Map_01_Week6_Readability
+  m_Name: Map_01_Week6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11190,7 +11190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1245492999}
   m_Layer: 0
-  m_Name: H2_Obstacle_Readability
+  m_Name: H2_Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12884,7 +12884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1469923596}
   m_Layer: 0
-  m_Name: H3_Obstacle_Readability
+  m_Name: H3_Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13249,7 +13249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1494713079}
   m_Layer: 0
-  m_Name: H1_ShallowResidential_Readability
+  m_Name: H1_ShallowResidential
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18431,7 +18431,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2133766435}
   m_Layer: 0
-  m_Name: H1_Light_Obstacle_Readability
+  m_Name: H1_Light_Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

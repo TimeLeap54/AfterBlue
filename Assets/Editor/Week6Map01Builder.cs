@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 
 namespace AfterBlue.EditorTools
 {
-    public static class Week6Map01ReadabilityBuilder
+    public static class Week6Map01Builder
     {
-        private const string ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week6_Readability.unity";
+        private const string ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity";
         private const string DebugMaterialFolder = "Assets/AfterBlue/Materials/Debug";
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
         private const string RoofModelPath = "Assets/Art/Exports/flooded_roof_modern_v01.fbx";
@@ -28,8 +28,8 @@ namespace AfterBlue.EditorTools
         private static readonly Vector3 H3 = ExpandNode(30f, -18f);
         private static readonly Vector3 D = ExpandNode(-8f, -20f);
 
-        [MenuItem("AfterBlue/Setup/Apply Week 6 Map 01 Readability")]
-        public static void ApplyWeek6Map01Readability()
+        [MenuItem("AfterBlue/Setup/Apply Week 6 Map 01")]
+        public static void ApplyWeek6Map01()
         {
             EnsureFolder("Assets/AfterBlue");
             EnsureFolder("Assets/AfterBlue/Scenes");
@@ -44,7 +44,7 @@ namespace AfterBlue.EditorTools
             Material h3Zone = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Zone_H3_DeepViolet.mat", new Color(0.22f, 0.16f, 0.58f, 0.46f), true);
             Material startZone = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Zone_Start_Warm.mat", new Color(1f, 0.56f, 0.12f, 0.48f), true);
             Material returnZone = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Zone_Return.mat", new Color(0.23f, 0.68f, 0.92f, 0.28f), true);
-            Material route = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Route_Readability.mat", new Color(0.57f, 0.94f, 1f, 0.64f), true);
+            Material route = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Route_Main.mat", new Color(0.57f, 0.94f, 1f, 0.64f), true);
             Material boundary = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_Boundary.mat", new Color(0.72f, 0.94f, 1f, 0.82f), true);
             Material road = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_AsphaltProxy.mat", new Color(0.08f, 0.13f, 0.16f, 1f), false);
             Material concrete = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_ConcreteProxy.mat", new Color(0.42f, 0.54f, 0.56f, 1f), false);
@@ -57,9 +57,9 @@ namespace AfterBlue.EditorTools
             Material shadow = CreateMaterial($"{DebugMaterialFolder}/MAT_S2_SubmergedShadow.mat", new Color(0.02f, 0.07f, 0.09f, 0.52f), true);
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            scene.name = "Map_01_Week6_Readability";
+            scene.name = "Map_01_Week6";
 
-            GameObject root = new GameObject("Map_01_Week6_Readability");
+            GameObject root = new GameObject("Map_01_Week6");
             Transform system = CreateChild(root.transform, "00_SYSTEM");
             Transform waterRoot = CreateChild(root.transform, "01_WATER");
             Transform mapGuides = CreateChild(root.transform, "02_MAP_GUIDES");
@@ -78,7 +78,7 @@ namespace AfterBlue.EditorTools
             CreateLargeZoneFields(zones, startZone, shallow, medium, h2Zone, h3Zone, returnZone);
             CreateFishingZoneFields(fishingZones, shallow, medium, h2Zone, h3Zone, returnZone);
             CreateWeek5StyleProxies(landmarks, obstacles, road, concrete, roof, wood, rust, vegetation, warmLight, shadow);
-            CreateWaterReadabilityLines(waterRoot, ripple);
+            CreateWaterLines(waterRoot, ripple);
             CreateSpeedAndCrossingMarkers(debug, route, boundary);
             CreateBoatAndCamera(system, warmLight);
             CreateNotes(system);
@@ -93,12 +93,12 @@ namespace AfterBlue.EditorTools
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
-            Debug.Log($"Applied Week 6 Map_01 readability. Scene: {ScenePath}");
+            Debug.Log($"Applied Week 6 Map_01. Scene: {ScenePath}");
         }
 
         private static void CreateWaterAndDepthPatches(Transform parent, Material water, Material shallow, Material medium, Material h2, Material h3, Material start, Material ret)
         {
-            GameObject baseWater = CreateBox(parent, "Water_Blockout_280x192", new Vector3(0f, -0.05f, 0f), new Vector3(WaterWidth, 0.10f, WaterDepth), Quaternion.identity, water);
+            GameObject baseWater = CreateBox(parent, "Water_Base_280x192", new Vector3(0f, -0.05f, 0f), new Vector3(WaterWidth, 0.10f, WaterDepth), Quaternion.identity, water);
             DestroyCollider(baseWater);
 
             CreateFlatEllipse(parent, "Depth_Start_Warm_Shelf", Start, new Vector2(28f, 24f), start);
@@ -111,7 +111,7 @@ namespace AfterBlue.EditorTools
 
         private static void CreateGameplayAreaGuide(Transform parent, Material material)
         {
-            GameObject guide = CreateBox(parent, "GameplayArea_Readability_192x128", new Vector3(0f, -0.035f, 0f), new Vector3(GameplayWidth, 0.02f, GameplayDepth), Quaternion.identity, material);
+            GameObject guide = CreateBox(parent, "GameplayArea_192x128", new Vector3(0f, -0.035f, 0f), new Vector3(GameplayWidth, 0.02f, GameplayDepth), Quaternion.identity, material);
             DestroyCollider(guide);
         }
 
@@ -168,7 +168,7 @@ namespace AfterBlue.EditorTools
 
         private static void CreateStartSupplyCluster(Transform parent, Material wood, Material rust, Material warmLight)
         {
-            Transform root = CreateChild(parent, "Start_Supply_Buoy_Readability");
+            Transform root = CreateChild(parent, "Start_Supply_Buoy");
             root.localPosition = Start;
 
             CreateCylinder(root, "Supply_Buoy_Outer", new Vector3(0f, 0.15f, 0f), new Vector3(3.4f, 0.25f, 3.4f), Quaternion.identity, rust);
@@ -181,7 +181,7 @@ namespace AfterBlue.EditorTools
 
         private static void CreateH1ResidentialCluster(Transform landmarks, Transform obstacles, Material roof, Material concrete, Material vegetation, Material shadow)
         {
-            Transform root = CreateChild(landmarks, "H1_ShallowResidential_Readability");
+            Transform root = CreateChild(landmarks, "H1_ShallowResidential");
             root.localPosition = H1;
 
             Vector3[] roofPositions =
@@ -207,7 +207,7 @@ namespace AfterBlue.EditorTools
             CreatePlantCluster(root, "H1_Seaweed_Cluster_B", new Vector3(15f, 0.32f, 9f), 5, vegetation);
             CreateFlatEllipse(root, "H1_Submerged_Roof_Shadows", new Vector3(2f, -0.01f, 0f), new Vector2(44f, 28f), shadow);
 
-            Transform block = CreateChild(obstacles, "H1_Light_Obstacle_Readability");
+            Transform block = CreateChild(obstacles, "H1_Light_Obstacle");
             block.localPosition = H1;
             CreateBox(block, "H1_Passable_Narrow_Clutter_A", new Vector3(-20f, 0.25f, 2f), new Vector3(6f, 0.4f, 3f), Quaternion.Euler(0f, 12f, 0f), concrete);
             CreateBox(block, "H1_Passable_Narrow_Clutter_B", new Vector3(18f, 0.25f, -7f), new Vector3(5f, 0.4f, 2.5f), Quaternion.Euler(0f, -22f, 0f), concrete);
@@ -215,7 +215,7 @@ namespace AfterBlue.EditorTools
 
         private static void CreateCentralRoadCluster(Transform landmarks, Transform obstacles, Material road, Material concrete, Material shadow)
         {
-            Transform root = CreateChild(landmarks, "M_Central_SubmergedRoad_Readability");
+            Transform root = CreateChild(landmarks, "M_Central_SubmergedRoad");
             root.localPosition = Vector3.zero;
 
             CreateRoadSegment(root, "Road_S_to_M_A", Mid(Start, M, 0.28f) + Vector3.up * 0.02f, Start, M, 26f, road, concrete);
@@ -231,7 +231,7 @@ namespace AfterBlue.EditorTools
 
         private static void CreateH2TrafficLightCluster(Transform landmarks, Transform obstacles, Material road, Material concrete, Material rust, Material warmLight, Material shadow)
         {
-            Transform root = CreateChild(landmarks, "H2_TrafficLight_Readability");
+            Transform root = CreateChild(landmarks, "H2_TrafficLight");
             root.localPosition = H2;
 
             CreateBox(root, "H2_Intersection_Main_Road", new Vector3(0f, 0.03f, 0f), new Vector3(42f, 0.10f, 9f), Quaternion.Euler(0f, -10f, 0f), road);
@@ -247,7 +247,7 @@ namespace AfterBlue.EditorTools
             CreateBox(root, "H2_Road_Sign_Proxy", new Vector3(12f, 1.15f, 6f), new Vector3(2.8f, 1.0f, 0.12f), Quaternion.Euler(0f, -24f, 0f), rust);
             CreateFlatEllipse(root, "H2_Deepening_Water_Shadow", new Vector3(2f, -0.01f, -2f), new Vector2(46f, 32f), shadow);
 
-            Transform block = CreateChild(obstacles, "H2_Obstacle_Readability");
+            Transform block = CreateChild(obstacles, "H2_Obstacle");
             block.localPosition = H2;
             CreateBox(block, "H2_Broken_Road_Blocker_North", new Vector3(-18f, 0.25f, 10f), new Vector3(8f, 0.5f, 4f), Quaternion.Euler(0f, 18f, 0f), concrete);
             CreateBox(block, "H2_Broken_Road_Blocker_South", new Vector3(16f, 0.25f, -12f), new Vector3(9f, 0.5f, 4.5f), Quaternion.Euler(0f, -14f, 0f), concrete);
@@ -255,7 +255,7 @@ namespace AfterBlue.EditorTools
 
         private static void CreateH3DeepDebrisCluster(Transform landmarks, Transform obstacles, Material rust, Material wood, Material vegetation, Material shadow)
         {
-            Transform root = CreateChild(landmarks, "H3_DeepDebris_Readability");
+            Transform root = CreateChild(landmarks, "H3_DeepDebris");
             root.localPosition = H3;
 
             CreateFlatEllipse(root, "H3_Dark_Depth_Shadow_Core", new Vector3(0f, -0.02f, 0f), new Vector2(58f, 42f), shadow);
@@ -270,7 +270,7 @@ namespace AfterBlue.EditorTools
             CreatePlantCluster(root, "H3_Long_Seaweed_Cluster_A", new Vector3(-12f, 0.5f, 11f), 7, vegetation);
             CreatePlantCluster(root, "H3_Long_Seaweed_Cluster_B", new Vector3(17f, 0.5f, -9f), 8, vegetation);
 
-            Transform block = CreateChild(obstacles, "H3_Obstacle_Readability");
+            Transform block = CreateChild(obstacles, "H3_Obstacle");
             block.localPosition = H3;
             CreateBox(block, "H3_Hero_Wreck_Silhouette", new Vector3(3f, 0.28f, -1f), new Vector3(24f, 0.45f, 8f), Quaternion.Euler(0f, -22f, 0f), rust);
             CreateBox(block, "H3_Not_Passable_Debris_Core", new Vector3(-8f, 0.38f, 9f), new Vector3(12f, 0.55f, 5f), Quaternion.Euler(0f, 35f, 0f), rust);
@@ -278,24 +278,24 @@ namespace AfterBlue.EditorTools
 
         private static void CreateReturnWaterCluster(Transform landmarks, Transform obstacles, Material roof, Material vegetation, Material shadow)
         {
-            Transform root = CreateChild(landmarks, "D_ReturnWater_Readability");
+            Transform root = CreateChild(landmarks, "D_ReturnWater");
             root.localPosition = D;
 
             CreateFlatEllipse(root, "D_Return_Water_Shadow", Vector3.zero, new Vector2(32f, 22f), shadow);
             CreateRoofProxy(root, "D_Low_Roof_Guide_A", new Vector3(-7f, 0.1f, 5f), Quaternion.Euler(0f, 30f, 0f), new Vector3(7f, 0.18f, 3.8f), roof, roof, vegetation);
             CreatePlantCluster(root, "D_Seaweed_Return_Cue", new Vector3(8f, 0.32f, -5f), 6, vegetation);
 
-            Transform block = CreateChild(obstacles, "D_Light_Obstacle_Readability");
+            Transform block = CreateChild(obstacles, "D_Light_Obstacle");
             block.localPosition = D;
             CreateBox(block, "D_Return_Debris_Not_Blocking", new Vector3(10f, 0.22f, 7f), new Vector3(7f, 0.35f, 3f), Quaternion.Euler(0f, -12f, 0f), roof);
         }
 
-        private static void CreateWaterReadabilityLines(Transform parent, Material material)
+        private static void CreateWaterLines(Transform parent, Material material)
         {
             CreateRing(parent, "Ripple_Start_Supply", Start + new Vector3(2.5f, 0.04f, 2f), 5f, material);
             CreateRing(parent, "Ripple_H1_Fishing_Water", H1 + new Vector3(8f, 0.04f, -5f), 7f, material);
             CreateRing(parent, "Ripple_M_Open_Water", M + new Vector3(5f, 0.04f, 2f), 9f, material);
-            CreateRing(parent, "Ripple_H2_Bobber_Readability", H2 + new Vector3(-5f, 0.04f, -4f), 6f, material);
+            CreateRing(parent, "Ripple_H2_Bobber", H2 + new Vector3(-5f, 0.04f, -4f), 6f, material);
             CreateRing(parent, "Ripple_H3_Deep_Water", H3 + new Vector3(-7f, 0.04f, 4f), 8f, material);
 
             CreateFlowArrow(parent, "Flow_Start_to_H1", Mid(Start, H1, 0.52f), Start, H1, material);
@@ -390,11 +390,11 @@ namespace AfterBlue.EditorTools
 
         private static void CreateNotes(Transform parent)
         {
-            GameObject notes = new GameObject("STAGE02_GOAL_Readability_Not_FinalArt");
+            GameObject notes = new GameObject("WEEK6_GOAL_MapSize_Movement_ZoneRead");
             notes.transform.SetParent(parent, false);
             notes.transform.localPosition = Vector3.zero;
 
-            GameObject spec = new GameObject("P1_TEST_192x128_Boat7p2ms_ZoneScaleReadability");
+            GameObject spec = new GameObject("P1_TEST_192x128_Boat7p2ms_ZoneScale");
             spec.transform.SetParent(parent, false);
             spec.transform.localPosition = new Vector3(0f, 0f, 2f);
         }

@@ -9,7 +9,7 @@ This roadmap supersedes the old Week 0-4 task list. It follows the final game de
 - [x] Week 04 baseline fishing scene exists.
 - [x] S0 baseline stabilization docs exist.
 - [x] S1 fishing behavior lock candidate exists.
-- [x] Week 6 Map_01 blockout/readability builders exist.
+- [x] Week 6 Map_01 builder exists.
 - [x] Map_01 scale test is currently on the 192 x 128m P1 candidate after rejecting the first 96 x 64m and 112 x 72m view checks.
 
 ## S0 - Week 04 Baseline Stabilization
@@ -40,13 +40,11 @@ Remaining later polish:
 
 Goal: verify the launch-map size and boat movement metrics before art, props, water shader, or obstacle placement.
 
-- [x] Add `AfterBlue > Setup > Apply Week 6 Map 01 Blockout`.
-- [x] Add `AfterBlue > Setup > Apply Week 6 Map 01 Readability`.
-- [x] Create separate scene path `Assets/AfterBlue/Scenes/Map_01/Map_01_Week6_Blockout.unity`.
-- [x] Create separate readability scene path `Assets/AfterBlue/Scenes/Map_01/Map_01_Week6_Readability.unity`.
+- [x] Add `AfterBlue > Setup > Apply Week 6 Map 01`.
+- [x] Create scene path `Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity`.
 - [x] Create role-based hierarchy: system, water, guides, zone markers, route guides, obstacle blockout, boundary, landmarks, fishing zones, debug.
 - [x] Record P0 scale rules: Unity 1 unit = 1m, Blender 1m = Unity 1 unit, Unity water height Y 0, Blender water height Z 0.
-- [x] Add P0 spec marker object under `00_SYSTEM` in the Week 6 blockout builder.
+- [x] Add P0 spec marker object under `00_SYSTEM` in the Week 6 builder.
 - [x] Create debug materials under `Assets/AfterBlue/Materials/Debug`.
 - [x] Reject the first 96 x 64m view check as too small-feeling.
 - [x] Create 280 x 192m water blockout.
@@ -57,10 +55,9 @@ Goal: verify the launch-map size and boat movement metrics before art, props, wa
 - [x] Raise boat forward speed to 7.2m/s and reverse speed to 3.2m/s for the large-map test.
 - [x] Add edge crossing markers for horizontal and vertical travel checks.
 - [x] Add primary and support route guides between S/A/M/B/C/D.
-- [x] Replace small yellow zone dots with larger color-coded Start/H1/M/H2/H3/D fields in Week 6 readability.
-- [x] Add Week5-style proxy language to Week 6 readability: supply buoy, roofs, submerged roads, tilted traffic light, utility poles, debris, vegetation, ripple rings.
-- [ ] Regenerate and open `Map_01_Week6_Blockout.unity` in Unity.
-- [ ] Regenerate and open `Map_01_Week6_Readability.unity` in Unity.
+- [x] Replace small yellow zone dots with larger color-coded Start/H1/M/H2/H3/D fields in Week 6.
+- [x] Add Week5-style proxy language to Week 6: supply buoy, roofs, submerged roads, tilted traffic light, utility poles, debris, vegetation, ripple rings.
+- [ ] Regenerate and open `Map_01_Week6.unity` in Unity.
 - [ ] Measure current boat real size against the 1.8 x 4.5m reference cube.
 - [ ] Measure 20m straight travel time.
 - [ ] Measure average movement speed.

@@ -10,7 +10,7 @@ S2 now starts from the final 0-1 production spec. The goal is not a pretty map. 
 - Water visual blockout: 280 x 192m
 - Unity scale: 1 unit = 1 meter
 - Water height: Y 0
-- Test scene: `Assets/AfterBlue/Scenes/Map_01/Map_01_Week6_Blockout.unity`
+- Test scene: `Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity`
 - Boat forward speed: 7.2m/s
 - Boat reverse speed: 3.2m/s
 
@@ -38,7 +38,7 @@ S2 now starts from the final 0-1 production spec. The goal is not a pretty map. 
 
 Use:
 
-`AfterBlue > Setup > Apply Week 6 Map 01 Blockout`
+`AfterBlue > Setup > Apply Week 6 Map 01`
 
 This creates the exact 0-1 blockout scene specified by the latest Map_01 production document.
 

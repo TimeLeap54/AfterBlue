@@ -46,23 +46,15 @@ Do not build the entire map as one Blender mesh.
 
 ## Current Position
 
-Current work is Week 6 Map_01. The 192 x 128m large-map candidate is active, and the Week 6 readability pass adds large proxy destinations on top of it.
+Current work is Week 6 Map_01. The 192 x 128m large-map candidate is active, and the Week 6 scene adds large proxy destinations on top of it.
 
 Active scene:
 
-`Assets/AfterBlue/Scenes/Map_01/Map_01_Week6_Blockout.unity`
-
-Readability scene:
-
-`Assets/AfterBlue/Scenes/Map_01/Map_01_Week6_Readability.unity`
+`Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity`
 
 Active menu:
 
-`AfterBlue > Setup > Apply Week 6 Map 01 Blockout`
-
-Readability menu:
-
-`AfterBlue > Setup > Apply Week 6 Map 01 Readability`
+`AfterBlue > Setup > Apply Week 6 Map 01`
 
 Current test candidate:
 

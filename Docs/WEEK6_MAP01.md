@@ -1,16 +1,16 @@
-# Week 6 Map_01 Readability
+# Week 6 Map_01
 
-Week 6 Readability exists because the 192 x 128m test map reads too empty with only small zone dots.
+Week 6 defines the current Map_01 playable layout pass.
 
 ## Unity Menu
 
 Use:
 
-`AfterBlue > Setup > Apply Week 6 Map 01 Readability`
+`AfterBlue > Setup > Apply Week 6 Map 01`
 
 This creates:
 
-`Assets/AfterBlue/Scenes/Map_01/Map_01_Week6_Readability.unity`
+`Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity`
 
 ## Goal
 
@@ -33,7 +33,7 @@ Make the player camera read clear destinations on the large map before final art
 - H3 Deep Debris: dark blue / violet.
 - D Return Water: quiet blue.
 
-## Added Readability Proxies
+## Added Proxies
 
 - Start: supply buoy, platform, warm lantern, simple dock planks.
 - H1: broad shallow zone, roof cluster, vegetation, light clutter.

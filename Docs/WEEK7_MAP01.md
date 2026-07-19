@@ -40,7 +40,8 @@ Status: implementation complete, visual review pending after Unity menu apply.
 - Week7 menu applies `AB_Water_Map01_Candidate.mat` to the large 900 x 600m water surface.
 - Week7 debug guide materials are written under `Assets/AfterBlue/Materials/Week7` so Week6 debug materials stay stable.
 - Week7 guide fields, route lines, and boundary lines use reduced alpha so water reads first.
-- Fallback behavior: if the imported water prefab or material is missing, the builder falls back to the old simple water plane.
+- Guard behavior: Week7 now validates the imported water prefab, imported water material, and boat FBX before regenerating the scene.
+- If those required assets are not ready in Unity's AssetDatabase, the Week7 builder stops instead of saving a fallback scene that looks like an older week.
 - Shallow/medium/deep are currently expressed with very faint depth overlays plus submerged shadows, not separate water shaders.
 
 ### W7-D Submerged Height Rules

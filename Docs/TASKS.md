@@ -92,6 +92,7 @@ Goal: make the Week6 map read like a flooded world by solving water visibility, 
 - [x] Add W7-E underwater floor proxy plates for Start, H1, M, H2, H3, and D.
 - [x] Enlarge Week7 central roads and the H2 intersection to better match the 640 x 420m map scale.
 - [x] Draft H1/H2/H3 asset sourcing table: reuse existing proxy, free asset, Blender MCP, custom Blender, or defer.
+- [x] Add Week7 required-asset guard so failed imports do not silently save fallback water/boat scenes.
 - [ ] Apply `AfterBlue > Setup > Apply Week 7 Water And Asset Pass` and visually review W7-E in Unity.
 - [ ] Confirm no representative asset blocks normal boating.
 

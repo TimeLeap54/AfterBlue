@@ -63,6 +63,12 @@ namespace AfterBlue.EditorTools
         [MenuItem("AfterBlue/Setup/Apply Week 7 Water And Asset Pass")]
         public static void ApplyWeek7WaterAndAssetPass()
         {
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            if (!ValidateWeek7RequiredAssets())
+            {
+                return;
+            }
+
             ApplyMap01(Week7ScenePath, "Map_01_Week7", "WEEK7_GOAL_Water_SubmergedReadability_AssetPlan", $"W7_E_UNDERWATER_FLOOR_V1_{ActiveScaleLabel}_IgniteCodersSimpleWater", "Week 7 Water And Asset Pass", true);
         }
 
@@ -76,6 +82,14 @@ namespace AfterBlue.EditorTools
             EnsureFolder(materialFolder);
 
             Material water = useWeek7Water ? EnsureWeek7WaterCandidateMaterial() : null;
+            if (useWeek7Water && water == null)
+            {
+                const string message = "Week 7 water material could not be created. Let Unity finish importing assets, then run Apply Week 7 again.";
+                Debug.LogError(message);
+                EditorUtility.DisplayDialog("AfterBlue Week 7", message, "OK");
+                return;
+            }
+
             if (water == null)
             {
                 water = CreateMaterial($"{materialFolder}/MAT_S2_Water_Base.mat", new Color(0.04f, 0.55f, 0.62f, 0.68f), true);
@@ -143,6 +157,29 @@ namespace AfterBlue.EditorTools
             EditorSceneManager.SaveScene(scene, scenePath);
             AssetDatabase.SaveAssets();
             Debug.Log($"Applied {logLabel}. Scene: {scenePath}");
+        }
+
+        private static bool ValidateWeek7RequiredAssets()
+        {
+            bool hasWaterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(Week7WaterBlockPrefabPath) != null;
+            bool hasWaterMaterial = AssetDatabase.LoadAssetAtPath<Material>(Week7WaterSourceMaterialPath) != null;
+            bool hasBoatModel = AssetDatabase.LoadAssetAtPath<GameObject>(BoatModelPath) != null;
+
+            if (hasWaterPrefab && hasWaterMaterial && hasBoatModel)
+            {
+                return true;
+            }
+
+            string message =
+                "Week 7 required assets are not ready, so the scene was not regenerated.\n\n" +
+                $"Water prefab: {(hasWaterPrefab ? "OK" : Week7WaterBlockPrefabPath)}\n" +
+                $"Water material: {(hasWaterMaterial ? "OK" : Week7WaterSourceMaterialPath)}\n" +
+                $"Boat model: {(hasBoatModel ? "OK" : BoatModelPath)}\n\n" +
+                "Let Unity finish importing packages/assets, then run Apply Week 7 again.";
+
+            Debug.LogError(message);
+            EditorUtility.DisplayDialog("AfterBlue Week 7", message, "OK");
+            return false;
         }
 
         private static void CreateWaterAndDepthPatches(Transform parent, Material water, Material shallow, Material medium, Material h2, Material h3, Material start, Material ret, bool useWeek7Water)

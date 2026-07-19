@@ -32,22 +32,28 @@ Status: complete.
 
 ### W7-B Water Readability
 
-Status: candidate wiring complete, visual review pending.
+Status: implementation complete, visual review pending after Unity menu apply.
 
 - Imported candidate: `Assets/IgniteCoders/Simple Water Shader`.
 - Week7 menu uses `WaterBlock_50m.prefab` when the asset is available.
-- Week7 menu applies `Water_mat_03.mat` to the large 900 x 600m water surface.
+- Week7 menu clones `Water_mat_03.mat` into `Assets/AfterBlue/Materials/Week7/AB_Water_Map01_Candidate.mat`.
+- Week7 menu applies `AB_Water_Map01_Candidate.mat` to the large 900 x 600m water surface.
 - Week7 debug guide materials are written under `Assets/AfterBlue/Materials/Week7` so Week6 debug materials stay stable.
+- Week7 guide fields, route lines, and boundary lines use reduced alpha so water reads first.
 - Fallback behavior: if the imported water prefab or material is missing, the builder falls back to the old simple water plane.
-- Reduce debug field dominance.
-- Define shallow, medium, and deep water material targets.
-- Make submerged silhouettes visible without looking like objects are sitting on top of the water.
+- Shallow/medium/deep are currently expressed with very faint depth overlays plus submerged shadows, not separate water shaders.
 
 ### W7-C Submerged Height Rules
+
+Status: builder rules complete, visual review pending after Unity menu apply.
 
 - Underwater: roads, some roofs, small debris, car bodies.
 - Partially exposed: poles, traffic light, signs, large debris, some roof edges.
 - Above water: supply buoy, gameplay anchors, readable landmark tops.
+- H1 roof proxies are lowered so only roof tops/edges should read.
+- M and H2 road/crosswalk proxies are lowered below the water surface.
+- H3 debris is mostly submerged, with only large silhouettes and some planks reading near the surface.
+- Start supply buoy and H2 traffic light remain clearly above water as navigation anchors.
 
 ### W7-D H2 Representative Slice
 

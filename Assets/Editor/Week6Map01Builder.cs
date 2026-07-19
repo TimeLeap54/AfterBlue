@@ -14,7 +14,8 @@ namespace AfterBlue.EditorTools
         private const string DebugMaterialFolder = "Assets/AfterBlue/Materials/Debug";
         private const string Week7MaterialFolder = "Assets/AfterBlue/Materials/Week7";
         private const string Week7WaterBlockPrefabPath = "Assets/IgniteCoders/Simple Water Shader/Prefabs/WaterBlock_50m.prefab";
-        private const string Week7WaterMaterialPath = "Assets/IgniteCoders/Simple Water Shader/Resources/Water_mat_03.mat";
+        private const string Week7WaterSourceMaterialPath = "Assets/IgniteCoders/Simple Water Shader/Resources/Water_mat_03.mat";
+        private const string Week7WaterCandidateMaterialPath = "Assets/AfterBlue/Materials/Week7/AB_Water_Map01_Candidate.mat";
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
         private const string RoofModelPath = "Assets/Art/Exports/flooded_roof_modern_v01.fbx";
         private const string UtilityPoleModelPath = "Assets/Art/Exports/rusted_utility_pole_v01.fbx";
@@ -56,21 +57,21 @@ namespace AfterBlue.EditorTools
             string materialFolder = useWeek7Water ? Week7MaterialFolder : DebugMaterialFolder;
             EnsureFolder(materialFolder);
 
-            Material water = useWeek7Water ? LoadMaterial(Week7WaterMaterialPath) : null;
+            Material water = useWeek7Water ? EnsureWeek7WaterCandidateMaterial() : null;
             if (water == null)
             {
                 water = CreateMaterial($"{materialFolder}/MAT_S2_Water_Base.mat", new Color(0.04f, 0.55f, 0.62f, 0.68f), true);
             }
 
-            float guideAlphaScale = useWeek7Water ? 0.42f : 1f;
+            float guideAlphaScale = useWeek7Water ? 0.20f : 1f;
             Material shallow = CreateMaterial($"{materialFolder}/MAT_S2_Depth_Shallow_H1.mat", WithAlpha(new Color(0.35f, 0.96f, 0.72f, 0.36f), guideAlphaScale), true);
             Material medium = CreateMaterial($"{materialFolder}/MAT_S2_Depth_Medium.mat", WithAlpha(new Color(0.05f, 0.70f, 0.76f, 0.32f), guideAlphaScale), true);
             Material h2Zone = CreateMaterial($"{materialFolder}/MAT_S2_Zone_H2_TealViolet.mat", WithAlpha(new Color(0.15f, 0.52f, 0.96f, 0.34f), guideAlphaScale), true);
             Material h3Zone = CreateMaterial($"{materialFolder}/MAT_S2_Zone_H3_DeepViolet.mat", WithAlpha(new Color(0.22f, 0.16f, 0.58f, 0.46f), guideAlphaScale), true);
             Material startZone = CreateMaterial($"{materialFolder}/MAT_S2_Zone_Start_Warm.mat", WithAlpha(new Color(1f, 0.56f, 0.12f, 0.48f), guideAlphaScale), true);
             Material returnZone = CreateMaterial($"{materialFolder}/MAT_S2_Zone_Return.mat", WithAlpha(new Color(0.23f, 0.68f, 0.92f, 0.28f), guideAlphaScale), true);
-            Material route = CreateMaterial($"{materialFolder}/MAT_S2_Route_Main.mat", WithAlpha(new Color(0.57f, 0.94f, 1f, 0.64f), useWeek7Water ? 0.55f : 1f), true);
-            Material boundary = CreateMaterial($"{materialFolder}/MAT_S2_Boundary.mat", WithAlpha(new Color(0.72f, 0.94f, 1f, 0.82f), useWeek7Water ? 0.46f : 1f), true);
+            Material route = CreateMaterial($"{materialFolder}/MAT_S2_Route_Main.mat", WithAlpha(new Color(0.57f, 0.94f, 1f, 0.64f), useWeek7Water ? 0.32f : 1f), true);
+            Material boundary = CreateMaterial($"{materialFolder}/MAT_S2_Boundary.mat", WithAlpha(new Color(0.72f, 0.94f, 1f, 0.82f), useWeek7Water ? 0.26f : 1f), true);
             Material road = CreateMaterial($"{materialFolder}/MAT_S2_AsphaltProxy.mat", new Color(0.08f, 0.13f, 0.16f, 1f), false);
             Material concrete = CreateMaterial($"{materialFolder}/MAT_S2_ConcreteProxy.mat", new Color(0.42f, 0.54f, 0.56f, 1f), false);
             Material roof = CreateMaterial($"{materialFolder}/MAT_S2_RoofProxy.mat", new Color(0.11f, 0.24f, 0.27f, 1f), false);
@@ -78,8 +79,8 @@ namespace AfterBlue.EditorTools
             Material rust = CreateMaterial($"{materialFolder}/MAT_S2_RustMetalProxy.mat", new Color(0.56f, 0.25f, 0.12f, 1f), false);
             Material vegetation = CreateMaterial($"{materialFolder}/MAT_S2_VegetationProxy.mat", new Color(0.20f, 0.43f, 0.22f, 1f), false);
             Material warmLight = CreateMaterial($"{materialFolder}/MAT_S2_WarmLightProxy.mat", new Color(1f, 0.72f, 0.30f, 1f), false);
-            Material ripple = CreateMaterial($"{materialFolder}/MAT_S2_RippleLines.mat", WithAlpha(new Color(0.74f, 1f, 1f, 0.55f), useWeek7Water ? 0.70f : 1f), true);
-            Material shadow = CreateMaterial($"{materialFolder}/MAT_S2_SubmergedShadow.mat", WithAlpha(new Color(0.02f, 0.07f, 0.09f, 0.52f), useWeek7Water ? 0.62f : 1f), true);
+            Material ripple = CreateMaterial($"{materialFolder}/MAT_S2_RippleLines.mat", WithAlpha(new Color(0.74f, 1f, 1f, 0.55f), useWeek7Water ? 0.48f : 1f), true);
+            Material shadow = CreateMaterial($"{materialFolder}/MAT_S2_SubmergedShadow.mat", WithAlpha(new Color(0.02f, 0.07f, 0.09f, 0.52f), useWeek7Water ? 0.86f : 1f), true);
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             scene.name = sceneName;
@@ -102,7 +103,7 @@ namespace AfterBlue.EditorTools
             CreateRouteGuides(routes, route);
             CreateLargeZoneFields(zones, startZone, shallow, medium, h2Zone, h3Zone, returnZone);
             CreateFishingZoneFields(fishingZones, shallow, medium, h2Zone, h3Zone, returnZone);
-            CreateWeek5StyleProxies(landmarks, obstacles, road, concrete, roof, wood, rust, vegetation, warmLight, shadow);
+            CreateWeek5StyleProxies(landmarks, obstacles, road, concrete, roof, wood, rust, vegetation, warmLight, shadow, useWeek7Water);
             CreateWaterLines(waterRoot, ripple);
             CreateSpeedAndCrossingMarkers(debug, route, boundary);
             CreateBoatAndCamera(system, warmLight);
@@ -221,14 +222,14 @@ namespace AfterBlue.EditorTools
             CreateFlatEllipse(parent, "FZ_D_ReturnWater_Readable", D + new Vector3(15f, 0f, 6f), ScaleSize(30f, 22f, FishingFieldScale), ret);
         }
 
-        private static void CreateWeek5StyleProxies(Transform landmarks, Transform obstacles, Material road, Material concrete, Material roof, Material wood, Material rust, Material vegetation, Material warmLight, Material shadow)
+        private static void CreateWeek5StyleProxies(Transform landmarks, Transform obstacles, Material road, Material concrete, Material roof, Material wood, Material rust, Material vegetation, Material warmLight, Material shadow, bool useSubmergedHeightRules)
         {
             CreateStartSupplyCluster(landmarks, wood, rust, warmLight);
-            CreateH1ResidentialCluster(landmarks, obstacles, roof, concrete, vegetation, shadow);
-            CreateCentralRoadCluster(landmarks, obstacles, road, concrete, shadow);
-            CreateH2TrafficLightCluster(landmarks, obstacles, road, concrete, rust, warmLight, shadow);
-            CreateH3DeepDebrisCluster(landmarks, obstacles, rust, wood, vegetation, shadow);
-            CreateReturnWaterCluster(landmarks, obstacles, roof, vegetation, shadow);
+            CreateH1ResidentialCluster(landmarks, obstacles, roof, concrete, vegetation, shadow, useSubmergedHeightRules);
+            CreateCentralRoadCluster(landmarks, obstacles, road, concrete, shadow, useSubmergedHeightRules);
+            CreateH2TrafficLightCluster(landmarks, obstacles, road, concrete, rust, warmLight, shadow, useSubmergedHeightRules);
+            CreateH3DeepDebrisCluster(landmarks, obstacles, rust, wood, vegetation, shadow, useSubmergedHeightRules);
+            CreateReturnWaterCluster(landmarks, obstacles, roof, vegetation, shadow, useSubmergedHeightRules);
         }
 
         private static void CreateStartSupplyCluster(Transform parent, Material wood, Material rust, Material warmLight)
@@ -244,19 +245,21 @@ namespace AfterBlue.EditorTools
             CreateBox(root, "Dock_Plank_B", new Vector3(7.0f, 0.1f, -1.2f), new Vector3(7.2f, 0.18f, 1.0f), Quaternion.Euler(0f, -5f, 0f), wood);
         }
 
-        private static void CreateH1ResidentialCluster(Transform landmarks, Transform obstacles, Material roof, Material concrete, Material vegetation, Material shadow)
+        private static void CreateH1ResidentialCluster(Transform landmarks, Transform obstacles, Material roof, Material concrete, Material vegetation, Material shadow, bool useSubmergedHeightRules)
         {
             Transform root = CreateChild(landmarks, "H1_ShallowResidential");
             root.localPosition = H1;
+            float roofY = useSubmergedHeightRules ? -0.08f : 0.10f;
+            float clutterY = useSubmergedHeightRules ? -0.10f : 0.25f;
 
             Vector3[] roofPositions =
             {
-                new Vector3(-15f, 0.12f, 7f),
-                new Vector3(-4f, 0.10f, 10f),
-                new Vector3(9f, 0.10f, 5f),
-                new Vector3(-11f, 0.10f, -6f),
-                new Vector3(4f, 0.10f, -8f),
-                new Vector3(17f, 0.09f, -3f)
+                new Vector3(-15f, roofY + 0.02f, 7f),
+                new Vector3(-4f, roofY, 10f),
+                new Vector3(9f, roofY, 5f),
+                new Vector3(-11f, roofY, -6f),
+                new Vector3(4f, roofY, -8f),
+                new Vector3(17f, roofY - 0.01f, -3f)
             };
 
             for (int i = 0; i < roofPositions.Length; i++)
@@ -274,36 +277,41 @@ namespace AfterBlue.EditorTools
 
             Transform block = CreateChild(obstacles, "H1_Light_Obstacle");
             block.localPosition = H1;
-            CreateBox(block, "H1_Passable_Narrow_Clutter_A", new Vector3(-20f, 0.25f, 2f), new Vector3(6f, 0.4f, 3f), Quaternion.Euler(0f, 12f, 0f), concrete);
-            CreateBox(block, "H1_Passable_Narrow_Clutter_B", new Vector3(18f, 0.25f, -7f), new Vector3(5f, 0.4f, 2.5f), Quaternion.Euler(0f, -22f, 0f), concrete);
+            CreateBox(block, "H1_Passable_Narrow_Clutter_A", new Vector3(-20f, clutterY, 2f), new Vector3(6f, 0.4f, 3f), Quaternion.Euler(0f, 12f, 0f), concrete);
+            CreateBox(block, "H1_Passable_Narrow_Clutter_B", new Vector3(18f, clutterY, -7f), new Vector3(5f, 0.4f, 2.5f), Quaternion.Euler(0f, -22f, 0f), concrete);
         }
 
-        private static void CreateCentralRoadCluster(Transform landmarks, Transform obstacles, Material road, Material concrete, Material shadow)
+        private static void CreateCentralRoadCluster(Transform landmarks, Transform obstacles, Material road, Material concrete, Material shadow, bool useSubmergedHeightRules)
         {
             Transform root = CreateChild(landmarks, "M_Central_SubmergedRoad");
             root.localPosition = Vector3.zero;
+            float roadY = useSubmergedHeightRules ? -0.16f : 0.02f;
+            float fragmentY = useSubmergedHeightRules ? -0.08f : 0.18f;
 
-            CreateRoadSegment(root, "Road_S_to_M_A", Mid(Start, M, 0.28f) + Vector3.up * 0.02f, Start, M, 26f, road, concrete);
-            CreateRoadSegment(root, "Road_S_to_M_B", Mid(Start, M, 0.64f) + Vector3.up * 0.02f, Start, M, 25f, road, concrete);
-            CreateRoadSegment(root, "Road_M_to_H2_A", Mid(M, H2, 0.35f) + Vector3.up * 0.02f, M, H2, 30f, road, concrete);
-            CreateRoadSegment(root, "Road_M_to_H2_B", Mid(M, H2, 0.72f) + Vector3.up * 0.02f, M, H2, 24f, road, concrete);
+            CreateRoadSegment(root, "Road_S_to_M_A", Mid(Start, M, 0.28f) + Vector3.up * roadY, Start, M, 26f, road, concrete);
+            CreateRoadSegment(root, "Road_S_to_M_B", Mid(Start, M, 0.64f) + Vector3.up * roadY, Start, M, 25f, road, concrete);
+            CreateRoadSegment(root, "Road_M_to_H2_A", Mid(M, H2, 0.35f) + Vector3.up * roadY, M, H2, 30f, road, concrete);
+            CreateRoadSegment(root, "Road_M_to_H2_B", Mid(M, H2, 0.72f) + Vector3.up * roadY, M, H2, 24f, road, concrete);
             CreateFlatEllipse(root, "M_Road_Submerged_Shadow", M + new Vector3(4f, 0f, -4f), new Vector2(52f, 24f), shadow);
 
             Transform block = CreateChild(obstacles, "M_Central_Road_OpenPassages");
-            CreateBox(block, "M_Road_Fragment_Visible_Not_Blocking_A", M + new Vector3(-18f, 0.18f, -10f), new Vector3(10f, 0.32f, 3f), Quaternion.Euler(0f, -18f, 0f), concrete);
-            CreateBox(block, "M_Road_Fragment_Visible_Not_Blocking_B", M + new Vector3(22f, 0.18f, 10f), new Vector3(9f, 0.32f, 2.6f), Quaternion.Euler(0f, 16f, 0f), concrete);
+            CreateBox(block, "M_Road_Fragment_Visible_Not_Blocking_A", M + new Vector3(-18f, fragmentY, -10f), new Vector3(10f, 0.32f, 3f), Quaternion.Euler(0f, -18f, 0f), concrete);
+            CreateBox(block, "M_Road_Fragment_Visible_Not_Blocking_B", M + new Vector3(22f, fragmentY, 10f), new Vector3(9f, 0.32f, 2.6f), Quaternion.Euler(0f, 16f, 0f), concrete);
         }
 
-        private static void CreateH2TrafficLightCluster(Transform landmarks, Transform obstacles, Material road, Material concrete, Material rust, Material warmLight, Material shadow)
+        private static void CreateH2TrafficLightCluster(Transform landmarks, Transform obstacles, Material road, Material concrete, Material rust, Material warmLight, Material shadow, bool useSubmergedHeightRules)
         {
             Transform root = CreateChild(landmarks, "H2_TrafficLight");
             root.localPosition = H2;
+            float roadY = useSubmergedHeightRules ? -0.15f : 0.03f;
+            float stripeY = useSubmergedHeightRules ? -0.08f : 0.12f;
+            float blockerY = useSubmergedHeightRules ? 0.02f : 0.25f;
 
-            CreateBox(root, "H2_Intersection_Main_Road", new Vector3(0f, 0.03f, 0f), new Vector3(42f, 0.10f, 9f), Quaternion.Euler(0f, -10f, 0f), road);
-            CreateBox(root, "H2_Intersection_Cross_Road", new Vector3(1f, 0.035f, 0f), new Vector3(9f, 0.10f, 34f), Quaternion.Euler(0f, -10f, 0f), road);
+            CreateBox(root, "H2_Intersection_Main_Road", new Vector3(0f, roadY, 0f), new Vector3(42f, 0.10f, 9f), Quaternion.Euler(0f, -10f, 0f), road);
+            CreateBox(root, "H2_Intersection_Cross_Road", new Vector3(1f, roadY + 0.005f, 0f), new Vector3(9f, 0.10f, 34f), Quaternion.Euler(0f, -10f, 0f), road);
             for (int i = -2; i <= 2; i++)
             {
-                CreateBox(root, $"H2_Crosswalk_Stripe_{i + 3}", new Vector3(i * 2.2f, 0.12f, -6.4f), new Vector3(1.1f, 0.04f, 7f), Quaternion.Euler(0f, -10f, 0f), concrete);
+                CreateBox(root, $"H2_Crosswalk_Stripe_{i + 3}", new Vector3(i * 2.2f, stripeY, -6.4f), new Vector3(1.1f, 0.04f, 7f), Quaternion.Euler(0f, -10f, 0f), concrete);
             }
 
             CreateTrafficLightProxy(root, "H2_Tilted_TrafficLight_Hero", new Vector3(2.5f, 1.7f, 0.5f), Quaternion.Euler(0f, 18f, -18f), rust, warmLight);
@@ -314,22 +322,25 @@ namespace AfterBlue.EditorTools
 
             Transform block = CreateChild(obstacles, "H2_Obstacle");
             block.localPosition = H2;
-            CreateBox(block, "H2_Broken_Road_Blocker_North", new Vector3(-18f, 0.25f, 10f), new Vector3(8f, 0.5f, 4f), Quaternion.Euler(0f, 18f, 0f), concrete);
-            CreateBox(block, "H2_Broken_Road_Blocker_South", new Vector3(16f, 0.25f, -12f), new Vector3(9f, 0.5f, 4.5f), Quaternion.Euler(0f, -14f, 0f), concrete);
+            CreateBox(block, "H2_Broken_Road_Blocker_North", new Vector3(-18f, blockerY, 10f), new Vector3(8f, 0.5f, 4f), Quaternion.Euler(0f, 18f, 0f), concrete);
+            CreateBox(block, "H2_Broken_Road_Blocker_South", new Vector3(16f, blockerY, -12f), new Vector3(9f, 0.5f, 4.5f), Quaternion.Euler(0f, -14f, 0f), concrete);
         }
 
-        private static void CreateH3DeepDebrisCluster(Transform landmarks, Transform obstacles, Material rust, Material wood, Material vegetation, Material shadow)
+        private static void CreateH3DeepDebrisCluster(Transform landmarks, Transform obstacles, Material rust, Material wood, Material vegetation, Material shadow, bool useSubmergedHeightRules)
         {
             Transform root = CreateChild(landmarks, "H3_DeepDebris");
             root.localPosition = H3;
+            float debrisY = useSubmergedHeightRules ? -0.05f : 0.35f;
+            float plankY = useSubmergedHeightRules ? 0.03f : 0.2f;
+            float heroY = useSubmergedHeightRules ? -0.08f : 0.28f;
 
             CreateFlatEllipse(root, "H3_Dark_Depth_Shadow_Core", new Vector3(0f, -0.02f, 0f), new Vector2(58f, 42f), shadow);
             for (int i = 0; i < 8; i++)
             {
                 float angle = i * 46f;
-                Vector3 position = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad) * (10f + i % 3 * 5f), 0.35f, Mathf.Sin(angle * Mathf.Deg2Rad) * (8f + i % 2 * 6f));
+                Vector3 position = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad) * (10f + i % 3 * 5f), debrisY, Mathf.Sin(angle * Mathf.Deg2Rad) * (8f + i % 2 * 6f));
                 CreateBox(root, $"H3_Metal_Frame_Debris_{i + 1}", position, new Vector3(9f + i % 2 * 4f, 0.28f, 0.55f), Quaternion.Euler(0f, angle, 0f), rust);
-                CreateBox(root, $"H3_Wood_Plank_Debris_{i + 1}", position + new Vector3(1.2f, 0.2f, -1.3f), new Vector3(5f, 0.20f, 0.45f), Quaternion.Euler(0f, angle + 28f, 0f), wood);
+                CreateBox(root, $"H3_Wood_Plank_Debris_{i + 1}", new Vector3(position.x + 1.2f, plankY, position.z - 1.3f), new Vector3(5f, 0.20f, 0.45f), Quaternion.Euler(0f, angle + 28f, 0f), wood);
             }
 
             CreatePlantCluster(root, "H3_Long_Seaweed_Cluster_A", new Vector3(-12f, 0.5f, 11f), 7, vegetation);
@@ -337,22 +348,24 @@ namespace AfterBlue.EditorTools
 
             Transform block = CreateChild(obstacles, "H3_Obstacle");
             block.localPosition = H3;
-            CreateBox(block, "H3_Hero_Wreck_Silhouette", new Vector3(3f, 0.28f, -1f), new Vector3(24f, 0.45f, 8f), Quaternion.Euler(0f, -22f, 0f), rust);
-            CreateBox(block, "H3_Not_Passable_Debris_Core", new Vector3(-8f, 0.38f, 9f), new Vector3(12f, 0.55f, 5f), Quaternion.Euler(0f, 35f, 0f), rust);
+            CreateBox(block, "H3_Hero_Wreck_Silhouette", new Vector3(3f, heroY, -1f), new Vector3(24f, 0.45f, 8f), Quaternion.Euler(0f, -22f, 0f), rust);
+            CreateBox(block, "H3_Not_Passable_Debris_Core", new Vector3(-8f, heroY + 0.10f, 9f), new Vector3(12f, 0.55f, 5f), Quaternion.Euler(0f, 35f, 0f), rust);
         }
 
-        private static void CreateReturnWaterCluster(Transform landmarks, Transform obstacles, Material roof, Material vegetation, Material shadow)
+        private static void CreateReturnWaterCluster(Transform landmarks, Transform obstacles, Material roof, Material vegetation, Material shadow, bool useSubmergedHeightRules)
         {
             Transform root = CreateChild(landmarks, "D_ReturnWater");
             root.localPosition = D;
+            float roofY = useSubmergedHeightRules ? -0.08f : 0.1f;
+            float markerY = useSubmergedHeightRules ? -0.03f : 0.22f;
 
             CreateFlatEllipse(root, "D_Return_Water_Shadow", Vector3.zero, new Vector2(32f, 22f), shadow);
-            CreateRoofProxy(root, "D_Low_Roof_Guide_A", new Vector3(-7f, 0.1f, 5f), Quaternion.Euler(0f, 30f, 0f), new Vector3(7f, 0.18f, 3.8f), roof, roof, vegetation);
+            CreateRoofProxy(root, "D_Low_Roof_Guide_A", new Vector3(-7f, roofY, 5f), Quaternion.Euler(0f, 30f, 0f), new Vector3(7f, 0.18f, 3.8f), roof, roof, vegetation);
             CreatePlantCluster(root, "D_Seaweed_Return_Cue", new Vector3(8f, 0.32f, -5f), 6, vegetation);
 
             Transform block = CreateChild(obstacles, "D_Light_Obstacle");
             block.localPosition = D;
-            CreateBox(block, "D_Return_Debris_Not_Blocking", new Vector3(10f, 0.22f, 7f), new Vector3(7f, 0.35f, 3f), Quaternion.Euler(0f, -12f, 0f), roof);
+            CreateBox(block, "D_Return_Debris_Not_Blocking", new Vector3(10f, markerY, 7f), new Vector3(7f, 0.35f, 3f), Quaternion.Euler(0f, -12f, 0f), roof);
         }
 
         private static void CreateWaterLines(Transform parent, Material material)
@@ -630,15 +643,55 @@ namespace AfterBlue.EditorTools
             }
         }
 
-        private static Material LoadMaterial(string path)
+        private static Material EnsureWeek7WaterCandidateMaterial()
         {
-            return AssetDatabase.LoadAssetAtPath<Material>(path);
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(Week7WaterCandidateMaterialPath);
+            if (material == null)
+            {
+                Material source = AssetDatabase.LoadAssetAtPath<Material>(Week7WaterSourceMaterialPath);
+                if (source == null)
+                {
+                    return null;
+                }
+
+                AssetDatabase.CopyAsset(Week7WaterSourceMaterialPath, Week7WaterCandidateMaterialPath);
+                material = AssetDatabase.LoadAssetAtPath<Material>(Week7WaterCandidateMaterialPath);
+                if (material == null)
+                {
+                    return source;
+                }
+            }
+
+            material.name = "AB_Water_Map01_Candidate";
+            SetColorIfPresent(material, "Color_36218622185947c6a5ae36366d8e21d8", new Color(0.12f, 0.45f, 0.54f, 0.96f));
+            SetColorIfPresent(material, "Color_93e06cd551a5449091bcde90b46765a0", new Color(0.25f, 0.86f, 0.78f, 0.18f));
+            SetFloatIfPresent(material, "Vector1_687f54e8c371429f86b9eaab0e7dfe3e", 0.34f);
+            SetFloatIfPresent(material, "Vector1_6c82dffdd68049bcb019d3a9c64c92a0", 0.14f);
+            SetFloatIfPresent(material, "Vector1_7273530c27a34c9f8ee5723b84f96baa", 0.34f);
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         private static Color WithAlpha(Color color, float alphaScale)
         {
             color.a *= alphaScale;
             return color;
+        }
+
+        private static void SetColorIfPresent(Material material, string propertyName, Color color)
+        {
+            if (material.HasProperty(propertyName))
+            {
+                material.SetColor(propertyName, color);
+            }
+        }
+
+        private static void SetFloatIfPresent(Material material, string propertyName, float value)
+        {
+            if (material.HasProperty(propertyName))
+            {
+                material.SetFloat(propertyName, value);
+            }
         }
 
         private static Material CreateMaterial(string path, Color color, bool transparent)

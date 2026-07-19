@@ -11,6 +11,7 @@ namespace AfterBlue.EditorTools
     {
         private const string Week6ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week6.unity";
         private const string Week7ScenePath = "Assets/AfterBlue/Scenes/Map_01/Map_01_Week7.unity";
+        private const string Week7TriggerPath = "Temp/AfterBlueRunWeek7WaterPass.once";
         private const string DebugMaterialFolder = "Assets/AfterBlue/Materials/Debug";
         private const string Week7MaterialFolder = "Assets/AfterBlue/Materials/Week7";
         private const string Week7WaterBlockPrefabPath = "Assets/IgniteCoders/Simple Water Shader/Prefabs/WaterBlock_50m.prefab";
@@ -30,6 +31,9 @@ namespace AfterBlue.EditorTools
         private const string FloodedGroundsCarPath = "Assets/Flooded_Grounds/Prefabs/Props/Prop_Car_A.prefab";
         private const string FloodedGroundsShipPath = "Assets/Flooded_Grounds/Prefabs/Props/Prop_Ship_A.prefab";
         private const string FloodedGroundsLampPath = "Assets/Flooded_Grounds/Prefabs/Props/Prop_Lamp_C.prefab";
+        private const string FloodedGroundsGrassTallAPath = "Assets/Flooded_Grounds/Prefabs/Nature/Grass/Grass_Tall_A.prefab";
+        private const string FloodedGroundsBushAPath = "Assets/Flooded_Grounds/Prefabs/Nature/Bushes/DecoBush_A.prefab";
+        private const string FloodedGroundsConvertedMaterialFolder = "Assets/AfterBlue/Materials/FloodedGroundsConverted";
 
         private const float GameplayWidth = 640f;
         private const float GameplayDepth = 420f;
@@ -65,13 +69,25 @@ namespace AfterBlue.EditorTools
         private static readonly Vector3 H3 = new Vector3(250f, 0f, -155f);
         private static readonly Vector3 D = new Vector3(-90f, 0f, -170f);
 
+        [InitializeOnLoadMethod]
+        private static void RunWeek7WhenTriggered()
+        {
+            if (!System.IO.File.Exists(Week7TriggerPath))
+            {
+                return;
+            }
+
+            System.IO.File.Delete(Week7TriggerPath);
+            EditorApplication.delayCall += ApplyWeek7WaterAndAssetPass;
+        }
+
         [MenuItem("AfterBlue/Setup/Apply Week 6 Map 01")]
         public static void ApplyWeek6Map01()
         {
             ApplyMap01(Week6ScenePath, "Map_01_Week6", "WEEK6_GOAL_MapSize_ZoneLoop_Movement", $"W6_BC_LOOP_{ActiveScaleLabel}_Boat9p5ms_MainStartH1MH2H3D", "Week 6 Map_01", false);
         }
 
-        [MenuItem("AfterBlue/Setup/Apply Week 7 Water And Asset Pass")]
+        [MenuItem("AfterBlue/Setup/Apply Week 7 Water Pass")]
         public static void ApplyWeek7WaterAndAssetPass()
         {
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
@@ -80,7 +96,7 @@ namespace AfterBlue.EditorTools
                 return;
             }
 
-            ApplyMap01(Week7ScenePath, "Map_01_Week7", "WEEK7_GOAL_Water_SubmergedReadability_AssetPlan", $"W7_E_UNDERWATER_FLOOR_V1_{ActiveScaleLabel}_IgniteCodersSimpleWater", "Week 7 Water And Asset Pass", true);
+            ApplyMap01(Week7ScenePath, "Map_01_Week7", "WEEK7_GOAL_Water_SubmergedReadability_AssetPlan", $"W7_WATER_PASS_{ActiveScaleLabel}_IgniteCodersSimpleWater", "Week 7 Water Pass", true);
         }
 
         private static void ApplyMap01(string scenePath, string sceneName, string goalName, string specName, string logLabel, bool useWeek7Water)
@@ -154,7 +170,7 @@ namespace AfterBlue.EditorTools
             CreateWeek5StyleProxies(landmarks, obstacles, road, concrete, roof, wood, rust, vegetation, warmLight, shadow, useWeek7Water);
             if (useWeek7Water)
             {
-                CreateFloodedGroundsSelectedAssetPass(landmarks);
+                CreateWeek7NatureDressingPass(landmarks);
             }
             CreateWaterLines(waterRoot, ripple);
             CreateSpeedAndCrossingMarkers(debug, route, boundary);
@@ -327,6 +343,79 @@ namespace AfterBlue.EditorTools
             CreateFloodedGroundsAsset(root, FloodedGroundsBridgePath, "H3_FG_Broken_Bridge_Silhouette", H3 + new Vector3(-8f, -0.72f, 8f), Quaternion.Euler(0f, -22f, 0f), Vector3.one * 2.6f);
             CreateFloodedGroundsAsset(root, FloodedGroundsFencePath, "H3_FG_Fence_Debris_A", H3 + new Vector3(20f, -0.20f, -12f), Quaternion.Euler(0f, 35f, 0f), Vector3.one * 2.0f);
             CreateFloodedGroundsAsset(root, FloodedGroundsShipPath, "H3_FG_Sunken_Ship_A", H3 + new Vector3(-26f, -0.85f, -5f), Quaternion.Euler(0f, 12f, 0f), Vector3.one * 2.1f);
+        }
+
+        private static void CreateWeek7NatureDressingPass(Transform landmarks)
+        {
+            Transform root = CreateChild(landmarks, "W7_NatureDressing_TwoAssetVariation");
+
+            CreateNatureDressingCluster(root, "H1_Shallow_Roof_Overgrowth", H1, new[]
+            {
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(-38f, -0.78f, 20f), 1.85f, -18f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(-32f, -0.82f, 14f), 1.55f, 36f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(-23f, -0.72f, 3f), 1.35f, 82f),
+                new NaturePlacement(FloodedGroundsBushAPath, new Vector3(-18f, -0.58f, 18f), 1.45f, -32f),
+                new NaturePlacement(FloodedGroundsBushAPath, new Vector3(9f, -0.55f, 14f), 1.25f, 26f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(18f, -0.78f, 5f), 1.65f, 66f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(30f, -0.82f, -9f), 1.45f, -52f),
+                new NaturePlacement(FloodedGroundsBushAPath, new Vector3(22f, -0.62f, -18f), 1.15f, 118f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(-5f, -0.88f, -22f), 1.50f, 145f),
+            });
+
+            CreateNatureDressingCluster(root, "M_Road_Seam_Overgrowth", Vector3.zero, new[]
+            {
+                new NaturePlacement(FloodedGroundsGrassTallAPath, Mid(Start, M, 0.42f) + new Vector3(-8f, -0.90f, 7f), 1.30f, 18f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, Mid(Start, M, 0.56f) + new Vector3(7f, -0.90f, -6f), 1.20f, -44f),
+                new NaturePlacement(FloodedGroundsBushAPath, Mid(Start, M, 0.68f) + new Vector3(11f, -0.72f, 6f), 0.95f, 74f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, Mid(M, H2, 0.32f) + new Vector3(-6f, -0.92f, 8f), 1.25f, 120f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, Mid(M, H2, 0.56f) + new Vector3(5f, -0.92f, -9f), 1.35f, -18f),
+                new NaturePlacement(FloodedGroundsBushAPath, Mid(M, H2, 0.76f) + new Vector3(-10f, -0.76f, 6f), 1.05f, 32f),
+            });
+
+            CreateNatureDressingCluster(root, "H2_Intersection_Edge_Growth", H2, new[]
+            {
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(-42f, -0.85f, 26f), 1.45f, -8f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(-31f, -0.82f, -22f), 1.35f, 38f),
+                new NaturePlacement(FloodedGroundsBushAPath, new Vector3(-24f, -0.66f, 18f), 1.00f, -48f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(24f, -0.88f, 20f), 1.55f, 94f),
+                new NaturePlacement(FloodedGroundsBushAPath, new Vector3(31f, -0.68f, -18f), 1.10f, 22f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(42f, -0.90f, -6f), 1.25f, -78f),
+            });
+
+            CreateNatureDressingCluster(root, "H3_Deep_Silhouette_Growth", H3, new[]
+            {
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(-52f, -1.10f, 28f), 1.80f, -26f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(-34f, -1.04f, -24f), 1.55f, 42f),
+                new NaturePlacement(FloodedGroundsBushAPath, new Vector3(-18f, -0.92f, 21f), 1.40f, -82f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(16f, -1.12f, 30f), 1.65f, 108f),
+                new NaturePlacement(FloodedGroundsBushAPath, new Vector3(31f, -0.96f, -24f), 1.55f, 18f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, new Vector3(50f, -1.15f, -5f), 1.45f, -118f),
+            });
+
+            CreateNatureDressingCluster(root, "Start_And_Return_Sparse_Cues", Vector3.zero, new[]
+            {
+                new NaturePlacement(FloodedGroundsGrassTallAPath, Start + new Vector3(20f, -0.72f, 22f), 1.20f, 16f),
+                new NaturePlacement(FloodedGroundsBushAPath, Start + new Vector3(-16f, -0.58f, 15f), 0.90f, -34f),
+                new NaturePlacement(FloodedGroundsGrassTallAPath, D + new Vector3(-20f, -0.85f, 18f), 1.25f, 42f),
+                new NaturePlacement(FloodedGroundsBushAPath, D + new Vector3(18f, -0.66f, -12f), 1.00f, -66f),
+            });
+        }
+
+        private static void CreateNatureDressingCluster(Transform parent, string name, Vector3 center, NaturePlacement[] placements)
+        {
+            Transform root = CreateChild(parent, name);
+            root.localPosition = center;
+            for (int i = 0; i < placements.Length; i++)
+            {
+                NaturePlacement placement = placements[i];
+                CreateNatureDressingAsset(
+                    root,
+                    placement.Path,
+                    $"{name}_{i + 1:00}",
+                    placement.OffsetOrWorldPosition,
+                    Quaternion.Euler(0f, placement.YawDegrees, 0f),
+                    Vector3.one * placement.Scale);
+            }
         }
 
         private static void CreateUnderwaterFloorPlates(Transform obstacles, Material floor, Material road, Material concrete)
@@ -732,6 +821,74 @@ namespace AfterBlue.EditorTools
             return true;
         }
 
+        private static bool CreateNatureDressingAsset(Transform parent, string path, string name, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            GameObject asset = LoadGameObjectAsset(path);
+            if (asset == null)
+            {
+                Debug.LogWarning($"Flooded Grounds nature asset was not available for Week 7: {path}");
+                return false;
+            }
+
+            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            instance.name = name;
+            instance.transform.SetParent(parent, false);
+            instance.transform.localPosition = position;
+            instance.transform.localRotation = rotation;
+            instance.transform.localScale = scale;
+            ApplyConvertedMaterials(instance);
+            DestroyCollidersRecursively(instance);
+            return true;
+        }
+
+        private static void ApplyConvertedMaterials(GameObject target)
+        {
+            foreach (Renderer renderer in target.GetComponentsInChildren<Renderer>(true))
+            {
+                Material[] materials = renderer.sharedMaterials;
+                bool changed = false;
+
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    Material converted = FindConvertedMaterial(materials[i]);
+                    if (converted == null)
+                    {
+                        continue;
+                    }
+
+                    materials[i] = converted;
+                    changed = true;
+                }
+
+                if (changed)
+                {
+                    renderer.sharedMaterials = materials;
+                }
+            }
+        }
+
+        private static Material FindConvertedMaterial(Material source)
+        {
+            if (source == null || !AssetDatabase.IsValidFolder(FloodedGroundsConvertedMaterialFolder))
+            {
+                return null;
+            }
+
+            string safeName = SanitizeFileName(source.name);
+            string[] guids = AssetDatabase.FindAssets($"{safeName} t:Material", new[] { FloodedGroundsConvertedMaterialFolder });
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                if (fileName.StartsWith(safeName + "_"))
+                {
+                    return AssetDatabase.LoadAssetAtPath<Material>(path);
+                }
+            }
+
+            return null;
+        }
+
         private static GameObject LoadGameObjectAsset(string path)
         {
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
@@ -952,9 +1109,35 @@ namespace AfterBlue.EditorTools
             return $"{width:0}x{depth:0}";
         }
 
+        private static string SanitizeFileName(string value)
+        {
+            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+            {
+                value = value.Replace(c, '_');
+            }
+
+            return value;
+        }
+
         private static Vector3 Mid(Vector3 start, Vector3 end, float t)
         {
             return Vector3.Lerp(start, end, t);
+        }
+
+        private readonly struct NaturePlacement
+        {
+            public NaturePlacement(string path, Vector3 offsetOrWorldPosition, float scale, float yawDegrees)
+            {
+                Path = path;
+                OffsetOrWorldPosition = offsetOrWorldPosition;
+                Scale = scale;
+                YawDegrees = yawDegrees;
+            }
+
+            public string Path { get; }
+            public Vector3 OffsetOrWorldPosition { get; }
+            public float Scale { get; }
+            public float YawDegrees { get; }
         }
     }
 }

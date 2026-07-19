@@ -36,16 +36,10 @@ public class ReadmeEditor : Editor {
 	
 	static void LoadLayout()
 	{
-		var layoutPath = Path.Combine(Application.dataPath, "IgniteCoders/Simple Water Shader/Info/Layout.wlt");
-		if (!File.Exists(layoutPath))
-		{
-			return;
-		}
-
 		var assembly = typeof(EditorApplication).Assembly; 
 		var windowLayoutType = assembly.GetType("UnityEditor.WindowLayout", true);
 		var method = windowLayoutType.GetMethod("LoadWindowLayout", BindingFlags.Public | BindingFlags.Static);
-		method.Invoke(null, new object[]{layoutPath, false});
+		method.Invoke(null, new object[]{Path.Combine(Application.dataPath, "IgniteCoders/Simple Water Shader/Info/Layout.wlt"), false});
 	}
 	
 	[MenuItem("Documentation/Simple Water Shader")]
@@ -161,3 +155,4 @@ public class ReadmeEditor : Editor {
 		return GUI.Button (position, label, LinkStyle);
 	}
 }
+

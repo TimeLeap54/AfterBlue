@@ -6,7 +6,7 @@ Week 7 starts from the closed Week6 spatial foundation.
 
 Use:
 
-`AfterBlue > Setup > Apply Week 7 Water And Asset Pass`
+`AfterBlue > Setup > Apply Week 7 Water Pass`
 
 This creates:
 
@@ -17,6 +17,14 @@ This creates:
 Make the Week6 map read as a flooded world before full asset production.
 
 Week7 should not replace the Week6 layout. It should preserve the 640 x 420m map, the 9.5m/s boat candidate, and the Start/H1/M/H2/H3/D route structure.
+
+## Archive Note
+
+Status: archived as a learning snapshot after Week7 map-pipeline review.
+
+See `Docs/POSTMORTEM_WEEK07_MAP_PIPELINE.md`.
+
+Week7 proved that water, submerged terrain, asset sourcing, material conversion, and environment dressing should not be advanced before the underwater ground model and art direction are locked. Continue from this branch only as reference, not as the next production base.
 
 ## W7-A Scene And Branch Setup
 
@@ -80,18 +88,14 @@ Status: builder implementation complete, visual review pending after Unity menu 
 - Keep these W7-E floor plates collider-free, so normal boat navigation remains open.
 - Treat these plates as temporary slots. Replace them with Flooded Grounds road/ground prefabs once that package is actually imported under `Assets`.
 
-### W7-G Flooded Grounds Selected Asset Pass
+### W7-G Flooded Grounds Selected Asset / Nature Review Pass
 
-Status: builder implementation complete, visual review pending after Unity menu apply.
+Status: exploratory implementation archived.
 
 - Keep the full imported `Assets/Flooded_Grounds` package ignored by Git as a local source dump.
-- Add a small selected pass under `07_LANDMARKS/W7_FloodedGrounds_SelectedAssets`.
-- Start uses a Flooded Grounds dock and lamp.
-- H1 uses Villa base/roof pieces as shallow residential silhouettes.
-- M and H2 use pavement pieces for submerged road readability.
-- H2 uses billboard and car props as traffic-intersection clutter.
-- H3 uses bridge, fence, and ship props as deep debris silhouettes.
-- All selected Flooded Grounds instances have colliders removed by the builder so they do not block boat navigation during the readability pass.
+- AssetLab review tools were added for Flooded Grounds material conversion and nature/moss review.
+- Week7 builder includes a small two-asset nature dressing experiment using `Grass_Tall_A` and `DecoBush_A`.
+- This pass is not considered production-ready because the underwater terrain model was not locked first.
 
 ### W7-F Asset Sourcing Table
 

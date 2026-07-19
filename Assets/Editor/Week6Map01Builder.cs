@@ -19,6 +19,17 @@ namespace AfterBlue.EditorTools
         private const string BoatModelPath = "Assets/Art/Exports/boat_small_v01.fbx";
         private const string RoofModelPath = "Assets/Art/Exports/flooded_roof_modern_v01.fbx";
         private const string UtilityPoleModelPath = "Assets/Art/Exports/rusted_utility_pole_v01.fbx";
+        private const string FloodedGroundsPavementMidPath = "Assets/Flooded_Grounds/Prefabs/Buildings/Structures1/Pavement2_Mid_A.prefab";
+        private const string FloodedGroundsPavementCornerPath = "Assets/Flooded_Grounds/Prefabs/Buildings/Structures1/Pavement1_Cor_A.prefab";
+        private const string FloodedGroundsDockPath = "Assets/Flooded_Grounds/Prefabs/Buildings/Structures1/Struct_Docking_A.prefab";
+        private const string FloodedGroundsFencePath = "Assets/Flooded_Grounds/Prefabs/Buildings/Structures1/Struct_Fence1_Mid_A.prefab";
+        private const string FloodedGroundsBillboardPath = "Assets/Flooded_Grounds/Prefabs/Buildings/Structures1/Struct_BillBoard_A.prefab";
+        private const string FloodedGroundsVillaRoofPath = "Assets/Flooded_Grounds/Prefabs/Buildings/Villa1/Villa1_Roof_Mid_A.prefab";
+        private const string FloodedGroundsVillaBasePath = "Assets/Flooded_Grounds/Prefabs/Buildings/Villa1/Villa1_Base_Mid_A.prefab";
+        private const string FloodedGroundsBridgePath = "Assets/Flooded_Grounds/Prefabs/Buildings/Bridge/BLD_Bridge_A.prefab";
+        private const string FloodedGroundsCarPath = "Assets/Flooded_Grounds/Prefabs/Props/Prop_Car_A.prefab";
+        private const string FloodedGroundsShipPath = "Assets/Flooded_Grounds/Prefabs/Props/Prop_Ship_A.prefab";
+        private const string FloodedGroundsLampPath = "Assets/Flooded_Grounds/Prefabs/Props/Prop_Lamp_C.prefab";
 
         private const float GameplayWidth = 640f;
         private const float GameplayDepth = 420f;
@@ -141,6 +152,10 @@ namespace AfterBlue.EditorTools
                 CreateUnderwaterFloorPlates(obstacles, underwaterFloor, road, concrete);
             }
             CreateWeek5StyleProxies(landmarks, obstacles, road, concrete, roof, wood, rust, vegetation, warmLight, shadow, useWeek7Water);
+            if (useWeek7Water)
+            {
+                CreateFloodedGroundsSelectedAssetPass(landmarks);
+            }
             CreateWaterLines(waterRoot, ripple);
             CreateSpeedAndCrossingMarkers(debug, route, boundary);
             CreateBoatAndCamera(system, warmLight);
@@ -161,20 +176,16 @@ namespace AfterBlue.EditorTools
 
         private static bool ValidateWeek7RequiredAssets()
         {
-            bool hasWaterPrefab = LoadGameObjectAsset(Week7WaterBlockPrefabPath) != null;
             bool hasWaterMaterial = AssetDatabase.LoadAssetAtPath<Material>(Week7WaterSourceMaterialPath) != null;
-            bool hasBoatModel = LoadGameObjectAsset(BoatModelPath) != null;
 
-            if (hasWaterPrefab && hasWaterMaterial && hasBoatModel)
+            if (hasWaterMaterial)
             {
                 return true;
             }
 
             string message =
-                "Week 7 required assets are not ready, so the scene was not regenerated.\n\n" +
-                $"Water prefab: {(hasWaterPrefab ? "OK" : Week7WaterBlockPrefabPath)}\n" +
-                $"Water material: {(hasWaterMaterial ? "OK" : Week7WaterSourceMaterialPath)}\n" +
-                $"Boat model: {(hasBoatModel ? "OK" : BoatModelPath)}\n\n" +
+                "Week 7 water source material is not ready, so the scene was not regenerated.\n\n" +
+                $"Water material: {Week7WaterSourceMaterialPath}\n\n" +
                 "Let Unity finish importing packages/assets, then run Apply Week 7 again.";
 
             Debug.LogError(message);
@@ -214,9 +225,12 @@ namespace AfterBlue.EditorTools
                     DestroyCollidersRecursively(waterObject);
                     return;
                 }
+
+                Debug.LogWarning($"Week 7 water prefab was not available. Creating material fallback water with {Week7WaterCandidateMaterialPath}.");
             }
 
-            GameObject baseWater = CreateBox(parent, $"Water_Base_{FormatSize(WaterWidth, WaterDepth)}", new Vector3(0f, -0.05f, 0f), new Vector3(WaterWidth, 0.10f, WaterDepth), Quaternion.identity, water);
+            string fallbackName = useWeek7Water ? "Water_Week7MaterialFallback" : "Water_Base";
+            GameObject baseWater = CreateBox(parent, $"{fallbackName}_{FormatSize(WaterWidth, WaterDepth)}", new Vector3(0f, -0.05f, 0f), new Vector3(WaterWidth, 0.10f, WaterDepth), Quaternion.identity, water);
             DestroyCollider(baseWater);
         }
 
@@ -290,6 +304,29 @@ namespace AfterBlue.EditorTools
             CreateH2TrafficLightCluster(landmarks, obstacles, road, concrete, rust, warmLight, shadow, useSubmergedHeightRules);
             CreateH3DeepDebrisCluster(landmarks, obstacles, rust, wood, vegetation, shadow, useSubmergedHeightRules);
             CreateReturnWaterCluster(landmarks, obstacles, roof, vegetation, shadow, useSubmergedHeightRules);
+        }
+
+        private static void CreateFloodedGroundsSelectedAssetPass(Transform landmarks)
+        {
+            Transform root = CreateChild(landmarks, "W7_FloodedGrounds_SelectedAssets");
+
+            CreateFloodedGroundsAsset(root, FloodedGroundsDockPath, "Start_FG_Dock_A", Start + new Vector3(8f, -0.20f, 6f), Quaternion.Euler(0f, 16f, 0f), Vector3.one * 2.2f);
+            CreateFloodedGroundsAsset(root, FloodedGroundsLampPath, "Start_FG_Lamp_C", Start + new Vector3(-4f, 0.72f, 5f), Quaternion.Euler(0f, -22f, 0f), Vector3.one * 1.8f);
+
+            CreateFloodedGroundsAsset(root, FloodedGroundsVillaBasePath, "H1_FG_Villa_Base_A", H1 + new Vector3(-20f, -0.80f, 11f), Quaternion.Euler(0f, -18f, 0f), Vector3.one * 2.5f);
+            CreateFloodedGroundsAsset(root, FloodedGroundsVillaRoofPath, "H1_FG_Villa_Roof_A", H1 + new Vector3(-13f, -0.18f, 10f), Quaternion.Euler(0f, -18f, 0f), Vector3.one * 2.35f);
+            CreateFloodedGroundsAsset(root, FloodedGroundsVillaRoofPath, "H1_FG_Villa_Roof_B", H1 + new Vector3(17f, -0.24f, -8f), Quaternion.Euler(0f, 22f, 0f), Vector3.one * 2.0f);
+
+            CreateFloodedGroundsAsset(root, FloodedGroundsPavementMidPath, "M_FG_Submerged_Pavement_A", Mid(M, H2, 0.28f) + new Vector3(0f, -0.60f, 0f), Quaternion.Euler(0f, 68f, 0f), new Vector3(2.8f, 1f, 2.8f));
+            CreateFloodedGroundsAsset(root, FloodedGroundsPavementMidPath, "M_FG_Submerged_Pavement_B", Mid(Start, M, 0.62f) + new Vector3(0f, -0.60f, 0f), Quaternion.Euler(0f, 35f, 0f), new Vector3(2.8f, 1f, 2.8f));
+
+            CreateFloodedGroundsAsset(root, FloodedGroundsPavementCornerPath, "H2_FG_Pavement_Corner", H2 + new Vector3(-10f, -0.58f, -4f), Quaternion.Euler(0f, -10f, 0f), Vector3.one * 3.0f);
+            CreateFloodedGroundsAsset(root, FloodedGroundsBillboardPath, "H2_FG_Billboard_Road_Sign", H2 + new Vector3(22f, 0.45f, 10f), Quaternion.Euler(0f, -34f, -8f), Vector3.one * 1.8f);
+            CreateFloodedGroundsAsset(root, FloodedGroundsCarPath, "H2_FG_Submerged_Car", H2 + new Vector3(-24f, -0.46f, -18f), Quaternion.Euler(0f, 28f, 0f), Vector3.one * 2.0f);
+
+            CreateFloodedGroundsAsset(root, FloodedGroundsBridgePath, "H3_FG_Broken_Bridge_Silhouette", H3 + new Vector3(-8f, -0.72f, 8f), Quaternion.Euler(0f, -22f, 0f), Vector3.one * 2.6f);
+            CreateFloodedGroundsAsset(root, FloodedGroundsFencePath, "H3_FG_Fence_Debris_A", H3 + new Vector3(20f, -0.20f, -12f), Quaternion.Euler(0f, 35f, 0f), Vector3.one * 2.0f);
+            CreateFloodedGroundsAsset(root, FloodedGroundsShipPath, "H3_FG_Sunken_Ship_A", H3 + new Vector3(-26f, -0.85f, -5f), Quaternion.Euler(0f, 12f, 0f), Vector3.one * 2.1f);
         }
 
         private static void CreateUnderwaterFloorPlates(Transform obstacles, Material floor, Material road, Material concrete)
@@ -495,6 +532,7 @@ namespace AfterBlue.EditorTools
             }
             else
             {
+                Debug.LogWarning($"Boat model was not available. Creating Week 7 fallback boat: {BoatModelPath}");
                 CreateBox(boat.transform, "Boat_Fallback_4p5m", Vector3.zero, new Vector3(1.8f, 0.6f, 4.5f), Quaternion.identity, fallbackMaterial);
             }
 
@@ -672,6 +710,25 @@ namespace AfterBlue.EditorTools
             instance.transform.localPosition = position;
             instance.transform.localRotation = rotation;
             instance.transform.localScale = scale;
+            return true;
+        }
+
+        private static bool CreateFloodedGroundsAsset(Transform parent, string path, string name, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            GameObject asset = LoadGameObjectAsset(path);
+            if (asset == null)
+            {
+                Debug.LogWarning($"Flooded Grounds asset was not available for Week 7: {path}");
+                return false;
+            }
+
+            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            instance.name = name;
+            instance.transform.SetParent(parent, false);
+            instance.transform.localPosition = position;
+            instance.transform.localRotation = rotation;
+            instance.transform.localScale = scale;
+            DestroyCollidersRecursively(instance);
             return true;
         }
 

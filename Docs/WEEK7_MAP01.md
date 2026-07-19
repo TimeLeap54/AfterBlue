@@ -40,8 +40,9 @@ Status: implementation complete, visual review pending after Unity menu apply.
 - Week7 menu applies `AB_Water_Map01_Candidate.mat` to the large 900 x 600m water surface.
 - Week7 debug guide materials are written under `Assets/AfterBlue/Materials/Week7` so Week6 debug materials stay stable.
 - Week7 guide fields, route lines, and boundary lines use reduced alpha so water reads first.
-- Guard behavior: Week7 now validates the imported water prefab, imported water material, and boat FBX before regenerating the scene.
-- If those required assets are not ready in Unity's AssetDatabase, the Week7 builder stops instead of saving a fallback scene that looks like an older week.
+- Guard behavior: Week7 now validates the imported water source material before regenerating the scene.
+- If the water prefab cannot be loaded as a prefab, Week7 still creates `Water_Week7MaterialFallback_*` with the Week7 water candidate material so the water pass remains visible.
+- If the boat FBX cannot be loaded as a model prefab, Week7 logs a warning and creates `Boat_Fallback_4p5m` so the scene remains testable.
 - Shallow/medium/deep are currently expressed with very faint depth overlays plus submerged shadows, not separate water shaders.
 
 ### W7-D Submerged Height Rules
@@ -79,6 +80,19 @@ Status: builder implementation complete, visual review pending after Unity menu 
 - Keep these W7-E floor plates collider-free, so normal boat navigation remains open.
 - Treat these plates as temporary slots. Replace them with Flooded Grounds road/ground prefabs once that package is actually imported under `Assets`.
 
+### W7-G Flooded Grounds Selected Asset Pass
+
+Status: builder implementation complete, visual review pending after Unity menu apply.
+
+- Keep the full imported `Assets/Flooded_Grounds` package ignored by Git as a local source dump.
+- Add a small selected pass under `07_LANDMARKS/W7_FloodedGrounds_SelectedAssets`.
+- Start uses a Flooded Grounds dock and lamp.
+- H1 uses Villa base/roof pieces as shallow residential silhouettes.
+- M and H2 use pavement pieces for submerged road readability.
+- H2 uses billboard and car props as traffic-intersection clutter.
+- H3 uses bridge, fence, and ship props as deep debris silhouettes.
+- All selected Flooded Grounds instances have colliders removed by the builder so they do not block boat navigation during the readability pass.
+
 ### W7-F Asset Sourcing Table
 
 Status: first pass drafted.
@@ -86,12 +100,12 @@ Status: first pass drafted.
 | Need | Current Week7 source | Replacement direction |
 | --- | --- | --- |
 | Water surface | `IgniteCoders/Simple Water Shader` | Keep as first candidate until performance or visual issues appear. |
-| Underwater ground | W7-E primitive floor plates | Replace with Flooded Grounds terrain/ground prefabs after import. |
-| Submerged asphalt/crosswalk | Enlarged Week5-style primitives | Replace with Flooded Grounds road/intersection pieces if scale and license fit. |
+| Underwater ground | W7-E primitive floor plates | Replace or blend with Flooded Grounds terrain/ground prefabs after visual review. |
+| Submerged asphalt/crosswalk | Enlarged Week5-style primitives plus selected Flooded Grounds pavement pieces | Keep only if readable from gameplay camera. |
 | Roof silhouettes | Existing `flooded_roof_modern_v01.fbx` plus proxies | Keep, then add variants through Blender MCP or a small modular kit. |
 | Traffic light landmark | Existing tilted proxy | Build or source a hero asset for H2 later. |
 | Utility poles | Existing `rusted_utility_pole_v01.fbx` | Keep and add wire readability pass later. |
 | Vegetation/debris | Primitive proxies | Replace selectively; do not fill the whole map yet. |
 | Fish silhouettes | Deferred | Add after water readability is accepted. |
 
-`Flooded Grounds` is not currently visible in the project `Assets` tree. It may still need to be imported through Unity Package Manager or moved from the local download/cache location.
+`Flooded Grounds` is currently imported locally under `Assets/Flooded_Grounds`, but that full source package is ignored by Git. Only selected/copied production assets should be committed later.

@@ -1,159 +1,162 @@
-# AfterBlue Week01-07 Postmortem
+# AfterBlue Week01-07 작업 회고
 
-Date: 2026-07-20
-Branch: `week07`
+작성일: 2026-07-20  
+브랜치: `week07`
 
-This document records why the current AfterBlue prototype is being archived instead of pushed further in the same direction.
+이 문서는 현재 AfterBlue 프로토타입을 같은 방향으로 더 밀고 나가지 않고, 일단 아카이브하기로 한 이유를 기록한다.
 
-## Summary
+## 요약
 
-AfterBlue did not fail because the fishing loop was impossible. The main failure point was the map and environment production pipeline.
+AfterBlue가 막힌 이유는 낚시 루프 자체가 불가능했기 때문이 아니다. 가장 큰 실패 지점은 `Map_01` 제작과 환경 아트 파이프라인이었다.
 
-The project reached a working fishing prototype, but Map_01 required a much clearer art direction, underwater terrain plan, material pipeline, and 3D asset strategy than the project had at the time. AI-assisted implementation increased speed, but it also made it easy to keep adding plausible-looking pieces before the design foundation was locked.
+Week01-05까지는 낚시 프로토타입으로서 작동하는 기반을 만들었다. 그러나 `Map_01`은 단순히 오브젝트를 배치하는 문제가 아니라, 명확한 아트 방향성, 수중 지형 설계, 머티리얼 파이프라인, 3D 에셋 제작 기준이 먼저 필요한 작업이었다.
 
-## What Worked
+AI를 활용하면 구현 속도는 빨라지지만, 기획자의 의도와 제한 조건이 명확하지 않으면 그럴듯한 조각들이 계속 추가될 뿐 하나의 일관된 게임 공간으로 수렴하지 않는다.
 
-- Week01-05 produced a usable prototype rhythm.
-- Boat movement, fishing input, bite states, catch results, species data, and codex-style records were testable.
-- The fishing system reached a point where tuning could continue.
-- Week06 improved the map scale and boat speed. A 640 x 420m map and 9.5m/s boat speed felt closer to the intended play space than the earlier compact map.
+## 잘 된 부분
 
-## Main Failure Points
+- Week01-05에서 기본 플레이 리듬을 만들었다.
+- 보트 이동, 낚시 입력, 입질 상태, 포획 결과, 어종 데이터, 도감 기록은 테스트 가능한 수준까지 도달했다.
+- 낚시 시스템은 추가 튜닝을 이어갈 만한 기반이 있다.
+- Week06에서 맵 스케일과 보트 속도 감각을 개선했다.
+- `640 x 420m` 맵과 `9.5m/s` 보트 속도는 초기의 너무 작은 맵보다 의도한 탐험 공간에 더 가까웠다.
 
-### 1. Art Direction Was Not Locked
+## 주요 실패 지점
 
-The project moved between several visual targets:
+### 1. 아트 방향성이 잠기지 않았다
 
-- Low-poly prototype style.
-- Semi-realistic reference images.
-- Free Asset Store packs.
-- Blender-made simple props.
-- AI reference images with much higher environmental quality than the prototype could support.
+프로젝트가 여러 시각 목표 사이에서 흔들렸다.
 
-Because the art target was not strict, every new asset shifted the visual direction. The work started following available assets instead of the original game intention.
+- 로우폴리 프로토타입 스타일
+- 반실사 레퍼런스 이미지
+- 무료 에셋 스토어 패키지
+- Blender로 만든 단순 프롭
+- 현재 프로토타입이 감당하기 어려운 고품질 AI 레퍼런스 이미지
 
-Needed before further production:
+아트 목표가 엄격하지 않으니 새 에셋을 가져올 때마다 게임의 방향이 바뀌었다. 원래 기획 의도에 맞춰 에셋을 고르는 것이 아니라, 사용 가능한 에셋에 프로젝트가 끌려가는 흐름이 되었다.
 
-- A narrow art bible.
-- Clear allowed and disallowed asset styles.
-- A decision on low-poly, stylized realism, or asset-pack-driven style.
-- A material palette for water, wet wood, asphalt, concrete, moss, rust, and underwater silhouettes.
+다시 시작하기 전에 필요한 것:
 
-### 2. Map Design Was Too Vague
+- 좁고 명확한 아트 바이블
+- 허용할 에셋 스타일과 제외할 에셋 스타일
+- 로우폴리, 스타일라이즈드 리얼리즘, 에셋팩 기반 중 하나의 선택
+- 물, 젖은 나무, 아스팔트, 콘크리트, 이끼, 녹슨 금속, 수중 실루엣에 대한 머티리얼 팔레트
 
-Map_01 was treated as a visual layout problem too early. It should first have been a spatial and gameplay specification.
+### 2. 맵 설계가 너무 두리뭉술했다
 
-Missing locked decisions:
+`Map_01`은 먼저 공간 설계와 플레이 명세로 잠갔어야 한다. 그런데 너무 빨리 비주얼 배치 문제로 넘어갔다.
 
-- Exact playable boundary.
-- Natural blockers and why the player cannot pass them.
-- Underwater terrain height map.
-- Road height versus water level.
-- Which structures are fully submerged, partially exposed, or above water.
-- How the player reads Start, H1, M, H2, H3, and D from the gameplay camera.
-- How sky, fog, water clarity, lighting, and distant silhouettes support the map boundary.
+잠기지 않았던 결정들:
 
-The project had a water level (`Y=0`) but not a real underwater ground model. Because of this, roads, roofs, plants, and debris were repeatedly placed by feel. That made the process unstable.
+- 정확한 플레이 가능 경계
+- 플레이어가 왜 더 이상 갈 수 없는지 설명하는 자연스러운 차단물
+- 수중 지형 높이 지도
+- 도로 높이와 수면 높이의 관계
+- 완전히 잠긴 구조물, 일부만 드러난 구조물, 수면 위로 솟은 구조물의 기준
+- 플레이 카메라에서 Start, H1, M, H2, H3, D가 어떻게 읽히는지
+- 하늘, 안개, 수면 투명도, 조명, 먼 실루엣이 맵 경계를 어떻게 보조하는지
 
-### 3. Underwater Terrain Should Have Come First
+수면 높이 `Y=0`은 정했지만, 실제 수중 바닥 모델이 없었다. 그래서 도로, 지붕, 식생, 잔해를 계속 감으로 배치하게 되었고, 작업 과정이 불안정해졌다.
 
-The correct order should have been:
+### 3. 수중 지형이 먼저였어야 했다
 
-1. Lock water level.
-2. Lock underwater terrain height by zone.
-3. Place submerged road/ground surfaces.
-4. Test gameplay camera readability.
-5. Add large landmark silhouettes.
-6. Add water material and depth/fog tuning.
-7. Add vegetation and small dressing.
+올바른 순서는 다음에 가까웠다.
 
-Instead, water shader, roads, props, Flooded Grounds assets, and vegetation were introduced before the terrain rules were stable.
+1. 수면 높이를 확정한다.
+2. 구역별 수중 지형 높이를 확정한다.
+3. 물밑 도로와 바닥 면을 배치한다.
+4. 플레이 카메라에서 구역이 읽히는지 확인한다.
+5. 큰 랜드마크 실루엣을 배치한다.
+6. 물 머티리얼, 깊이감, 안개를 조정한다.
+7. 식생과 작은 장식물을 추가한다.
 
-### 4. 3D Art And Material Pipeline Were Underspecified
+실제로는 지형 규칙이 안정되기 전에 물 셰이더, 도로, 프롭, Flooded Grounds 에셋, 식생을 먼저 넣었다. 그래서 계속 떠 보이거나, 잠긴 느낌이 약하거나, 맵의 의도가 흐려지는 문제가 생겼다.
 
-AfterBlue needs material-heavy environmental art:
+### 4. 3D 아트와 머티리얼 파이프라인 이해가 부족했다
 
-- Wet wood.
-- Rusted metal.
-- Mossy roofs.
-- Submerged asphalt.
-- Concrete under transparent water.
-- Depth-based water color.
-- Underwater vegetation.
+AfterBlue가 원하는 수몰 문명 분위기는 머티리얼 의존도가 높다.
 
-The project did not yet have enough Blender, UV, Substance Painter, texture, and Unity URP material knowledge to control those looks intentionally. This made the prototype dependent on whatever imported assets happened to provide.
+- 젖은 나무
+- 녹슨 금속
+- 이끼 낀 지붕
+- 물밑 아스팔트
+- 투명한 물 아래 보이는 콘크리트
+- 깊이에 따라 달라지는 물 색
+- 수중 식생
 
-### 5. Asset Store Packs Helped But Also Added Risk
+이런 비주얼을 의도대로 만들려면 Blender, UV, Substance Painter, 텍스처, Unity URP 머티리얼에 대한 이해가 더 필요했다. 이 기반이 부족하니, 원하는 그림을 직접 만드는 것이 아니라 가져온 에셋이 제공하는 외형에 의존하게 되었다.
 
-Flooded Grounds and the water shader were useful references, but they also introduced problems:
+### 5. 에셋 스토어 패키지는 도움이 됐지만 위험도 컸다
 
-- Old Built-in render pipeline materials appeared pink in URP.
-- TreeCreator materials needed local shader patching.
-- Some imported packages were large and increased local disk pressure.
-- Full Asset Store source packages should not be committed to the public repository.
-- Converted review scenes/materials are useful for local study, but they are not a clean production asset pipeline.
+Flooded Grounds와 물 셰이더는 참고 자료로는 유용했다. 하지만 동시에 여러 문제를 만들었다.
 
-### 6. AI Assistance Needed A Stronger Creative Frame
+- 오래된 Built-in 렌더 파이프라인 머티리얼이 URP에서 핑크색으로 깨졌다.
+- TreeCreator 계열 머티리얼은 별도 패치가 필요했다.
+- 일부 에셋 패키지는 용량이 커서 로컬 디스크 부담이 컸다.
+- 에셋 스토어 원본 패키지는 공개 저장소에 그대로 커밋하면 안 된다.
+- 변환된 리뷰 씬과 머티리얼은 학습용으로는 쓸 수 있지만, 아직 깨끗한 프로덕션 파이프라인은 아니다.
 
-AI accelerated implementation, but it could not replace the director-level decisions.
+### 6. AI 작업에는 더 강한 기획 프레임이 필요했다
 
-The missing constraints were:
+AI는 구현을 빠르게 도와줄 수 있지만, 디렉터 수준의 판단을 대신할 수는 없다.
 
-- What the game must feel like.
-- What the player should notice first.
-- What should stay out of scope.
-- Which visual compromises are acceptable.
-- What the map must prove before art dressing starts.
+부족했던 제한 조건:
 
-Without those constraints, AI-generated implementation kept moving forward, but not always toward a coherent authored game.
+- 이 게임이 어떤 감각이어야 하는지
+- 플레이어가 화면에서 가장 먼저 무엇을 봐야 하는지
+- 이번 단계에서 하지 말아야 할 일이 무엇인지
+- 어떤 시각적 타협은 허용하고 어떤 타협은 허용하지 않을지
+- 아트 드레싱 전에 맵이 반드시 증명해야 하는 것이 무엇인지
 
-## System Status
+이 조건들이 부족하니 구현은 계속 전진했지만, 일관된 작품 방향으로 모이지 못했다.
 
-Fishing loop:
+## 현재 시스템 상태
 
-- Worth preserving.
-- Needs UI/feedback pass.
-- Needs future economy/progression validation.
+낚시 루프:
 
-Map_01:
+- 보존할 가치가 있다.
+- UI와 피드백 패스가 필요하다.
+- 이후 경제, 성장, 보상 구조와 맞물리는지 검증해야 한다.
 
-- Current Week06 scale and boat speed findings are useful.
-- Current Week07 water/asset work is a useful study, not a locked production direction.
-- Underwater ground and art direction should be restarted from a stricter specification.
+`Map_01`:
 
-External assets:
+- Week06의 맵 스케일과 보트 속도 판단은 유용하다.
+- Week07의 물, 에셋, 자연물 작업은 학습용 기록으로는 유용하지만, 확정된 제작 방향은 아니다.
+- 수중 지형과 아트 방향성은 더 엄격한 명세에서 다시 시작하는 편이 낫다.
 
-- `Assets/Flooded_Grounds/` is a local ignored source import and is not committed.
-- `Assets/IgniteCoders/Simple Water Shader/` exists in the repository history and should be reviewed for license/public repository safety before any public release.
+외부 에셋:
 
-## Restart Conditions
+- `Assets/Flooded_Grounds/`는 로컬에서만 쓰는 원본 임포트 폴더이며 `.gitignore` 처리되어 커밋되지 않는다.
+- `Assets/IgniteCoders/Simple Water Shader/`는 저장소 기록에 포함되어 있으므로, 공개 저장소나 출시 전에 라이선스 안전성을 별도로 확인해야 한다.
 
-Restart AfterBlue only after these are true:
+## 다시 시작하기 위한 조건
 
-- One-page art bible is locked.
-- One-page Map_01 top-down design is locked.
-- Underwater height map is locked.
-- A small material test board exists for water, road, concrete, wood, rust, moss, and vegetation.
-- At least one small environment slice proves the intended look from the gameplay camera.
-- Fishing UI feedback is prototyped.
+AfterBlue를 다시 시작하려면 최소한 다음이 먼저 준비되어야 한다.
 
-## Recommended Restart Scope
+- 1페이지짜리 아트 바이블
+- 1페이지짜리 `Map_01` 탑다운 설계도
+- 수중 지형 높이 지도
+- 물, 도로, 콘크리트, 나무, 녹, 이끼, 식생의 소형 머티리얼 테스트 보드
+- 플레이 카메라에서 의도한 분위기가 증명되는 작은 환경 슬라이스
+- 낚시 UI 피드백 프로토타입
 
-Do not restart with the full flooded open map first.
+## 권장 재시작 범위
 
-Start with a smaller vertical slice:
+처음부터 큰 수몰 오픈맵으로 다시 시작하지 않는다.
 
-- One 40 x 40m fishing location.
-- One boat.
-- One dock or buoy.
-- One submerged road/roof cue.
-- One visible fish shadow.
-- One complete catch-to-reward loop.
+먼저 작은 버티컬 슬라이스로 시작한다.
 
-Only expand after the small scene proves the art direction, water readability, and fishing UX.
+- `40 x 40m` 낚시 장소 하나
+- 보트 하나
+- 부두 또는 부표 하나
+- 물밑 도로 또는 지붕 단서 하나
+- 보이는 물고기 그림자 하나
+- 포획에서 보상까지 이어지는 완결 루프 하나
 
-## Final Judgment
+이 작은 장면에서 아트 방향성, 물 가독성, 낚시 UX가 증명된 뒤에만 맵을 확장한다.
 
-AfterBlue's core idea remains viable, but the current Week07 map pipeline is not stable enough to continue directly.
+## 최종 판단
 
-Archive this branch as a learning snapshot. Future work should restart from stricter design locks, not from more asset placement.
+AfterBlue의 핵심 아이디어는 여전히 가능성이 있다. 하지만 현재 Week07 맵 제작 파이프라인은 그대로 이어가기에는 안정적이지 않다.
+
+이 브랜치는 실패가 아니라 학습 스냅샷으로 아카이브한다. 다음 작업은 더 많은 에셋 배치가 아니라, 더 엄격한 설계 잠금에서 다시 시작해야 한다.

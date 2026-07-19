@@ -45,3 +45,9 @@ Desktop.ini
 # Blender backup files
 *.blend1
 *.blend1.meta
+
+# Local Asset Store source dumps
+[Aa]ssets/[Ff]looded_[Gg]rounds/
+[Aa]ssets/[Ff]looded_[Gg]rounds.meta
+[Aa]ssets/_TerrainAutoUpgrade/
+[Aa]ssets/_TerrainAutoUpgrade.meta

@@ -87,6 +87,7 @@ Goal: make the Week6 map read like a flooded world by solving water visibility, 
 - [x] Define the first water material target: imported water material clone plus faint depth overlays.
 - [x] Decide which objects should be below water, partly above water, or clearly above water.
 - [x] Replace guide-field dominance with water-first readability in the Week7 builder.
+- [x] Centralize W7-D Height Rule v1 constants in the Week7 builder.
 - [ ] Create H1/H2/H3 asset sourcing table: reuse existing proxy, free asset, Blender MCP, custom Blender, or defer.
 - [ ] Build one representative H2 water/depth/asset slice directly inside `Map_01_Week6.unity` or its Week7 successor.
 - [ ] Confirm no representative asset blocks normal boating.

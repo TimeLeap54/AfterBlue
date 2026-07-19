@@ -43,25 +43,34 @@ Status: implementation complete, visual review pending after Unity menu apply.
 - Fallback behavior: if the imported water prefab or material is missing, the builder falls back to the old simple water plane.
 - Shallow/medium/deep are currently expressed with very faint depth overlays plus submerged shadows, not separate water shaders.
 
-### W7-C Submerged Height Rules
+### W7-D Submerged Height Rules
 
-Status: builder rules complete, visual review pending after Unity menu apply.
+Status: Height Rule v1 complete, visual review pending after Unity menu apply.
 
 - Underwater: roads, some roofs, small debris, car bodies.
 - Partially exposed: poles, traffic light, signs, large debris, some roof edges.
 - Above water: supply buoy, gameplay anchors, readable landmark tops.
+- Water level: Y 0.00.
+- Underwater roads: Y -0.16.
+- Underwater crosswalks / visible road fragments: Y -0.08.
+- Underwater small debris: Y -0.10.
+- Partially exposed roofs: Y -0.08.
+- Partially exposed debris: Y -0.05.
+- Surface planks / low markers: Y +0.03.
+- Readable poles/signs: Y +1.15.
+- Readable traffic light anchor: Y +1.70.
 - H1 roof proxies are lowered so only roof tops/edges should read.
 - M and H2 road/crosswalk proxies are lowered below the water surface.
 - H3 debris is mostly submerged, with only large silhouettes and some planks reading near the surface.
 - Start supply buoy and H2 traffic light remain clearly above water as navigation anchors.
 
-### W7-D H2 Representative Slice
+### W7-E H2 Representative Slice
 
 - Build one traffic-light intersection slice directly on Map_01.
 - Include water color, submerged road, crosswalk, tilted signal, poles, wires, and a few visible debris silhouettes.
 - Keep normal boat navigation open.
 
-### W7-E Asset Sourcing Table
+### W7-F Asset Sourcing Table
 
 - Decide which assets are reused proxies.
 - Decide which assets are Blender MCP candidates.

@@ -161,9 +161,9 @@ namespace AfterBlue.EditorTools
 
         private static bool ValidateWeek7RequiredAssets()
         {
-            bool hasWaterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(Week7WaterBlockPrefabPath) != null;
+            bool hasWaterPrefab = LoadGameObjectAsset(Week7WaterBlockPrefabPath) != null;
             bool hasWaterMaterial = AssetDatabase.LoadAssetAtPath<Material>(Week7WaterSourceMaterialPath) != null;
-            bool hasBoatModel = AssetDatabase.LoadAssetAtPath<GameObject>(BoatModelPath) != null;
+            bool hasBoatModel = LoadGameObjectAsset(BoatModelPath) != null;
 
             if (hasWaterPrefab && hasWaterMaterial && hasBoatModel)
             {
@@ -198,7 +198,7 @@ namespace AfterBlue.EditorTools
         {
             if (useWeek7Water)
             {
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(Week7WaterBlockPrefabPath);
+                GameObject prefab = LoadGameObjectAsset(Week7WaterBlockPrefabPath);
                 if (prefab != null)
                 {
                     GameObject waterObject = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
@@ -483,7 +483,7 @@ namespace AfterBlue.EditorTools
             boat.transform.localPosition = Start + new Vector3(0f, 0.18f, -4.4f);
             boat.transform.localRotation = Quaternion.Euler(0f, 22f, 0f);
 
-            GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>(BoatModelPath);
+            GameObject model = LoadGameObjectAsset(BoatModelPath);
             if (model != null)
             {
                 GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(model);
@@ -660,7 +660,7 @@ namespace AfterBlue.EditorTools
 
         private static bool InstantiateAsset(Transform parent, string path, string name, Vector3 position, Quaternion rotation, Vector3 scale)
         {
-            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            GameObject asset = LoadGameObjectAsset(path);
             if (asset == null)
             {
                 return false;
@@ -673,6 +673,34 @@ namespace AfterBlue.EditorTools
             instance.transform.localRotation = rotation;
             instance.transform.localScale = scale;
             return true;
+        }
+
+        private static GameObject LoadGameObjectAsset(string path)
+        {
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (asset != null)
+            {
+                return asset;
+            }
+
+            asset = AssetDatabase.LoadMainAssetAtPath(path) as GameObject;
+            if (asset != null)
+            {
+                return asset;
+            }
+
+            Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+            foreach (Object candidate in assets)
+            {
+                if (candidate is GameObject gameObject)
+                {
+                    return gameObject;
+                }
+            }
+
+            return null;
         }
 
         private static GameObject CreateBox(Transform parent, string name, Vector3 position, Vector3 scale, Quaternion rotation, Material material)

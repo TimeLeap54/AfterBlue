@@ -30,14 +30,17 @@ namespace AfterBlue.EditorTools
         private const string RejectedScaleLabel = "192x128";
 
         private const float WaterLevelY = 0f;
-        private const float HeightUnderwaterRoadY = WaterLevelY - 0.16f;
-        private const float HeightUnderwaterCrosswalkY = WaterLevelY - 0.08f;
-        private const float HeightUnderwaterSmallDebrisY = WaterLevelY - 0.10f;
-        private const float HeightPartiallyExposedRoofY = WaterLevelY - 0.08f;
-        private const float HeightPartiallyExposedDebrisY = WaterLevelY - 0.05f;
+        private const float HeightUnderwaterFloorShallowY = WaterLevelY - 0.55f;
+        private const float HeightUnderwaterFloorMediumY = WaterLevelY - 0.80f;
+        private const float HeightUnderwaterFloorDeepY = WaterLevelY - 1.35f;
+        private const float HeightUnderwaterRoadY = WaterLevelY - 0.55f;
+        private const float HeightUnderwaterCrosswalkY = WaterLevelY - 0.48f;
+        private const float HeightUnderwaterSmallDebrisY = WaterLevelY - 0.35f;
+        private const float HeightPartiallyExposedRoofY = WaterLevelY - 0.22f;
+        private const float HeightPartiallyExposedDebrisY = WaterLevelY - 0.18f;
         private const float HeightPartiallyExposedPlankY = WaterLevelY + 0.03f;
         private const float HeightPartiallyExposedBlockerY = WaterLevelY + 0.02f;
-        private const float HeightStrongSubmergedSilhouetteY = WaterLevelY - 0.08f;
+        private const float HeightStrongSubmergedSilhouetteY = WaterLevelY - 0.75f;
         private const float HeightReadablePoleBaseY = WaterLevelY + 1.15f;
         private const float HeightReadableTrafficLightY = WaterLevelY + 1.70f;
         private const float HeightStartSupplyDeckY = WaterLevelY + 0.55f;
@@ -60,7 +63,7 @@ namespace AfterBlue.EditorTools
         [MenuItem("AfterBlue/Setup/Apply Week 7 Water And Asset Pass")]
         public static void ApplyWeek7WaterAndAssetPass()
         {
-            ApplyMap01(Week7ScenePath, "Map_01_Week7", "WEEK7_GOAL_Water_SubmergedReadability_AssetPlan", $"W7_D_HEIGHT_RULE_V1_{ActiveScaleLabel}_IgniteCodersSimpleWater", "Week 7 Water And Asset Pass", true);
+            ApplyMap01(Week7ScenePath, "Map_01_Week7", "WEEK7_GOAL_Water_SubmergedReadability_AssetPlan", $"W7_E_UNDERWATER_FLOOR_V1_{ActiveScaleLabel}_IgniteCodersSimpleWater", "Week 7 Water And Asset Pass", true);
         }
 
         private static void ApplyMap01(string scenePath, string sceneName, string goalName, string specName, string logLabel, bool useWeek7Water)
@@ -89,6 +92,7 @@ namespace AfterBlue.EditorTools
             Material boundary = CreateMaterial($"{materialFolder}/MAT_S2_Boundary.mat", WithAlpha(new Color(0.72f, 0.94f, 1f, 0.82f), useWeek7Water ? 0.26f : 1f), true);
             Material road = CreateMaterial($"{materialFolder}/MAT_S2_AsphaltProxy.mat", new Color(0.08f, 0.13f, 0.16f, 1f), false);
             Material concrete = CreateMaterial($"{materialFolder}/MAT_S2_ConcreteProxy.mat", new Color(0.42f, 0.54f, 0.56f, 1f), false);
+            Material underwaterFloor = useWeek7Water ? CreateMaterial($"{materialFolder}/MAT_W7_UnderwaterFloorProxy.mat", new Color(0.10f, 0.22f, 0.22f, 1f), false) : null;
             Material roof = CreateMaterial($"{materialFolder}/MAT_S2_RoofProxy.mat", new Color(0.11f, 0.24f, 0.27f, 1f), false);
             Material wood = CreateMaterial($"{materialFolder}/MAT_S2_WoodProxy.mat", new Color(0.38f, 0.27f, 0.18f, 1f), false);
             Material rust = CreateMaterial($"{materialFolder}/MAT_S2_RustMetalProxy.mat", new Color(0.56f, 0.25f, 0.12f, 1f), false);
@@ -118,6 +122,10 @@ namespace AfterBlue.EditorTools
             CreateRouteGuides(routes, route);
             CreateLargeZoneFields(zones, startZone, shallow, medium, h2Zone, h3Zone, returnZone);
             CreateFishingZoneFields(fishingZones, shallow, medium, h2Zone, h3Zone, returnZone);
+            if (useWeek7Water)
+            {
+                CreateUnderwaterFloorPlates(obstacles, underwaterFloor, road, concrete);
+            }
             CreateWeek5StyleProxies(landmarks, obstacles, road, concrete, roof, wood, rust, vegetation, warmLight, shadow, useWeek7Water);
             CreateWaterLines(waterRoot, ripple);
             CreateSpeedAndCrossingMarkers(debug, route, boundary);
@@ -247,6 +255,21 @@ namespace AfterBlue.EditorTools
             CreateReturnWaterCluster(landmarks, obstacles, roof, vegetation, shadow, useSubmergedHeightRules);
         }
 
+        private static void CreateUnderwaterFloorPlates(Transform obstacles, Material floor, Material road, Material concrete)
+        {
+            Transform root = CreateChild(obstacles, "W7_UnderwaterFloor_ReplaceWithFloodedGrounds");
+
+            CreateFloorPlate(root, "Floor_Start_Shallow_Shelf", Start + new Vector3(18f, HeightUnderwaterFloorShallowY, 20f), new Vector3(88f, 0.12f, 68f), Quaternion.Euler(0f, 10f, 0f), floor);
+            CreateFloorPlate(root, "Floor_H1_Shallow_Residential_Bed", H1 + new Vector3(2f, HeightUnderwaterFloorShallowY, -4f), new Vector3(145f, 0.12f, 108f), Quaternion.Euler(0f, -8f, 0f), floor);
+            CreateFloorPlate(root, "Floor_M_Central_Submerged_Road_Bed", M + new Vector3(10f, HeightUnderwaterFloorMediumY, -6f), new Vector3(190f, 0.12f, 76f), Quaternion.Euler(0f, -18f, 0f), floor);
+            CreateFloorPlate(root, "Floor_H2_Intersection_Bed", H2 + new Vector3(-2f, HeightUnderwaterFloorMediumY, -6f), new Vector3(136f, 0.12f, 106f), Quaternion.Euler(0f, -10f, 0f), floor);
+            CreateFloorPlate(root, "Floor_H3_Deep_Debris_Bed", H3 + new Vector3(-8f, HeightUnderwaterFloorDeepY, 8f), new Vector3(156f, 0.12f, 122f), Quaternion.Euler(0f, 8f, 0f), floor);
+            CreateFloorPlate(root, "Floor_D_Return_Water_Bed", D + new Vector3(0f, HeightUnderwaterFloorMediumY, 2f), new Vector3(108f, 0.12f, 72f), Quaternion.Euler(0f, 16f, 0f), floor);
+
+            CreateFloorPlate(root, "Floor_H2_Asphalt_Support_Tint", H2 + new Vector3(0f, HeightUnderwaterFloorMediumY + 0.03f, 0f), new Vector3(104f, 0.08f, 86f), Quaternion.Euler(0f, -10f, 0f), road);
+            CreateFloorPlate(root, "Floor_H2_Crosswalk_Support_Tint", H2 + new Vector3(0f, HeightUnderwaterFloorMediumY + 0.06f, -12f), new Vector3(28f, 0.06f, 16f), Quaternion.Euler(0f, -10f, 0f), concrete);
+        }
+
         private static void CreateStartSupplyCluster(Transform parent, Material wood, Material rust, Material warmLight)
         {
             Transform root = CreateChild(parent, "Start_Supply_Buoy");
@@ -303,10 +326,11 @@ namespace AfterBlue.EditorTools
             float roadY = Height(useSubmergedHeightRules, HeightUnderwaterRoadY, 0.02f);
             float fragmentY = Height(useSubmergedHeightRules, HeightUnderwaterCrosswalkY, 0.18f);
 
-            CreateRoadSegment(root, "Road_S_to_M_A", Mid(Start, M, 0.28f) + Vector3.up * roadY, Start, M, 26f, road, concrete);
-            CreateRoadSegment(root, "Road_S_to_M_B", Mid(Start, M, 0.64f) + Vector3.up * roadY, Start, M, 25f, road, concrete);
-            CreateRoadSegment(root, "Road_M_to_H2_A", Mid(M, H2, 0.35f) + Vector3.up * roadY, M, H2, 30f, road, concrete);
-            CreateRoadSegment(root, "Road_M_to_H2_B", Mid(M, H2, 0.72f) + Vector3.up * roadY, M, H2, 24f, road, concrete);
+            float roadWidth = useSubmergedHeightRules ? 14f : 8.8f;
+            CreateRoadSegment(root, "Road_S_to_M_A", Mid(Start, M, 0.28f) + Vector3.up * roadY, Start, M, 42f, road, concrete, roadWidth);
+            CreateRoadSegment(root, "Road_S_to_M_B", Mid(Start, M, 0.64f) + Vector3.up * roadY, Start, M, 40f, road, concrete, roadWidth);
+            CreateRoadSegment(root, "Road_M_to_H2_A", Mid(M, H2, 0.35f) + Vector3.up * roadY, M, H2, 48f, road, concrete, roadWidth);
+            CreateRoadSegment(root, "Road_M_to_H2_B", Mid(M, H2, 0.72f) + Vector3.up * roadY, M, H2, 42f, road, concrete, roadWidth);
             CreateFlatEllipse(root, "M_Road_Submerged_Shadow", M + new Vector3(4f, 0f, -4f), new Vector2(52f, 24f), shadow);
 
             Transform block = CreateChild(obstacles, "M_Central_Road_OpenPassages");
@@ -322,11 +346,14 @@ namespace AfterBlue.EditorTools
             float stripeY = Height(useSubmergedHeightRules, HeightUnderwaterCrosswalkY, 0.12f);
             float blockerY = Height(useSubmergedHeightRules, HeightPartiallyExposedBlockerY, 0.25f);
 
-            CreateBox(root, "H2_Intersection_Main_Road", new Vector3(0f, roadY, 0f), new Vector3(42f, 0.10f, 9f), Quaternion.Euler(0f, -10f, 0f), road);
-            CreateBox(root, "H2_Intersection_Cross_Road", new Vector3(1f, roadY + 0.005f, 0f), new Vector3(9f, 0.10f, 34f), Quaternion.Euler(0f, -10f, 0f), road);
+            Vector3 mainRoadScale = useSubmergedHeightRules ? new Vector3(88f, 0.10f, 15f) : new Vector3(42f, 0.10f, 9f);
+            Vector3 crossRoadScale = useSubmergedHeightRules ? new Vector3(16f, 0.10f, 74f) : new Vector3(9f, 0.10f, 34f);
+            CreateBox(root, "H2_Intersection_Main_Road", new Vector3(0f, roadY, 0f), mainRoadScale, Quaternion.Euler(0f, -10f, 0f), road);
+            CreateBox(root, "H2_Intersection_Cross_Road", new Vector3(1f, roadY + 0.005f, 0f), crossRoadScale, Quaternion.Euler(0f, -10f, 0f), road);
             for (int i = -2; i <= 2; i++)
             {
-                CreateBox(root, $"H2_Crosswalk_Stripe_{i + 3}", new Vector3(i * 2.2f, stripeY, -6.4f), new Vector3(1.1f, 0.04f, 7f), Quaternion.Euler(0f, -10f, 0f), concrete);
+                Vector3 stripeScale = useSubmergedHeightRules ? new Vector3(1.25f, 0.04f, 11f) : new Vector3(1.1f, 0.04f, 7f);
+                CreateBox(root, $"H2_Crosswalk_Stripe_{i + 3}", new Vector3(i * 2.5f, stripeY, -10.5f), stripeScale, Quaternion.Euler(0f, -10f, 0f), concrete);
             }
 
             CreateTrafficLightProxy(root, "H2_Tilted_TrafficLight_Hero", new Vector3(2.5f, HeightReadableTrafficLightY, 0.5f), Quaternion.Euler(0f, 18f, -18f), rust, warmLight);
@@ -503,13 +530,14 @@ namespace AfterBlue.EditorTools
             CreateFlatEllipse(root, $"{name}_Offset_B", new Vector3(-size.x * 0.18f, 0f, -size.y * 0.10f), size * 0.48f, material);
         }
 
-        private static void CreateRoadSegment(Transform parent, string name, Vector3 position, Vector3 start, Vector3 end, float length, Material asphalt, Material concrete)
+        private static void CreateRoadSegment(Transform parent, string name, Vector3 position, Vector3 start, Vector3 end, float length, Material asphalt, Material concrete, float width = 8.8f)
         {
             Vector3 direction = (end - start).normalized;
             Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
-            CreateBox(parent, name, position, new Vector3(8.8f, 0.10f, length), rotation, asphalt);
-            CreateBox(parent, $"{name}_LaneMark_Left", position + rotation * new Vector3(-1.5f, 0.08f, 0f), new Vector3(0.18f, 0.035f, length * 0.75f), rotation, concrete);
-            CreateBox(parent, $"{name}_LaneMark_Right", position + rotation * new Vector3(1.5f, 0.08f, 0f), new Vector3(0.18f, 0.035f, length * 0.72f), rotation, concrete);
+            float laneOffset = width * 0.17f;
+            CreateBox(parent, name, position, new Vector3(width, 0.10f, length), rotation, asphalt);
+            CreateBox(parent, $"{name}_LaneMark_Left", position + rotation * new Vector3(-laneOffset, 0.08f, 0f), new Vector3(0.18f, 0.035f, length * 0.75f), rotation, concrete);
+            CreateBox(parent, $"{name}_LaneMark_Right", position + rotation * new Vector3(laneOffset, 0.08f, 0f), new Vector3(0.18f, 0.035f, length * 0.72f), rotation, concrete);
         }
 
         private static void CreateRoofProxy(Transform parent, string name, Vector3 position, Quaternion rotation, Vector3 scale, Material roof, Material concrete, Material vegetation)
@@ -622,6 +650,12 @@ namespace AfterBlue.EditorTools
             return obj;
         }
 
+        private static void CreateFloorPlate(Transform parent, string name, Vector3 position, Vector3 scale, Quaternion rotation, Material material)
+        {
+            GameObject obj = CreateBox(parent, name, position, scale, rotation, material);
+            DestroyCollider(obj);
+        }
+
         private static GameObject CreateCylinder(Transform parent, string name, Vector3 position, Vector3 scale, Quaternion rotation, Material material)
         {
             GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -678,8 +712,14 @@ namespace AfterBlue.EditorTools
             }
 
             material.name = "AB_Water_Map01_Candidate";
-            SetColorIfPresent(material, "Color_36218622185947c6a5ae36366d8e21d8", new Color(0.12f, 0.45f, 0.54f, 0.96f));
-            SetColorIfPresent(material, "Color_93e06cd551a5449091bcde90b46765a0", new Color(0.25f, 0.86f, 0.78f, 0.18f));
+            material.color = new Color(0.12f, 0.45f, 0.54f, 0.72f);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", material.color);
+            }
+
+            SetColorIfPresent(material, "Color_36218622185947c6a5ae36366d8e21d8", new Color(0.12f, 0.45f, 0.54f, 0.72f));
+            SetColorIfPresent(material, "Color_93e06cd551a5449091bcde90b46765a0", new Color(0.25f, 0.86f, 0.78f, 0.16f));
             SetFloatIfPresent(material, "Vector1_687f54e8c371429f86b9eaab0e7dfe3e", 0.34f);
             SetFloatIfPresent(material, "Vector1_6c82dffdd68049bcb019d3a9c64c92a0", 0.14f);
             SetFloatIfPresent(material, "Vector1_7273530c27a34c9f8ee5723b84f96baa", 0.34f);

@@ -88,8 +88,11 @@ Goal: make the Week6 map read like a flooded world by solving water visibility, 
 - [x] Decide which objects should be below water, partly above water, or clearly above water.
 - [x] Replace guide-field dominance with water-first readability in the Week7 builder.
 - [x] Centralize W7-D Height Rule v1 constants in the Week7 builder.
-- [ ] Create H1/H2/H3 asset sourcing table: reuse existing proxy, free asset, Blender MCP, custom Blender, or defer.
-- [ ] Build one representative H2 water/depth/asset slice directly inside `Map_01_Week6.unity` or its Week7 successor.
+- [x] Revise W7-D to Height Rule v2 after road props still read too close to the water surface.
+- [x] Add W7-E underwater floor proxy plates for Start, H1, M, H2, H3, and D.
+- [x] Enlarge Week7 central roads and the H2 intersection to better match the 640 x 420m map scale.
+- [x] Draft H1/H2/H3 asset sourcing table: reuse existing proxy, free asset, Blender MCP, custom Blender, or defer.
+- [ ] Apply `AfterBlue > Setup > Apply Week 7 Water And Asset Pass` and visually review W7-E in Unity.
 - [ ] Confirm no representative asset blocks normal boating.
 
 Pass criteria:
